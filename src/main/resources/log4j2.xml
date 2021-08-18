@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d{yyy-MM-dd HH:mm:ss.SSS} %X{sessionId} [%t]  %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <RollingFile name="RollingFile" fileName="logs/log.log"
+                     append="true" filePattern="logs/log-%d-%i.log">
+            <PatternLayout
+                    pattern="%d{yyy-MM-dd HH:mm:ss.SSS} %X{sessionId} [%t]  %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1Mb"/>
+            </Policies>
+            <DefaultRolloverStrategy max="3"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.manager" level="all" additivity="true"/>
+        <Root level="all">
+            <AppenderRef ref="Console" level="debug"/>
+            <AppenderRef ref="RollingFile" level="debug"/>
+        </Root>
+        <Root level="warn">
+            <AppenderRef ref="Console" level="debug"/>
+            <AppenderRef ref="RollingFile" level="debug"/>
+        </Root>
+    </Loggers>
+</Configuration>
