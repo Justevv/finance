@@ -69,6 +69,7 @@ Vue.component('expense-form', {
             if (this.id) {
                 expenseApi.update({id: this.id}, expense).then(result =>
                     result.json().then(data => {
+                        // let index = s;
                         let index = getIndex(this.expenses, data.id);
                         this.expenses.splice(index, 1, data);
                         this.sum = ''
