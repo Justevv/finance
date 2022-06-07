@@ -100,6 +100,7 @@ Vue.component('expense-row', {
         '<tr>' +
         '<td>{{ expense.id }}</td>' +
         '<td><span v-if="expense.description!==null">{{ expense.description }}</span></td>' +
+        '<td><span v-if="expense.date!==null">{{ expense.date }}</span></td>' +
         '<td><span v-if="expense.sum!==null">{{ expense.sum }}</span></td>' +
         '<td><span v-if="expense.place!==null">{{ expense.place.name }}</span></td>' +
         '<td><span v-if="expense.category!==null">{{ expense.category.name }}</span></td>' +
@@ -135,6 +136,7 @@ Vue.component('expenses-list', {
         '   <tr>' +
         '    <th>id</th>' +
         '    <th>description</th>' +
+        '    <th>date</th>' +
         '    <th>sum</th>' +
         '    <th>place</th>' +
         '    <th>category</th>' +
