@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -44,12 +45,13 @@ public class Expense {
     }
 
     @PostMapping
-    public ResponseEntity addExpense(@Valid ExpenseDTO expenseDTO, BindingResult bindingResult) throws IOException {
+    public ResponseEntity<Object> addExpense(@Valid ExpenseDTO expenseDTO, Principal principal,
+                                             BindingResult bindingResult) throws IOException {
         log.debug(logConstants.getInputDataNew(), expenseDTO);
-        ResponseEntity responseEntity;
+        ResponseEntity<Object> responseEntity;
 
         if (!bindingResult.hasErrors()) {
-            ExpenseEntity expense = expenseModel.addExpense(expenseDTO);
+            ExpenseEntity expense = expenseModel.addExpense(expenseDTO, principal);
             log.debug(logConstants.getSaveToDatabase(), expense);
             responseEntity = ResponseEntity.ok(expense);
         } else {
@@ -62,10 +64,10 @@ public class Expense {
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity changeExpenseProperty(@PathVariable("id") ExpenseEntity expense, @Valid ExpenseDTO expenseDTO,
+    public ResponseEntity<Object> changeExpenseProperty(@PathVariable("id") ExpenseEntity expense, @Valid ExpenseDTO expenseDTO,
                                                 BindingResult bindingResult) {
         log.debug(logConstants.getInputDataToChange(), expenseDTO, expense);
-        ResponseEntity responseEntity;
+        ResponseEntity<Object> responseEntity;
         if (!bindingResult.hasErrors()) {
             responseEntity = ResponseEntity.ok(expenseModel.changeExpense(expense, expenseDTO));
             log.debug(logConstants.getSaveToDatabase(), expenseDTO);
@@ -79,10 +81,10 @@ public class Expense {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity changeExpense(@PathVariable("id") ExpenseEntity expense, @Valid ExpenseDTO expenseDTO,
+    public ResponseEntity<Object> changeExpense(@PathVariable("id") ExpenseEntity expense, @Valid ExpenseDTO expenseDTO,
                                         BindingResult bindingResult) {
         log.debug(logConstants.getInputDataToChange(), expense, expenseDTO);
-        ResponseEntity responseEntity;
+        ResponseEntity<Object> responseEntity;
         if (!bindingResult.hasErrors()) {
             responseEntity = ResponseEntity.ok(expenseModel.changeExpense(expense, expenseDTO));
             log.debug(logConstants.getSaveToDatabase(), expenseDTO);
@@ -96,9 +98,9 @@ public class Expense {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deleteExpense(@PathVariable("id") ExpenseEntity expense) {
+    public ResponseEntity<Object> deleteExpense(@PathVariable("id") ExpenseEntity expense) {
         log.debug(logConstants.getInputDataForDelete(), expense);
-        ResponseEntity responseEntity = ResponseEntity.ok(expenseModel.deleteExpense(expense));
+        ResponseEntity<Object> responseEntity = ResponseEntity.ok(expenseModel.deleteExpense(expense));
         log.debug(logConstants.getDeletedResponse(), responseEntity);
         return responseEntity;
     }

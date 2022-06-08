@@ -7,12 +7,14 @@ import com.manager.finance.entity.ExpenseEntity;
 import com.manager.finance.repo.CategoryRepo;
 import com.manager.finance.repo.ExpenseRepo;
 import com.manager.finance.repo.PlaceRepo;
+import com.manager.finance.repo.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +25,14 @@ public class ExpenseModel {
     private final ExpenseRepo expenseRepo;
     private final CategoryRepo categoryRepo;
     private final PlaceRepo placeRepo;
+    private final UserRepo userRepo;
     private final LogConstants logConstants = new LogConstants(EXPENSE);
 
-    public ExpenseModel(ExpenseRepo expenseRepo, CategoryRepo categoryRepo, PlaceRepo placeRepo) {
+    public ExpenseModel(ExpenseRepo expenseRepo, CategoryRepo categoryRepo, PlaceRepo placeRepo, UserRepo userRepo) {
         this.expenseRepo = expenseRepo;
         this.categoryRepo = categoryRepo;
         this.placeRepo = placeRepo;
+        this.userRepo = userRepo;
     }
 
     @Cacheable(cacheNames = "expense")
@@ -48,8 +52,9 @@ public class ExpenseModel {
         return expenseEntities;
     }
 
-    public ExpenseEntity addExpense(ExpenseDTO expenseDTO) throws IOException {
+    public ExpenseEntity addExpense(ExpenseDTO expenseDTO, Principal principal) throws IOException {
         log.debug(logConstants.getInputDataNew(), expenseDTO);
+        expenseDTO.setUser(userRepo.findByUsername(principal.getName()));
         ExpenseEntity expenseEntity = new ExpenseEntity(expenseDTO);
         expenseEntity.setCategory(expenseDTO.getCategory() != null
                 ? expenseDTO.getCategory() : categoryRepo.findByName("Default"));
