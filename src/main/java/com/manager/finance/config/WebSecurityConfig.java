@@ -8,9 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manager.finance.dto.UserDTO;
 import com.manager.finance.entity.User;
 import com.manager.finance.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.CloseableThreadContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,8 +30,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final Logger LOGGER = LogManager.getLogger(WebSecurityConfig.class);
     private static final int STRENGTH_PASSWORD = 8;
 //    @Autowired
 //    private AuthenticationEntryPoint authEntryPoint;
@@ -97,7 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             String jsonUsername = mapper.writeValueAsString(userDTO);
             response.setContentType("text/x-json;charset=UTF-8");
             response.getWriter().write(jsonUsername);  // NOSONAR
-            LOGGER.info("Session {} for user {} created",
+            log.info("Session {} for user {} created",
                     RequestContextHolder.currentRequestAttributes().getSessionId(), userDTO);
         };
     }

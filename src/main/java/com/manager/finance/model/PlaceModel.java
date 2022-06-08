@@ -4,15 +4,14 @@ import com.manager.finance.config.LogConstants;
 import com.manager.finance.dto.PlaceDTO;
 import com.manager.finance.entity.PlaceEntity;
 import com.manager.finance.repo.PlaceRepo;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class PlaceModel {
-    private static final Logger LOGGER = LogManager.getLogger(PlaceModel.class);
     private static final String PLACE = "place";
     private final PlaceRepo placeRepo;
     private final LogConstants logConstants = new LogConstants(PLACE);
@@ -24,31 +23,31 @@ public class PlaceModel {
     public List<PlaceEntity> get() {
         List<PlaceEntity> categoryEntity = placeRepo.findAll();
 
-        LOGGER.debug(logConstants.getListFiltered(), categoryEntity);
+        log.debug(logConstants.getListFiltered(), categoryEntity);
         return categoryEntity;
     }
 
     public PlaceEntity create(PlaceDTO placeDTO) {
-        LOGGER.debug(logConstants.getInputDataNew(), placeDTO);
+        log.debug(logConstants.getInputDataNew(), placeDTO);
         PlaceEntity categoryEntity = new PlaceEntity(placeDTO);
         placeRepo.save(categoryEntity);
-        LOGGER.info(logConstants.getSaveToDatabase(), categoryEntity);
+        log.info(logConstants.getSaveToDatabase(), categoryEntity);
         return categoryEntity;
     }
 
     public PlaceEntity change(PlaceEntity placeEntity, PlaceDTO placeDTO) {
-        LOGGER.debug(logConstants.getInputDataToChange(), placeEntity, placeDTO);
+        log.debug(logConstants.getInputDataToChange(), placeEntity, placeDTO);
         placeEntity.setName(placeDTO.getName());
         placeEntity.setAddress(placeDTO.getAddress());
         placeRepo.save(placeEntity);
-        LOGGER.info(logConstants.getUpdatedToDatabase(), placeEntity);
+        log.info(logConstants.getUpdatedToDatabase(), placeEntity);
         return placeEntity;
     }
 
     public Void delete(PlaceEntity categoryEntity) {
-        LOGGER.debug(logConstants.getInputDataForDelete(), categoryEntity);
+        log.debug(logConstants.getInputDataForDelete(), categoryEntity);
         placeRepo.delete(categoryEntity);
-        LOGGER.info(logConstants.getDeletedFromDatabase(), categoryEntity);
+        log.info(logConstants.getDeletedFromDatabase(), categoryEntity);
         return null;
     }
 

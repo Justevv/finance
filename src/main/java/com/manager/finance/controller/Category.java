@@ -4,8 +4,7 @@ import com.manager.finance.config.LogConstants;
 import com.manager.finance.dto.CategoryDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.model.CategoryModel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,8 +16,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/category")
+@Slf4j
 public class Category {
-    private static final Logger LOGGER = LogManager.getLogger(Category.class);
     private static final String CATEGORY = "category";
     private final LogConstants logConstants = new LogConstants(CATEGORY);
     private final CategoryModel categoryModel;
@@ -30,56 +29,56 @@ public class Category {
     @GetMapping
     public List<CategoryEntity> getCategory() {
         List<CategoryEntity> expenseEntities = categoryModel.getCategory();
-        LOGGER.debug(logConstants.getListFiltered(), expenseEntities);
+        log.debug(logConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }
 
     @GetMapping("{id}")
     public CategoryEntity getCategory(@PathVariable("id") CategoryEntity categoryEntity) {
-        LOGGER.debug(logConstants.getInput(), categoryEntity);
+        log.debug(logConstants.getInput(), categoryEntity);
         return categoryEntity;
     }
 
     @PostMapping
     public ResponseEntity<Object> addCategory(CategoryDTO categoryDTO, BindingResult bindingResult) throws IOException {
-        LOGGER.debug(logConstants.getInputDataNew(), categoryDTO);
+        log.debug(logConstants.getInputDataNew(), categoryDTO);
         ResponseEntity<Object> responseEntity;
 
         if (!bindingResult.hasErrors()) {
             CategoryEntity category = categoryModel.createCategory(categoryDTO);
-            LOGGER.debug(logConstants.getSaveToDatabase(), category);
+            log.debug(logConstants.getSaveToDatabase(), category);
             responseEntity = ResponseEntity.ok(category);
         } else {
             Map<String, String> errors = Utils.getErrors(bindingResult);
-            LOGGER.debug(logConstants.getErrorAdd(), errors);
+            log.debug(logConstants.getErrorAdd(), errors);
             responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-        LOGGER.debug(logConstants.getSavedResponse(), responseEntity);
+        log.debug(logConstants.getSavedResponse(), responseEntity);
         return responseEntity;
     }
 
     @PutMapping("{id}")
-    public ResponseEntity changeCategory(@PathVariable("id") CategoryEntity categoryEntity,  CategoryDTO categoryDTO,
+    public ResponseEntity changeCategory(@PathVariable("id") CategoryEntity categoryEntity, CategoryDTO categoryDTO,
                                          BindingResult bindingResult) {
-        LOGGER.debug(logConstants.getInputDataToChange(), categoryDTO, categoryEntity);
+        log.debug(logConstants.getInputDataToChange(), categoryDTO, categoryEntity);
         ResponseEntity responseEntity;
         if (!bindingResult.hasErrors()) {
             responseEntity = ResponseEntity.ok(categoryModel.changeCategory(categoryEntity, categoryDTO));
-            LOGGER.debug(logConstants.getSaveToDatabase(), categoryDTO);
+            log.debug(logConstants.getSaveToDatabase(), categoryDTO);
         } else {
             Map<String, String> errors = Utils.getErrors(bindingResult);
-            LOGGER.debug(logConstants.getErrorChange(), errors);
+            log.debug(logConstants.getErrorChange(), errors);
             responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-        LOGGER.debug(logConstants.getUpdatedResponse(), responseEntity);
+        log.debug(logConstants.getUpdatedResponse(), responseEntity);
         return responseEntity;
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity deleteCategory(@PathVariable("id") CategoryEntity categoryEntity) {
-        LOGGER.debug(logConstants.getInputDataForDelete(), categoryEntity);
+        log.debug(logConstants.getInputDataForDelete(), categoryEntity);
         ResponseEntity responseEntity = ResponseEntity.ok(categoryModel.deleteCategory(categoryEntity));
-        LOGGER.debug(logConstants.getDeletedResponse(), responseEntity);
+        log.debug(logConstants.getDeletedResponse(), responseEntity);
         return responseEntity;
     }
 
