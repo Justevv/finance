@@ -1,6 +1,5 @@
 package com.manager.finance.entity;
 
-import com.manager.finance.dto.PlaceDTO;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,5 +13,7 @@ public class PlaceEntity implements CrudEntity {
     private long id;
     private String name;
     private String address;
+    @ManyToOne
+    private User user;
 
 }

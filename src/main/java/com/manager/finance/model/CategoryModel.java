@@ -6,8 +6,10 @@ import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.repo.CategoryRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -23,16 +25,18 @@ public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
     }
 
     public List<CategoryEntity> getCategory() {
-        List<CategoryEntity> categoryEntity = categoryRepo.findAll();
+        var categoryEntity = categoryRepo.findAll();
         log.debug(logConstants.getListFiltered(), categoryEntity);
         return categoryEntity;
     }
 
     @Override
-    public CategoryEntity create(CategoryDTO categoryDTO) {
+    public CategoryEntity create(CategoryDTO categoryDTO, Principal principal) {
         log.debug(logConstants.getInputDataNew(), categoryDTO);
-        CategoryEntity category = mapper.map(categoryDTO, CategoryEntity.class);
+        var category = mapper.map(categoryDTO, CategoryEntity.class);
         setDefaultValue(category);
+        category.setUser(getUserRepo().findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
         categoryRepo.save(category);
         log.info(logConstants.getSaveToDatabase(), category);
         return category;

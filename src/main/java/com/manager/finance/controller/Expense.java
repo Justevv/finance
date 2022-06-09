@@ -11,13 +11,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/expense")
 @Slf4j
-public class Expense extends CrudResponseApi<ExpenseModel> {
+public class Expense extends CrudApiResponse<ExpenseModel> {
     private static final String EXPENSE = "expense";
     private final LogConstants logConstants = new LogConstants(EXPENSE);
     private final ExpenseModel expenseModel;
@@ -44,8 +45,8 @@ public class Expense extends CrudResponseApi<ExpenseModel> {
 
     @PostMapping
     public ResponseEntity<Object> addExpense(@Valid ExpenseDTO expenseDTO, Principal principal,
-                                             BindingResult bindingResult) {
-        return create(expenseDTO, bindingResult);
+                                             BindingResult bindingResult) throws UserPrincipalNotFoundException {
+        return create(expenseDTO, principal,  bindingResult);
     }
 
     @PatchMapping("{id}")

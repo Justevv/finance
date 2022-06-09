@@ -5,8 +5,10 @@ import com.manager.finance.dto.PlaceDTO;
 import com.manager.finance.entity.PlaceEntity;
 import com.manager.finance.repo.PlaceRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -27,9 +29,12 @@ public class PlaceModel extends CrudModel<PlaceEntity, PlaceDTO> {
         return categoryEntity;
     }
 
-    public PlaceEntity create(PlaceDTO placeDTO) {
+    @Override
+    public PlaceEntity create(PlaceDTO placeDTO, Principal principal) {
         log.debug(logConstants.getInputDataNew(), placeDTO);
-        PlaceEntity place = getMapper().map(placeDTO, PlaceEntity.class);
+        var place = getMapper().map(placeDTO, PlaceEntity.class);
+        place.setUser(getUserRepo().findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
         placeRepo.save(place);
         log.info(logConstants.getSaveToDatabase(), place);
         return place;

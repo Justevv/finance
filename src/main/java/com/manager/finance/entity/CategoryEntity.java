@@ -1,6 +1,5 @@
 package com.manager.finance.entity;
 
-import com.manager.finance.dto.CategoryDTO;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,7 +12,9 @@ public class CategoryEntity implements CrudEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String name;
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private CategoryEntity parentCategory;
+    @ManyToOne
+    private User user;
 
 }

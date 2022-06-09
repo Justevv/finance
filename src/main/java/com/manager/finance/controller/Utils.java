@@ -10,7 +10,7 @@ import org.springframework.validation.FieldError;
 public class Utils {
     private static final String MESSAGE_FOR_ERROR = " Error";
 
-    static Map<String, String> getErrors(BindingResult bindingResult) {
+    public static Map<String, String> getErrors(BindingResult bindingResult) {
         Collector<FieldError, ?, Map<String, String>> collector = Collectors.toMap(
                 fieldError -> fieldError.getField() + MESSAGE_FOR_ERROR,
                 FieldError::getDefaultMessage

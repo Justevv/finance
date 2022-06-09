@@ -17,18 +17,18 @@ public class ExpenseEntity implements CrudEntity {
     private String description;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime date;
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private User user;
     @NotNull
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private CategoryEntity category;
     @NotNull
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private PlaceEntity place;
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private PaymentTypeEntity paymentType;
     private double sum;
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private AccountEntity account;
     @Enumerated(EnumType.ORDINAL)
     private Type transactionType;

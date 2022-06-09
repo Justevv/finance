@@ -7,28 +7,34 @@ import com.manager.finance.model.CrudModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.security.Principal;
 import java.util.Map;
 
 @Slf4j
-public class CrudResponseApi<T extends CrudModel> {
+public class CrudApiResponse<T extends CrudModel> {
     private final LogConstants logConstants;
     private final T model;
 
-    public CrudResponseApi(T model, String type) {
+    public CrudApiResponse(T model, String type) {
         this.model = model;
         logConstants = new LogConstants(type);
     }
 
-    public ResponseEntity<Object> create(DTO categoryDTO, BindingResult bindingResult) {
-        log.debug(logConstants.getInputDataNew(), categoryDTO);
+    public ResponseEntity<Object> create(DTO dto, Principal principal, BindingResult bindingResult) throws UserPrincipalNotFoundException {
+        log.debug(logConstants.getInputDataNew(), dto);
+        log.debug("Current principal is {}", principal);
+        if (principal == null) {
+            throw new UsernameNotFoundException("Principal is null");
+        }
         ResponseEntity<Object> responseEntity;
-
         if (!bindingResult.hasErrors()) {
-            CrudEntity category = model.create(categoryDTO);
-            log.debug(logConstants.getSaveToDatabase(), category);
-            responseEntity = ResponseEntity.ok(category);
+            var entity = model.create(dto, principal);
+            log.debug(logConstants.getSaveToDatabase(), entity);
+            responseEntity = ResponseEntity.ok(entity);
         } else {
             Map<String, String> errors = Utils.getErrors(bindingResult);
             log.debug(logConstants.getErrorAdd(), errors);
@@ -38,12 +44,12 @@ public class CrudResponseApi<T extends CrudModel> {
         return responseEntity;
     }
 
-    public ResponseEntity<Object> update(CrudEntity entity, DTO expenseDTO, BindingResult bindingResult) {
-        log.debug(logConstants.getInputDataToChange(), entity, expenseDTO);
+    public ResponseEntity<Object> update(CrudEntity entity, DTO dto, BindingResult bindingResult) {
+        log.debug(logConstants.getInputDataToChange(), entity, dto);
         ResponseEntity<Object> responseEntity;
         if (!bindingResult.hasErrors()) {
-            responseEntity = ResponseEntity.ok(model.update(entity, expenseDTO));
-            log.debug(logConstants.getSaveToDatabase(), expenseDTO);
+            responseEntity = ResponseEntity.ok(model.update(entity, dto));
+            log.debug(logConstants.getSaveToDatabase(), dto);
         } else {
             Map<String, String> errors = Utils.getErrors(bindingResult);
             log.debug(logConstants.getErrorChange(), errors);

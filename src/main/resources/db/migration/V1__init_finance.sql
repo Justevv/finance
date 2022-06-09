@@ -1,10 +1,65 @@
 create sequence hibernate_sequence start 1 increment 1;
-create table account (id int8 not null, name varchar(255), primary key (id));
-create table category (id int8 not null, name varchar(255), parent_category_id int8, primary key (id));
-create table expense (id int8 not null, date timestamp, description varchar(255), sum float8 not null, transaction_type int4, account_id int8, category_id int8 not null, payment_type_id int8, place_id int8 not null, user_id int8, primary key (id));
-create table payment_type (id int8 not null, name varchar(255), primary key (id));
-create table place (id int8 not null, address varchar(255), name varchar(255), primary key (id));
-create table users (id int8 not null, birthday varchar(255), email varchar(255), name varchar(255), password varchar(255), phone varchar(255), sex varchar(255), surname varchar(255), username varchar(255), primary key (id));
+create table account
+(
+    id   int8 not null,
+    name varchar(255),
+    primary key (id)
+);
+
+create table category
+(
+    id                 int8 not null,
+    name               varchar(255),
+    parent_category_id int8,
+    user_id            int8,
+    primary key (id)
+);
+
+create table expense
+(
+    id               int8   not null,
+    date             timestamp,
+    description      varchar(255),
+    sum              float8 not null,
+    transaction_type int4,
+    account_id       int8,
+    category_id      int8   not null,
+    payment_type_id  int8,
+    place_id         int8   not null,
+    user_id          int8,
+    primary key (id)
+);
+
+create table payment_type
+(
+    id   int8 not null,
+    name varchar(255),
+    primary key (id)
+);
+
+create table place
+(
+    id      int8 not null,
+    address varchar(255),
+    name    varchar(255),
+    user_id int8,
+    primary key (id)
+);
+
+create table users
+(
+    id       int8 not null,
+    birthday varchar(255),
+    email    varchar(255),
+    name     varchar(255),
+    password varchar(255),
+    phone    varchar(255),
+    sex      varchar(255),
+    surname  varchar(255),
+    username varchar(255),
+    primary key (id)
+);
+
 alter table if exists category add constraint FK_category_category foreign key (parent_category_id) references category;
 alter table if exists expense add constraint FK_expense_account foreign key (account_id) references account;
 alter table if exists expense add constraint FK_expense_category foreign key (category_id) references category;

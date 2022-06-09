@@ -10,8 +10,10 @@ import com.manager.finance.repo.PlaceRepo;
 import com.manager.finance.repo.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +25,12 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     private final ExpenseRepo expenseRepo;
     private final CategoryRepo categoryRepo;
     private final PlaceRepo placeRepo;
-    private final UserRepo userRepo;
     private final LogConstants logConstants = new LogConstants(EXPENSE);
 
-    public ExpenseModel(ExpenseRepo expenseRepo, CategoryRepo categoryRepo, PlaceRepo placeRepo, UserRepo userRepo) {
+    public ExpenseModel(ExpenseRepo expenseRepo, CategoryRepo categoryRepo, PlaceRepo placeRepo) {
         this.expenseRepo = expenseRepo;
         this.categoryRepo = categoryRepo;
         this.placeRepo = placeRepo;
-        this.userRepo = userRepo;
     }
 
     @Cacheable(cacheNames = "expense")
@@ -45,16 +45,17 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     }
 
     public List<ExpenseEntity> getExpense() {
-        List<ExpenseEntity> expenseEntities = expenseRepo.findAll();
+        var expenseEntities = expenseRepo.findAll();
         log.debug(logConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }
 
     @Override
-    public ExpenseEntity create(ExpenseDTO expenseDTO){
+    public ExpenseEntity create(ExpenseDTO expenseDTO, Principal principal) {
         log.debug(logConstants.getInputDataNew(), expenseDTO);
-//        expenseDTO.setUser(userRepo.findByUsername(principal.getName()));
-        ExpenseEntity expense = getMapper().map(expenseDTO, ExpenseEntity.class);
+        var expense = getMapper().map(expenseDTO, ExpenseEntity.class);
+        expense.setUser(getUserRepo().findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
         expense.setDate(LocalDateTime.now());
         setDefaultValue(expense);
         expenseRepo.save(expense);
@@ -62,11 +63,11 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
         return expense;
     }
 
-    private void setDefaultValue(ExpenseEntity expense){
-        if (expense.getCategory() == null){
+    private void setDefaultValue(ExpenseEntity expense) {
+        if (expense.getCategory() == null) {
             expense.setCategory(categoryRepo.findByName("Default"));
         }
-        if (expense.getPlace() == null){
+        if (expense.getPlace() == null) {
             expense.setPlace(placeRepo.findByName("Undefined"));
         }
     }
@@ -80,6 +81,7 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
         log.info(logConstants.getUpdatedToDatabase(), expense);
         return expense;
     }
+
     @Override
     public Void delete(ExpenseEntity expenseEntity) {
         log.debug(logConstants.getInputDataForDelete(), expenseEntity);
