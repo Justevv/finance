@@ -15,11 +15,4 @@ public class PlaceEntity implements CrudEntity {
     private String name;
     private String address;
 
-    public PlaceEntity() {
-    }
-
-    public PlaceEntity(PlaceDTO placeDTO) {
-        this.name = placeDTO.getName();
-        this.address = placeDTO.getAddress();
-    }
 }

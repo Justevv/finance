@@ -9,18 +9,16 @@ import com.manager.finance.repo.ExpenseRepo;
 import com.manager.finance.repo.PlaceRepo;
 import com.manager.finance.repo.UserRepo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Slf4j
-public class ExpenseModel implements CrudModel<ExpenseEntity, ExpenseDTO> {
+public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     private static final String EXPENSE = "expense";
     private final ExpenseRepo expenseRepo;
     private final CategoryRepo categoryRepo;
@@ -56,22 +54,28 @@ public class ExpenseModel implements CrudModel<ExpenseEntity, ExpenseDTO> {
     public ExpenseEntity create(ExpenseDTO expenseDTO){
         log.debug(logConstants.getInputDataNew(), expenseDTO);
 //        expenseDTO.setUser(userRepo.findByUsername(principal.getName()));
-        ExpenseEntity expenseEntity = new ExpenseEntity(expenseDTO);
-        expenseEntity.setCategory(expenseDTO.getCategory() != null
-                ? expenseDTO.getCategory() : categoryRepo.findByName("Default"));
-        expenseEntity.setPlace(expenseDTO.getPlace() != null ? expenseDTO.getPlace() : placeRepo.findByName("Undefined"));
-        expenseRepo.save(expenseEntity);
-        log.info(logConstants.getSaveToDatabase(), expenseEntity);
-        return expenseEntity;
+        ExpenseEntity expense = getMapper().map(expenseDTO, ExpenseEntity.class);
+        expense.setDate(LocalDateTime.now());
+        setDefaultValue(expense);
+        expenseRepo.save(expense);
+        log.info(logConstants.getSaveToDatabase(), expense);
+        return expense;
+    }
+
+    private void setDefaultValue(ExpenseEntity expense){
+        if (expense.getCategory() == null){
+            expense.setCategory(categoryRepo.findByName("Default"));
+        }
+        if (expense.getPlace() == null){
+            expense.setPlace(placeRepo.findByName("Undefined"));
+        }
     }
 
     @Override
     public ExpenseEntity update(ExpenseEntity expense, ExpenseDTO expenseDTO) {
         log.debug(logConstants.getInputDataToChange(), expenseDTO, expense);
-        BeanUtils.copyProperties(expenseDTO, expense);
-        expense.setCategory(expenseDTO.getCategory() != null
-                ? expenseDTO.getCategory() : categoryRepo.findByName("Default"));
-        expense.setPlace(expenseDTO.getPlace() != null ? expenseDTO.getPlace() : placeRepo.findByName("Undefined"));
+        getMapper().map(expenseDTO, expense);
+        setDefaultValue(expense);
         expenseRepo.save(expense);
         log.info(logConstants.getUpdatedToDatabase(), expense);
         return expense;

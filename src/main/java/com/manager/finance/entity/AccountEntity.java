@@ -16,12 +16,6 @@ public class AccountEntity implements CrudEntity {
     @Size(min = 2, message = "Name small size")
     private String name;
 
-    public AccountEntity() {
-    }
-
-    public AccountEntity(AccountDTO bookDTO) {
-        this.name = bookDTO.getName();
-    }
 
 }
 

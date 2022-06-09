@@ -16,11 +16,4 @@ public class CategoryEntity implements CrudEntity {
     @OneToOne(fetch = FetchType.EAGER)
     private CategoryEntity parentCategory;
 
-    public CategoryEntity() {
-    }
-
-    public CategoryEntity(CategoryDTO categoryDTO) {
-        this.name = categoryDTO.getName();
-        this.parentCategory = categoryDTO.getParentCategory();
-    }
 }

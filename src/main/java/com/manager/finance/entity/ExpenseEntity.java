@@ -1,7 +1,6 @@
 package com.manager.finance.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.manager.finance.dto.ExpenseDTO;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -34,18 +33,4 @@ public class ExpenseEntity implements CrudEntity {
     @Enumerated(EnumType.ORDINAL)
     private Type transactionType;
 
-    public ExpenseEntity() {
-    }
-
-    public ExpenseEntity(ExpenseDTO expenseDTO) {
-        this.description = expenseDTO.getDescription();
-        this.date = LocalDateTime.now();
-        this.user = expenseDTO.getUser();
-        this.category = expenseDTO.getCategory();
-        this.place = expenseDTO.getPlace();
-        this.paymentType = expenseDTO.getPaymentType();
-        this.sum = expenseDTO.getSum();
-        this.account = expenseDTO.getAccount();
-        this.transactionType = expenseDTO.getTransactionType();
-    }
 }

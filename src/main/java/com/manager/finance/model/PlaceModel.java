@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class PlaceModel implements CrudModel<PlaceEntity, PlaceDTO> {
+public class PlaceModel extends CrudModel<PlaceEntity, PlaceDTO> {
     private static final String PLACE = "place";
     private final PlaceRepo placeRepo;
     private final LogConstants logConstants = new LogConstants(PLACE);
@@ -29,17 +29,16 @@ public class PlaceModel implements CrudModel<PlaceEntity, PlaceDTO> {
 
     public PlaceEntity create(PlaceDTO placeDTO) {
         log.debug(logConstants.getInputDataNew(), placeDTO);
-        PlaceEntity categoryEntity = new PlaceEntity(placeDTO);
-        placeRepo.save(categoryEntity);
-        log.info(logConstants.getSaveToDatabase(), categoryEntity);
-        return categoryEntity;
+        PlaceEntity place = getMapper().map(placeDTO, PlaceEntity.class);
+        placeRepo.save(place);
+        log.info(logConstants.getSaveToDatabase(), place);
+        return place;
     }
 
     @Override
     public PlaceEntity update(PlaceEntity placeEntity, PlaceDTO placeDTO) {
         log.debug(logConstants.getInputDataToChange(), placeEntity, placeDTO);
-        placeEntity.setName(placeDTO.getName());
-        placeEntity.setAddress(placeDTO.getAddress());
+        getMapper().map(placeDTO, placeEntity);
         placeRepo.save(placeEntity);
         log.info(logConstants.getUpdatedToDatabase(), placeEntity);
         return placeEntity;

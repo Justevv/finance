@@ -5,16 +5,18 @@ import com.manager.finance.dto.CategoryDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.repo.CategoryRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @Slf4j
-public class CategoryModel implements CrudModel<CategoryEntity, CategoryDTO> {
+public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
     private static final String CATEGORY = "category";
     private final LogConstants logConstants = new LogConstants(CATEGORY);
     private final CategoryRepo categoryRepo;
+    private final ModelMapper mapper = new ModelMapper();
 
     public CategoryModel(CategoryRepo categoryRepo) {
         this.categoryRepo = categoryRepo;
@@ -29,21 +31,27 @@ public class CategoryModel implements CrudModel<CategoryEntity, CategoryDTO> {
     @Override
     public CategoryEntity create(CategoryDTO categoryDTO) {
         log.debug(logConstants.getInputDataNew(), categoryDTO);
-        CategoryEntity categoryEntity = new CategoryEntity(categoryDTO);
-        categoryEntity.setParentCategory(categoryDTO.getParentCategory() != null ? categoryDTO.getParentCategory() : categoryRepo.findByName("Base"));
-        categoryRepo.save(categoryEntity);
-        log.info(logConstants.getSaveToDatabase(), categoryEntity);
-        return categoryEntity;
+        CategoryEntity category = mapper.map(categoryDTO, CategoryEntity.class);
+        setDefaultValue(category);
+        categoryRepo.save(category);
+        log.info(logConstants.getSaveToDatabase(), category);
+        return category;
+    }
+
+    private void setDefaultValue(CategoryEntity category){
+        if (category.getParentCategory() == null){
+            category.setParentCategory(categoryRepo.findByName("Base"));
+        }
     }
 
     @Override
-    public CategoryEntity update(CategoryEntity categoryEntity, CategoryDTO categoryDTO) {
-        log.debug(logConstants.getInputDataToChange(), categoryEntity, categoryDTO);
-        categoryEntity.setName(categoryDTO.getName());
-        categoryEntity.setParentCategory(categoryDTO.getParentCategory() != null ? categoryDTO.getParentCategory() : categoryRepo.findByName("Base"));
-        categoryRepo.save(categoryEntity);
-        log.info(logConstants.getUpdatedToDatabase(), categoryEntity);
-        return categoryEntity;
+    public CategoryEntity update(CategoryEntity category, CategoryDTO categoryDTO) {
+        log.debug(logConstants.getInputDataToChange(), category, categoryDTO);
+        mapper.map(categoryDTO, category);
+        setDefaultValue(category);
+        categoryRepo.save(category);
+        log.info(logConstants.getUpdatedToDatabase(), category);
+        return category;
     }
 
     @Override
