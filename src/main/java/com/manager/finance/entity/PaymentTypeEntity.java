@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "PaymentType")
 @Data
-public class PaymentTypeEntity {
+public class PaymentTypeEntity  implements CrudEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

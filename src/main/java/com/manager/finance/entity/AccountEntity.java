@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "account")
 @Data
-public class AccountEntity {
+public class AccountEntity implements CrudEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

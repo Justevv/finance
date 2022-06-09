@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class ExpenseDTO {
+public class ExpenseDTO implements DTO {
     private String description;
     private Date date;
     private User user;

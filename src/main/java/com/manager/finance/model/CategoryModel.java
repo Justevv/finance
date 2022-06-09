@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class CategoryModel {
+public class CategoryModel implements CrudModel<CategoryEntity, CategoryDTO> {
     private static final String CATEGORY = "category";
     private final LogConstants logConstants = new LogConstants(CATEGORY);
     private final CategoryRepo categoryRepo;
@@ -26,7 +26,8 @@ public class CategoryModel {
         return categoryEntity;
     }
 
-    public CategoryEntity createCategory(CategoryDTO categoryDTO) {
+    @Override
+    public CategoryEntity create(CategoryDTO categoryDTO) {
         log.debug(logConstants.getInputDataNew(), categoryDTO);
         CategoryEntity categoryEntity = new CategoryEntity(categoryDTO);
         categoryEntity.setParentCategory(categoryDTO.getParentCategory() != null ? categoryDTO.getParentCategory() : categoryRepo.findByName("Base"));
@@ -35,7 +36,8 @@ public class CategoryModel {
         return categoryEntity;
     }
 
-    public CategoryEntity changeCategory(CategoryEntity categoryEntity, CategoryDTO categoryDTO) {
+    @Override
+    public CategoryEntity update(CategoryEntity categoryEntity, CategoryDTO categoryDTO) {
         log.debug(logConstants.getInputDataToChange(), categoryEntity, categoryDTO);
         categoryEntity.setName(categoryDTO.getName());
         categoryEntity.setParentCategory(categoryDTO.getParentCategory() != null ? categoryDTO.getParentCategory() : categoryRepo.findByName("Base"));
@@ -44,7 +46,8 @@ public class CategoryModel {
         return categoryEntity;
     }
 
-    public Void deleteCategory(CategoryEntity categoryEntity) {
+    @Override
+    public Void delete(CategoryEntity categoryEntity) {
         log.debug(logConstants.getInputDataForDelete(), categoryEntity);
         categoryRepo.delete(categoryEntity);
         log.info(logConstants.getDeletedFromDatabase(), categoryEntity);

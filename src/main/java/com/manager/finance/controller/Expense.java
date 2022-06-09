@@ -6,26 +6,24 @@ import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.entity.ExpenseEntity;
 import com.manager.finance.model.ExpenseModel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/expense")
 @Slf4j
-public class Expense {
+public class Expense extends CrudResponseApi<ExpenseModel> {
     private static final String EXPENSE = "expense";
     private final LogConstants logConstants = new LogConstants(EXPENSE);
     private final ExpenseModel expenseModel;
 
     public Expense(ExpenseModel expenseModel) {
+        super(expenseModel, EXPENSE);
         this.expenseModel = expenseModel;
     }
 
@@ -46,63 +44,25 @@ public class Expense {
 
     @PostMapping
     public ResponseEntity<Object> addExpense(@Valid ExpenseDTO expenseDTO, Principal principal,
-                                             BindingResult bindingResult) throws IOException {
-        log.debug(logConstants.getInputDataNew(), expenseDTO);
-        ResponseEntity<Object> responseEntity;
-
-        if (!bindingResult.hasErrors()) {
-            ExpenseEntity expense = expenseModel.addExpense(expenseDTO, principal);
-            log.debug(logConstants.getSaveToDatabase(), expense);
-            responseEntity = ResponseEntity.ok(expense);
-        } else {
-            Map<String, String> errors = Utils.getErrors(bindingResult);
-            log.debug(logConstants.getErrorAdd(), errors);
-            responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-        }
-        log.debug(logConstants.getSavedResponse(), responseEntity);
-        return responseEntity;
+                                             BindingResult bindingResult) {
+        return create(expenseDTO, bindingResult);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<Object> changeExpenseProperty(@PathVariable("id") ExpenseEntity expense, @Valid ExpenseDTO expenseDTO,
-                                                BindingResult bindingResult) {
-        log.debug(logConstants.getInputDataToChange(), expenseDTO, expense);
-        ResponseEntity<Object> responseEntity;
-        if (!bindingResult.hasErrors()) {
-            responseEntity = ResponseEntity.ok(expenseModel.changeExpense(expense, expenseDTO));
-            log.debug(logConstants.getSaveToDatabase(), expenseDTO);
-        } else {
-            Map<String, String> errors = Utils.getErrors(bindingResult);
-            log.debug(logConstants.getErrorChange(), errors);
-            responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-        }
-        log.debug(logConstants.getUpdatedResponse(), responseEntity);
-        return responseEntity;
+    public ResponseEntity<Object> changeExpenseProperty(@PathVariable("id") ExpenseEntity expense,
+                                                        @Valid ExpenseDTO expenseDTO, BindingResult bindingResult) {
+        return update(expense, expenseDTO, bindingResult);
     }
 
     @PutMapping("{id}")
     public ResponseEntity<Object> changeExpense(@PathVariable("id") ExpenseEntity expense, @Valid ExpenseDTO expenseDTO,
-                                        BindingResult bindingResult) {
-        log.debug(logConstants.getInputDataToChange(), expense, expenseDTO);
-        ResponseEntity<Object> responseEntity;
-        if (!bindingResult.hasErrors()) {
-            responseEntity = ResponseEntity.ok(expenseModel.changeExpense(expense, expenseDTO));
-            log.debug(logConstants.getSaveToDatabase(), expenseDTO);
-        } else {
-            Map<String, String> errors = Utils.getErrors(bindingResult);
-            log.debug(logConstants.getErrorChange(), errors);
-            responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-        }
-        log.debug(logConstants.getUpdatedResponse(), responseEntity);
-        return responseEntity;
+                                                BindingResult bindingResult) {
+        return update(expense, expenseDTO, bindingResult);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Object> deleteExpense(@PathVariable("id") ExpenseEntity expense) {
-        log.debug(logConstants.getInputDataForDelete(), expense);
-        ResponseEntity<Object> responseEntity = ResponseEntity.ok(expenseModel.deleteExpense(expense));
-        log.debug(logConstants.getDeletedResponse(), responseEntity);
-        return responseEntity;
+        return delete(expense);
     }
 
     @GetMapping("sum")

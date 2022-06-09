@@ -7,12 +7,11 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "expense")
 @Data
-public class ExpenseEntity {
+public class ExpenseEntity implements CrudEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

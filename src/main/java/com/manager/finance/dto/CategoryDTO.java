@@ -4,7 +4,7 @@ import com.manager.finance.entity.CategoryEntity;
 import lombok.Data;
 
 @Data
-public class CategoryDTO {
+public class CategoryDTO implements DTO {
     private String name;
     private CategoryEntity parentCategory;
 

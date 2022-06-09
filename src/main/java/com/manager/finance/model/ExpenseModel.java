@@ -20,7 +20,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class ExpenseModel {
+public class ExpenseModel implements CrudModel<ExpenseEntity, ExpenseDTO> {
     private static final String EXPENSE = "expense";
     private final ExpenseRepo expenseRepo;
     private final CategoryRepo categoryRepo;
@@ -52,9 +52,10 @@ public class ExpenseModel {
         return expenseEntities;
     }
 
-    public ExpenseEntity addExpense(ExpenseDTO expenseDTO, Principal principal) throws IOException {
+    @Override
+    public ExpenseEntity create(ExpenseDTO expenseDTO){
         log.debug(logConstants.getInputDataNew(), expenseDTO);
-        expenseDTO.setUser(userRepo.findByUsername(principal.getName()));
+//        expenseDTO.setUser(userRepo.findByUsername(principal.getName()));
         ExpenseEntity expenseEntity = new ExpenseEntity(expenseDTO);
         expenseEntity.setCategory(expenseDTO.getCategory() != null
                 ? expenseDTO.getCategory() : categoryRepo.findByName("Default"));
@@ -64,16 +65,8 @@ public class ExpenseModel {
         return expenseEntity;
     }
 
-    public ExpenseEntity changeExpense(long id, ExpenseDTO expenseDTO) {
-        log.debug(logConstants.getInputDataToChange(), id, expenseDTO);
-        ExpenseEntity expenseEntity = expenseRepo.findById(id).get();
-        BeanUtils.copyProperties(expenseDTO, expenseEntity);
-        expenseRepo.save(expenseEntity);
-        log.info(logConstants.getUpdatedToDatabase(), expenseEntity);
-        return expenseEntity;
-    }
-
-    public ExpenseEntity changeExpense(ExpenseEntity expense, ExpenseDTO expenseDTO) {
+    @Override
+    public ExpenseEntity update(ExpenseEntity expense, ExpenseDTO expenseDTO) {
         log.debug(logConstants.getInputDataToChange(), expenseDTO, expense);
         BeanUtils.copyProperties(expenseDTO, expense);
         expense.setCategory(expenseDTO.getCategory() != null
@@ -83,8 +76,8 @@ public class ExpenseModel {
         log.info(logConstants.getUpdatedToDatabase(), expense);
         return expense;
     }
-
-    public Void deleteExpense(ExpenseEntity expenseEntity) {
+    @Override
+    public Void delete(ExpenseEntity expenseEntity) {
         log.debug(logConstants.getInputDataForDelete(), expenseEntity);
         expenseRepo.delete(expenseEntity);
         log.info(logConstants.getDeletedFromDatabase(), expenseEntity);

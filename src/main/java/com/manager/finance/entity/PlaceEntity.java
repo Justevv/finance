@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "place")
 @Data
-public class PlaceEntity {
+public class PlaceEntity implements CrudEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
