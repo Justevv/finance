@@ -9,7 +9,7 @@ import java.util.Date;
 public class ExpenseDTO implements DTO {
     private String description;
     private Date date;
-    private User user;
+    private UserEntity userEntity;
     private CategoryEntity category;
     private PlaceEntity place;
     private PaymentTypeEntity paymentType;

@@ -4,10 +4,9 @@ import com.manager.finance.config.LogConstants;
 import com.manager.finance.dto.ExpenseDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.entity.ExpenseEntity;
-import com.manager.finance.repo.CategoryRepo;
-import com.manager.finance.repo.ExpenseRepo;
-import com.manager.finance.repo.PlaceRepo;
-import com.manager.finance.repo.UserRepo;
+import com.manager.finance.repository.CategoryRepository;
+import com.manager.finance.repository.ExpenseRepository;
+import com.manager.finance.repository.PlaceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,30 +21,30 @@ import java.util.List;
 @Slf4j
 public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     private static final String EXPENSE = "expense";
-    private final ExpenseRepo expenseRepo;
-    private final CategoryRepo categoryRepo;
-    private final PlaceRepo placeRepo;
+    private final ExpenseRepository expenseRepository;
+    private final CategoryRepository categoryRepository;
+    private final PlaceRepository placeRepository;
     private final LogConstants logConstants = new LogConstants(EXPENSE);
 
-    public ExpenseModel(ExpenseRepo expenseRepo, CategoryRepo categoryRepo, PlaceRepo placeRepo) {
-        this.expenseRepo = expenseRepo;
-        this.categoryRepo = categoryRepo;
-        this.placeRepo = placeRepo;
+    public ExpenseModel(ExpenseRepository expenseRepository, CategoryRepository categoryRepository, PlaceRepository placeRepository) {
+        this.expenseRepository = expenseRepository;
+        this.categoryRepository = categoryRepository;
+        this.placeRepository = placeRepository;
     }
 
     @Cacheable(cacheNames = "expense")
-    public List<ExpenseEntity> getExpense(long startWith, long count) {
+    public List<ExpenseEntity> getExpense(long startWith, long count, Principal principal) {
         log.debug("Input filter {}, search {}", startWith, count);
         List<ExpenseEntity> expenseEntities = new ArrayList<>();
         for (; startWith < count; startWith++) {
-            expenseRepo.findById(startWith).ifPresent(expenseEntities::add);
+            expenseRepository.findById(startWith).ifPresent(expenseEntities::add);
         }
         log.debug(logConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }
 
     public List<ExpenseEntity> getExpense() {
-        var expenseEntities = expenseRepo.findAll();
+        var expenseEntities = expenseRepository.findAll();
         log.debug(logConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }
@@ -54,21 +53,21 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     public ExpenseEntity create(ExpenseDTO expenseDTO, Principal principal) {
         log.debug(logConstants.getInputDataNew(), expenseDTO);
         var expense = getMapper().map(expenseDTO, ExpenseEntity.class);
-        expense.setUser(getUserRepo().findByUsername(principal.getName())
+        expense.setUser(getUserRepository().findByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found")));
         expense.setDate(LocalDateTime.now());
         setDefaultValue(expense);
-        expenseRepo.save(expense);
+        expenseRepository.save(expense);
         log.info(logConstants.getSaveToDatabase(), expense);
         return expense;
     }
 
     private void setDefaultValue(ExpenseEntity expense) {
         if (expense.getCategory() == null) {
-            expense.setCategory(categoryRepo.findByName("Default"));
+            expense.setCategory(categoryRepository.findByName("Default"));
         }
         if (expense.getPlace() == null) {
-            expense.setPlace(placeRepo.findByName("Undefined"));
+            expense.setPlace(placeRepository.findByName("Undefined"));
         }
     }
 
@@ -77,7 +76,7 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
         log.debug(logConstants.getInputDataToChange(), expenseDTO, expense);
         getMapper().map(expenseDTO, expense);
         setDefaultValue(expense);
-        expenseRepo.save(expense);
+        expenseRepository.save(expense);
         log.info(logConstants.getUpdatedToDatabase(), expense);
         return expense;
     }
@@ -85,17 +84,17 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     @Override
     public Void delete(ExpenseEntity expenseEntity) {
         log.debug(logConstants.getInputDataForDelete(), expenseEntity);
-        expenseRepo.delete(expenseEntity);
+        expenseRepository.delete(expenseEntity);
         log.info(logConstants.getDeletedFromDatabase(), expenseEntity);
         return null;
     }
 
     public double getSum() {
-        return expenseRepo.selectSum();
+        return expenseRepository.selectSum();
     }
 
     public double getSum(CategoryEntity categoryEntity) {
-        return expenseRepo.selectSum(categoryEntity);
+        return expenseRepository.selectSum(categoryEntity);
     }
 }
 

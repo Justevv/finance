@@ -1,8 +1,9 @@
-package com.manager.finance.config;
+package com.manager.finance.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.manager.finance.config.Log;
 import com.manager.finance.dto.UserDTO;
-import com.manager.finance.entity.User;
+import com.manager.finance.entity.UserEntity;
 import com.manager.finance.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.CloseableThreadContext;
@@ -10,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,27 +35,25 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class WebSecurityConfig {
     private static final int STRENGTH_PASSWORD = 8;
-//    @Autowired
-//    private AuthenticationEntryPoint authEntryPoint;
+    @Autowired
+    private JwtConfigure jwtConfigure;
     @Autowired
     private UserService userService;
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-    @Value("${mainPage.path}")
+    @Value("${path.mainPage}")
     private String mainPagePath;
-    @Value("${css.path}")
+    @Value("${path.css}")
     private String cssPath;
-    @Value("${js.path}")
+    @Value("${path.js}")
     private String jsPath;
-    @Value("${images.path}")
+    @Value("${path.images}")
     private String imagesPath;
-    @Value("${swagger.path}")
+    @Value("${path.swagger}")
     private String swaggerPath;
-    @Value("${swaggerResources.path}")
+    @Value("${path.swaggerResources}")
     private String webjarsPath;
-    @Value("${webjars.path}")
+    @Value("${path.webjars}")
     private String swaggerResourcesPath;
-    @Value("${apiDocs.path}")
+    @Value("${path.apiDocs}")
     private String apiDocsPath;
 
     @Bean
@@ -64,15 +66,24 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/login", mainPagePath, cssPath, jsPath, imagesPath).permitAll()
                 .antMatchers(swaggerPath, webjarsPath, swaggerResourcesPath, apiDocsPath).permitAll()
+//                .antMatchers("/**").permitAll()
+                .antMatchers("/api/v1/auth/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/user").permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .successHandler(successHandler())
+//                .and()
+//                .formLogin()
+//                .successHandler(successHandler())
                 .and()
                 .logout()
-                .logoutSuccessHandler(onLogoutSuccess());
+                .logoutSuccessHandler(onLogoutSuccess())
+                .and()
+                .apply(jwtConfigure);
         return http.build();
+    }
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
@@ -82,8 +93,9 @@ public class WebSecurityConfig {
 
     private AuthenticationSuccessHandler successHandler() {
         return (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> {
-            User user = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-            UserDTO userDTO = new UserDTO(user.getUsername());
+            UserEntity userEntity = ((UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUsername(userEntity.getUsername());
             response.setStatus(HttpServletResponse.SC_OK);
             CloseableThreadContext.put(Log.SESSION_ID_KEY,
                     RequestContextHolder.currentRequestAttributes().getSessionId());

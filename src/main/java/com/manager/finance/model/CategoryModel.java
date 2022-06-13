@@ -3,7 +3,7 @@ package com.manager.finance.model;
 import com.manager.finance.config.LogConstants;
 import com.manager.finance.dto.CategoryDTO;
 import com.manager.finance.entity.CategoryEntity;
-import com.manager.finance.repo.CategoryRepo;
+import com.manager.finance.repository.CategoryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,15 +17,15 @@ import java.util.List;
 public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
     private static final String CATEGORY = "category";
     private final LogConstants logConstants = new LogConstants(CATEGORY);
-    private final CategoryRepo categoryRepo;
+    private final CategoryRepository categoryRepository;
     private final ModelMapper mapper = new ModelMapper();
 
-    public CategoryModel(CategoryRepo categoryRepo) {
-        this.categoryRepo = categoryRepo;
+    public CategoryModel(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
     public List<CategoryEntity> getCategory() {
-        var categoryEntity = categoryRepo.findAll();
+        var categoryEntity = categoryRepository.findAll();
         log.debug(logConstants.getListFiltered(), categoryEntity);
         return categoryEntity;
     }
@@ -35,16 +35,16 @@ public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
         log.debug(logConstants.getInputDataNew(), categoryDTO);
         var category = mapper.map(categoryDTO, CategoryEntity.class);
         setDefaultValue(category);
-        category.setUser(getUserRepo().findByUsername(principal.getName())
+        category.setUser(getUserRepository().findByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found")));
-        categoryRepo.save(category);
+        categoryRepository.save(category);
         log.info(logConstants.getSaveToDatabase(), category);
         return category;
     }
 
     private void setDefaultValue(CategoryEntity category){
         if (category.getParentCategory() == null){
-            category.setParentCategory(categoryRepo.findByName("Base"));
+            category.setParentCategory(categoryRepository.findByName("Base"));
         }
     }
 
@@ -53,7 +53,7 @@ public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
         log.debug(logConstants.getInputDataToChange(), category, categoryDTO);
         mapper.map(categoryDTO, category);
         setDefaultValue(category);
-        categoryRepo.save(category);
+        categoryRepository.save(category);
         log.info(logConstants.getUpdatedToDatabase(), category);
         return category;
     }
@@ -61,7 +61,7 @@ public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
     @Override
     public Void delete(CategoryEntity categoryEntity) {
         log.debug(logConstants.getInputDataForDelete(), categoryEntity);
-        categoryRepo.delete(categoryEntity);
+        categoryRepository.delete(categoryEntity);
         log.info(logConstants.getDeletedFromDatabase(), categoryEntity);
         return null;
     }

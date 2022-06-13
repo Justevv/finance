@@ -30,9 +30,9 @@ public class Expense extends CrudApiResponse<ExpenseModel> {
 
     @GetMapping
     public List<ExpenseEntity> getExpense(@RequestParam(defaultValue = "0") long startWith,
-                                          @RequestParam(defaultValue = "500") long count) {
+                                          @RequestParam(defaultValue = "500") long count, Principal principal) {
         log.debug("Input filter {}, search {}", startWith, count);
-        List<ExpenseEntity> expenseEntities = expenseModel.getExpense(startWith, count);
+        List<ExpenseEntity> expenseEntities = expenseModel.getExpense(startWith, count, principal);
         log.debug(logConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }

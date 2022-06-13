@@ -14,6 +14,6 @@ public class PlaceEntity implements CrudEntity {
     private String name;
     private String address;
     @ManyToOne
-    private User user;
+    private UserEntity user;
 
 }

@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    active: devp
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+#spring.freemarker.expose-request-attributes=true
+
+jwt:
+  secret: justew
+  expiration: 604800
+  header: Authorization
+
+path:
+  mainPage: /
+  upload: /C:/Project/manager/image
+  css: /css/**
+  js: js/**
+  images: /images/**
+  swagger: /swagger-ui.html
+  webjars: /webjars/**
+  swaggerResources: /swagger-resources/**
+  apiDocs: /v2/api-docs
+  static: =classpath:/static/
+
+URI:
+  image: /img/**
+  static: /static/**

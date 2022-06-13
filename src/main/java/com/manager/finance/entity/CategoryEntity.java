@@ -15,6 +15,6 @@ public class CategoryEntity implements CrudEntity {
     @ManyToOne
     private CategoryEntity parentCategory;
     @ManyToOne
-    private User user;
+    private UserEntity user;
 
 }

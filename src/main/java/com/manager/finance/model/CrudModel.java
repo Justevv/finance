@@ -1,7 +1,7 @@
 package com.manager.finance.model;
 
 import com.manager.finance.entity.CrudEntity;
-import com.manager.finance.repo.UserRepo;
+import com.manager.finance.repository.UserRepository;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.security.Principal;
 public abstract class CrudModel<T, V> {
     private final ModelMapper mapper = new ModelMapper();
     @Autowired
-    private UserRepo userRepo;
+    private UserRepository userRepository;
 
     public abstract CrudEntity create(V v, Principal principal);
 

@@ -18,7 +18,7 @@ public class ExpenseEntity implements CrudEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime date;
     @ManyToOne
-    private User user;
+    private UserEntity user;
     @NotNull
     @ManyToOne
     private CategoryEntity category;
