@@ -1,6 +1,6 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.config.LogConstants;
+import com.manager.finance.config.CrudLogConstants;
 import com.manager.finance.dto.PlaceDTO;
 import com.manager.finance.entity.PlaceEntity;
 import com.manager.finance.model.PlaceModel;
@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class Place extends CrudApiResponse<PlaceModel> {
     private static final String PLACE = "place";
-    private final LogConstants logConstants = new LogConstants(PLACE);
+    private final CrudLogConstants crudLogConstants = new CrudLogConstants(PLACE);
     private final PlaceModel placeModel;
 
     public Place(PlaceModel placeModel) {
@@ -30,13 +30,13 @@ public class Place extends CrudApiResponse<PlaceModel> {
     @GetMapping
     public List<PlaceEntity> get() {
         List<PlaceEntity> places = placeModel.get();
-        log.debug(logConstants.getListFiltered(), places);
+        log.debug(crudLogConstants.getListFiltered(), places);
         return places;
     }
 
     @GetMapping("{id}")
     public PlaceEntity get(@PathVariable("id") PlaceEntity place) {
-        log.debug(logConstants.getInput(), place);
+        log.debug(crudLogConstants.getInput(), place);
         return place;
     }
 

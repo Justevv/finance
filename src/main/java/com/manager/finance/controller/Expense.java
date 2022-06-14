@@ -1,6 +1,6 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.config.LogConstants;
+import com.manager.finance.config.CrudLogConstants;
 import com.manager.finance.dto.ExpenseDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.entity.ExpenseEntity;
@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 public class Expense extends CrudApiResponse<ExpenseModel> {
     private static final String EXPENSE = "expense";
-    private final LogConstants logConstants = new LogConstants(EXPENSE);
+    private final CrudLogConstants crudLogConstants = new CrudLogConstants(EXPENSE);
     private final ExpenseModel expenseModel;
 
     public Expense(ExpenseModel expenseModel) {
@@ -33,13 +33,13 @@ public class Expense extends CrudApiResponse<ExpenseModel> {
                                           @RequestParam(defaultValue = "500") long count, Principal principal) {
         log.debug("Input filter {}, search {}", startWith, count);
         List<ExpenseEntity> expenseEntities = expenseModel.getExpense(startWith, count, principal);
-        log.debug(logConstants.getListFiltered(), expenseEntities);
+        log.debug(crudLogConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }
 
     @GetMapping("{id}")
     public ExpenseEntity getExpense(@PathVariable("id") ExpenseEntity expenseEntity) {
-        log.debug(logConstants.getInput(), expenseEntity);
+        log.debug(crudLogConstants.getInput(), expenseEntity);
         return expenseEntity;
     }
 

@@ -1,6 +1,6 @@
 package com.manager.finance.model;
 
-import com.manager.finance.config.LogConstants;
+import com.manager.finance.config.CrudLogConstants;
 import com.manager.finance.dto.CategoryDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.repository.CategoryRepository;
@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
     private static final String CATEGORY = "category";
-    private final LogConstants logConstants = new LogConstants(CATEGORY);
+    private final CrudLogConstants crudLogConstants = new CrudLogConstants(CATEGORY);
     private final CategoryRepository categoryRepository;
     private final ModelMapper mapper = new ModelMapper();
 
@@ -26,19 +26,19 @@ public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
 
     public List<CategoryEntity> getCategory() {
         var categoryEntity = categoryRepository.findAll();
-        log.debug(logConstants.getListFiltered(), categoryEntity);
+        log.debug(crudLogConstants.getListFiltered(), categoryEntity);
         return categoryEntity;
     }
 
     @Override
     public CategoryEntity create(CategoryDTO categoryDTO, Principal principal) {
-        log.debug(logConstants.getInputDataNew(), categoryDTO);
+        log.debug(crudLogConstants.getInputDataNew(), categoryDTO);
         var category = mapper.map(categoryDTO, CategoryEntity.class);
         setDefaultValue(category);
         category.setUser(getUserRepository().findByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found")));
         categoryRepository.save(category);
-        log.info(logConstants.getSaveToDatabase(), category);
+        log.info(crudLogConstants.getSaveToDatabase(), category);
         return category;
     }
 
@@ -50,19 +50,19 @@ public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
 
     @Override
     public CategoryEntity update(CategoryEntity category, CategoryDTO categoryDTO) {
-        log.debug(logConstants.getInputDataToChange(), category, categoryDTO);
+        log.debug(crudLogConstants.getInputDataToChange(), category, categoryDTO);
         mapper.map(categoryDTO, category);
         setDefaultValue(category);
         categoryRepository.save(category);
-        log.info(logConstants.getUpdatedToDatabase(), category);
+        log.info(crudLogConstants.getUpdatedToDatabase(), category);
         return category;
     }
 
     @Override
     public Void delete(CategoryEntity categoryEntity) {
-        log.debug(logConstants.getInputDataForDelete(), categoryEntity);
+        log.debug(crudLogConstants.getInputDataForDelete(), categoryEntity);
         categoryRepository.delete(categoryEntity);
-        log.info(logConstants.getDeletedFromDatabase(), categoryEntity);
+        log.info(crudLogConstants.getDeletedFromDatabase(), categoryEntity);
         return null;
     }
 

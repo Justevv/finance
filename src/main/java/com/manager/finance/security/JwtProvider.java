@@ -1,5 +1,6 @@
 package com.manager.finance.security;
 
+import com.manager.finance.entity.Role;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
 
 @Component
@@ -35,9 +37,9 @@ public class JwtProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String username, String role) {
+    public String createToken(String username, Collection<Role> role) {
         var claims = Jwts.claims().setSubject(username);
-        claims.put("role", role);
+        claims.put("roles", role);
         var currentTime = LocalDateTime.now();
         var validity = currentTime.plusSeconds(validityInSeconds);
 

@@ -33,5 +33,4 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-
 }

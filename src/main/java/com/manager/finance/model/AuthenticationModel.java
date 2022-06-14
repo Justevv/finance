@@ -21,6 +21,6 @@ public class AuthenticationModel {
     public String authenticate(AuthenticationRequestDTO authentication) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authentication.getUsername(), authentication.getPassword()));
         var user = userRepository.findByUsername(authentication.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User doesn't exists"));
-        return jwtProvider.createToken(authentication.getUsername(), user.getRole());
+        return jwtProvider.createToken(authentication.getUsername(), user.getRoles());
     }
 }

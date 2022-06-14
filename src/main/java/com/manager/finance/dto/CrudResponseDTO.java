@@ -1,4 +1,4 @@
 package com.manager.finance.dto;
 
-public interface DTO {
+public interface CrudResponseDTO {
 }

@@ -1,6 +1,6 @@
 package com.manager.finance.model;
 
-import com.manager.finance.config.LogConstants;
+import com.manager.finance.config.CrudLogConstants;
 import com.manager.finance.dto.PlaceDTO;
 import com.manager.finance.entity.PlaceEntity;
 import com.manager.finance.repository.PlaceRepository;
@@ -16,7 +16,7 @@ import java.util.List;
 public class PlaceModel extends CrudModel<PlaceEntity, PlaceDTO> {
     private static final String PLACE = "place";
     private final PlaceRepository placeRepository;
-    private final LogConstants logConstants = new LogConstants(PLACE);
+    private final CrudLogConstants crudLogConstants = new CrudLogConstants(PLACE);
 
     public PlaceModel(PlaceRepository placeRepository) {
         this.placeRepository = placeRepository;
@@ -25,35 +25,35 @@ public class PlaceModel extends CrudModel<PlaceEntity, PlaceDTO> {
     public List<PlaceEntity> get() {
         List<PlaceEntity> categoryEntity = placeRepository.findAll();
 
-        log.debug(logConstants.getListFiltered(), categoryEntity);
+        log.debug(crudLogConstants.getListFiltered(), categoryEntity);
         return categoryEntity;
     }
 
     @Override
     public PlaceEntity create(PlaceDTO placeDTO, Principal principal) {
-        log.debug(logConstants.getInputDataNew(), placeDTO);
+        log.debug(crudLogConstants.getInputDataNew(), placeDTO);
         var place = getMapper().map(placeDTO, PlaceEntity.class);
         place.setUser(getUserRepository().findByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found")));
         placeRepository.save(place);
-        log.info(logConstants.getSaveToDatabase(), place);
+        log.info(crudLogConstants.getSaveToDatabase(), place);
         return place;
     }
 
     @Override
     public PlaceEntity update(PlaceEntity placeEntity, PlaceDTO placeDTO) {
-        log.debug(logConstants.getInputDataToChange(), placeEntity, placeDTO);
+        log.debug(crudLogConstants.getInputDataToChange(), placeEntity, placeDTO);
         getMapper().map(placeDTO, placeEntity);
         placeRepository.save(placeEntity);
-        log.info(logConstants.getUpdatedToDatabase(), placeEntity);
+        log.info(crudLogConstants.getUpdatedToDatabase(), placeEntity);
         return placeEntity;
     }
 
     @Override
     public Void delete(PlaceEntity categoryEntity) {
-        log.debug(logConstants.getInputDataForDelete(), categoryEntity);
+        log.debug(crudLogConstants.getInputDataForDelete(), categoryEntity);
         placeRepository.delete(categoryEntity);
-        log.info(logConstants.getDeletedFromDatabase(), categoryEntity);
+        log.info(crudLogConstants.getDeletedFromDatabase(), categoryEntity);
         return null;
     }
 

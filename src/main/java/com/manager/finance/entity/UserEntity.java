@@ -1,21 +1,26 @@
 package com.manager.finance.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
 @Data
-public class UserEntity implements UserDetails {
+public class UserEntity implements UserDetails, CrudEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
@@ -37,16 +42,13 @@ public class UserEntity implements UserDetails {
     private BigDecimal balance = BigDecimal.ZERO;
     private boolean isPhoneConfirmed;
     private boolean isEmailConfirmed;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("roles")
     @JoinTable(
             name = "users_roles",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "role_id", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> roles;
-    @Transient
-    private String role;
 
     @Override
     public boolean isAccountNonExpired() {
@@ -55,8 +57,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
-//        return isEmailConfirmed && isPhoneConfirmed;
+        return isEmailConfirmed && isPhoneConfirmed;
     }
 
     @Override
@@ -70,7 +71,16 @@ public class UserEntity implements UserDetails {
     }
 
     @Override
+    @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return getGrantedAuthorities(roles);
+    }
+
+    private List<SimpleGrantedAuthority> getGrantedAuthorities(Collection<Role> roles) {
+        var privileges = roles.stream()
+                .flatMap(x -> x.getPermissions().stream().map(Permission::getName))
+                .collect(Collectors.toList());
+        roles.forEach(x -> privileges.add(x.getName()));
+        return privileges.stream().map(SimpleGrantedAuthority::new).toList();
     }
 }

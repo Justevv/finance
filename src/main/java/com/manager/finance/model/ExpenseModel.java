@@ -1,6 +1,6 @@
 package com.manager.finance.model;
 
-import com.manager.finance.config.LogConstants;
+import com.manager.finance.config.CrudLogConstants;
 import com.manager.finance.dto.ExpenseDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.entity.ExpenseEntity;
@@ -24,7 +24,7 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
     private final PlaceRepository placeRepository;
-    private final LogConstants logConstants = new LogConstants(EXPENSE);
+    private final CrudLogConstants crudLogConstants = new CrudLogConstants(EXPENSE);
 
     public ExpenseModel(ExpenseRepository expenseRepository, CategoryRepository categoryRepository, PlaceRepository placeRepository) {
         this.expenseRepository = expenseRepository;
@@ -39,26 +39,26 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
         for (; startWith < count; startWith++) {
             expenseRepository.findById(startWith).ifPresent(expenseEntities::add);
         }
-        log.debug(logConstants.getListFiltered(), expenseEntities);
+        log.debug(crudLogConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }
 
     public List<ExpenseEntity> getExpense() {
         var expenseEntities = expenseRepository.findAll();
-        log.debug(logConstants.getListFiltered(), expenseEntities);
+        log.debug(crudLogConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }
 
     @Override
     public ExpenseEntity create(ExpenseDTO expenseDTO, Principal principal) {
-        log.debug(logConstants.getInputDataNew(), expenseDTO);
+        log.debug(crudLogConstants.getInputDataNew(), expenseDTO);
         var expense = getMapper().map(expenseDTO, ExpenseEntity.class);
         expense.setUser(getUserRepository().findByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found")));
         expense.setDate(LocalDateTime.now());
         setDefaultValue(expense);
         expenseRepository.save(expense);
-        log.info(logConstants.getSaveToDatabase(), expense);
+        log.info(crudLogConstants.getSaveToDatabase(), expense);
         return expense;
     }
 
@@ -73,19 +73,19 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
 
     @Override
     public ExpenseEntity update(ExpenseEntity expense, ExpenseDTO expenseDTO) {
-        log.debug(logConstants.getInputDataToChange(), expenseDTO, expense);
+        log.debug(crudLogConstants.getInputDataToChange(), expenseDTO, expense);
         getMapper().map(expenseDTO, expense);
         setDefaultValue(expense);
         expenseRepository.save(expense);
-        log.info(logConstants.getUpdatedToDatabase(), expense);
+        log.info(crudLogConstants.getUpdatedToDatabase(), expense);
         return expense;
     }
 
     @Override
     public Void delete(ExpenseEntity expenseEntity) {
-        log.debug(logConstants.getInputDataForDelete(), expenseEntity);
+        log.debug(crudLogConstants.getInputDataForDelete(), expenseEntity);
         expenseRepository.delete(expenseEntity);
-        log.info(logConstants.getDeletedFromDatabase(), expenseEntity);
+        log.info(crudLogConstants.getDeletedFromDatabase(), expenseEntity);
         return null;
     }
 

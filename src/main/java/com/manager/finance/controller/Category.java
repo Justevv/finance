@@ -1,6 +1,6 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.config.LogConstants;
+import com.manager.finance.config.CrudLogConstants;
 import com.manager.finance.dto.CategoryDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.model.CategoryModel;
@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class Category extends CrudApiResponse<CategoryModel> {
     private static final String CATEGORY = "category";
-    private final LogConstants logConstants = new LogConstants(CATEGORY);
+    private final CrudLogConstants crudLogConstants = new CrudLogConstants(CATEGORY);
     private final CategoryModel categoryModel;
 
 
@@ -30,13 +30,13 @@ public class Category extends CrudApiResponse<CategoryModel> {
     @GetMapping
     public List<CategoryEntity> getCategory() {
         List<CategoryEntity> expenseEntities = categoryModel.getCategory();
-        log.debug(logConstants.getListFiltered(), expenseEntities);
+        log.debug(crudLogConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }
 
     @GetMapping("{id}")
     public CategoryEntity getCategory(@PathVariable("id") CategoryEntity categoryEntity) {
-        log.debug(logConstants.getInput(), categoryEntity);
+        log.debug(crudLogConstants.getInput(), categoryEntity);
         return categoryEntity;
     }
 

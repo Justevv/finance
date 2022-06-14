@@ -1,6 +1,5 @@
 package com.manager.finance.entity;
 
-import com.manager.finance.dto.AccountDTO;
 import lombok.Data;
 
 import javax.persistence.*;
