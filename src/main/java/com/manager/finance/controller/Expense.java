@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/expense")
 @Slf4j
-public class Expense extends CrudApiResponse<ExpenseModel> {
+public class Expense extends CrudApiResponse<ExpenseModel, ExpenseEntity> {
     private static final String EXPENSE = "expense";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(EXPENSE);
     private final ExpenseModel expenseModel;
@@ -32,9 +32,7 @@ public class Expense extends CrudApiResponse<ExpenseModel> {
     public List<ExpenseEntity> getExpense(@RequestParam(defaultValue = "0") long startWith,
                                           @RequestParam(defaultValue = "500") long count, Principal principal) {
         log.debug("Input filter {}, search {}", startWith, count);
-        List<ExpenseEntity> expenseEntities = expenseModel.getExpense(startWith, count, principal);
-        log.debug(crudLogConstants.getListFiltered(), expenseEntities);
-        return expenseEntities;
+        return getAll(principal);
     }
 
     @GetMapping("{id}")
@@ -46,7 +44,7 @@ public class Expense extends CrudApiResponse<ExpenseModel> {
     @PostMapping
     public ResponseEntity<Object> addExpense(@Valid ExpenseDTO expenseDTO, Principal principal,
                                              BindingResult bindingResult) throws UserPrincipalNotFoundException {
-        return create(expenseDTO, principal,  bindingResult);
+        return create(expenseDTO, principal, bindingResult);
     }
 
     @PatchMapping("{id}")
@@ -62,7 +60,7 @@ public class Expense extends CrudApiResponse<ExpenseModel> {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Object> deleteExpense(@PathVariable("id") ExpenseEntity expense) {
+    public ResponseEntity<Void> deleteExpense(@PathVariable("id") ExpenseEntity expense) {
         return delete(expense);
     }
 

@@ -17,21 +17,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/place")
 @Slf4j
-public class Place extends CrudApiResponse<PlaceModel> {
+public class Place extends CrudApiResponse<PlaceModel, PlaceEntity> {
     private static final String PLACE = "place";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(PLACE);
-    private final PlaceModel placeModel;
 
     public Place(PlaceModel placeModel) {
         super(placeModel, PLACE);
-        this.placeModel = placeModel;
     }
 
     @GetMapping
-    public List<PlaceEntity> get() {
-        List<PlaceEntity> places = placeModel.get();
-        log.debug(crudLogConstants.getListFiltered(), places);
-        return places;
+    public List<PlaceEntity> get(Principal principal) {
+        return getAll(principal);
     }
 
     @GetMapping("{id}")
@@ -48,11 +44,11 @@ public class Place extends CrudApiResponse<PlaceModel> {
     @PutMapping("{id}")
     public ResponseEntity<Object> updatePlace(@PathVariable("id") PlaceEntity placeEntity, @Valid PlaceDTO placeDTO,
                                               BindingResult bindingResult) {
-      return update(placeEntity, placeDTO, bindingResult);
+        return update(placeEntity, placeDTO, bindingResult);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Object> deletePlace(@PathVariable("id") PlaceEntity placeEntity) {
+    public ResponseEntity<Void> deletePlace(@PathVariable("id") PlaceEntity placeEntity) {
         return delete(placeEntity);
     }
 

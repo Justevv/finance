@@ -23,7 +23,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/user")
 @Slf4j
-public class User extends CrudApiResponse<UserModel> {
+public class User extends CrudApiResponse<UserModel, UserEntity> {
     private static final String USER_LOG_NAME = "user";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(USER_LOG_NAME);
     @Autowired
@@ -37,13 +37,11 @@ public class User extends CrudApiResponse<UserModel> {
     @GetMapping
     @PreAuthorize("hasAuthority('users:read')")
     public List<UserEntity> getUsers() {
-        log.debug("getUsers");
-        return userModel.getUsers();
+        return userModel.getAll();
     }
 
     @GetMapping("/myself")
     public UserEntity getUser(Principal principal) {
-        log.debug("getUsers");
         return userModel.getUser(principal);
     }
 
@@ -65,7 +63,6 @@ public class User extends CrudApiResponse<UserModel> {
         return responseEntity;
 //        return create(userDTO, bindingResult);
     }
-
 
     @PutMapping("/myself")
     public ResponseEntity<Object> updateUser(UserUpdateDTO crudDTO, Principal principal,
@@ -94,7 +91,6 @@ public class User extends CrudApiResponse<UserModel> {
 //        return delete(user);
     }
 
-
     @PutMapping("{id}")
     @PreAuthorize("hasAuthority('users:update')")
     public ResponseEntity<Object> updateUser(@PathVariable("id") UserEntity user, UserUpdateDTO crudDTO,
@@ -104,7 +100,7 @@ public class User extends CrudApiResponse<UserModel> {
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasAuthority('users:delete')")
-    public ResponseEntity<Object> deleteUser(@PathVariable("id") UserEntity user) {
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") UserEntity user) {
         return delete(user);
     }
 

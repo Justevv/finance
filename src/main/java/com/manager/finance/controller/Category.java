@@ -3,6 +3,7 @@ package com.manager.finance.controller;
 import com.manager.finance.config.CrudLogConstants;
 import com.manager.finance.dto.CategoryDTO;
 import com.manager.finance.entity.CategoryEntity;
+import com.manager.finance.entity.CrudEntity;
 import com.manager.finance.model.CategoryModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -11,27 +12,24 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/category")
 @Slf4j
-public class Category extends CrudApiResponse<CategoryModel> {
+public class Category extends CrudApiResponse<CategoryModel, CategoryEntity> {
     private static final String CATEGORY = "category";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(CATEGORY);
-    private final CategoryModel categoryModel;
 
 
     public Category(CategoryModel categoryModel) {
         super(categoryModel, CATEGORY);
-        this.categoryModel = categoryModel;
     }
 
     @GetMapping
-    public List<CategoryEntity> getCategory() {
-        List<CategoryEntity> expenseEntities = categoryModel.getCategory();
-        log.debug(crudLogConstants.getListFiltered(), expenseEntities);
-        return expenseEntities;
+    public List<CategoryEntity> getCategory(Principal principal) {
+        return getAll(principal);
     }
 
     @GetMapping("{id}")
@@ -41,18 +39,19 @@ public class Category extends CrudApiResponse<CategoryModel> {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addCategory(CategoryDTO categoryDTO, Principal principal, BindingResult bindingResult) throws UserPrincipalNotFoundException {
+    public ResponseEntity<Object> addCategory(CategoryDTO categoryDTO, Principal principal, BindingResult bindingResult)
+            throws UserPrincipalNotFoundException {
         return create(categoryDTO, principal, bindingResult);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity changeCategory(@PathVariable("id") CategoryEntity categoryEntity, CategoryDTO categoryDTO,
+    public ResponseEntity<Object> changeCategory(@PathVariable("id") CategoryEntity categoryEntity, CategoryDTO categoryDTO,
                                          BindingResult bindingResult) {
         return update(categoryEntity, categoryDTO, bindingResult);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity deleteCategory(@PathVariable("id") CategoryEntity categoryEntity) {
+    public ResponseEntity<Void> deleteCategory(@PathVariable("id") CategoryEntity categoryEntity) {
         return delete(categoryEntity);
     }
 

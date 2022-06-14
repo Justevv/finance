@@ -22,9 +22,10 @@ public class PlaceModel extends CrudModel<PlaceEntity, PlaceDTO> {
         this.placeRepository = placeRepository;
     }
 
-    public List<PlaceEntity> get() {
-        List<PlaceEntity> categoryEntity = placeRepository.findAll();
-
+    public List<PlaceEntity> getAll(Principal principal) {
+        var user = getUserRepository().findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        List<PlaceEntity> categoryEntity = placeRepository.findByUser(user);
         log.debug(crudLogConstants.getListFiltered(), categoryEntity);
         return categoryEntity;
     }

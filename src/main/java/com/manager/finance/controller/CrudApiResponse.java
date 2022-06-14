@@ -12,16 +12,23 @@ import org.springframework.validation.BindingResult;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class CrudApiResponse<T extends CrudModel> {
+public class CrudApiResponse<T extends CrudModel, V extends CrudEntity> {
     private final CrudLogConstants crudLogConstants;
     private final T model;
 
     public CrudApiResponse(T model, String type) {
         this.model = model;
         crudLogConstants = new CrudLogConstants(type);
+    }
+
+    public List<V> getAll(Principal principal) {
+        List<V> places = model.getAll(principal);
+        log.debug(crudLogConstants.getListFiltered(), places);
+        return places;
     }
 
     public ResponseEntity<Object> create(CrudDTO dto, Principal principal, BindingResult bindingResult) throws UserPrincipalNotFoundException {
@@ -59,9 +66,9 @@ public class CrudApiResponse<T extends CrudModel> {
         return responseEntity;
     }
 
-    public ResponseEntity<Object> delete(CrudEntity entity) {
+    public ResponseEntity<Void> delete(CrudEntity entity) {
         log.debug(crudLogConstants.getInputDataForDelete(), entity);
-        ResponseEntity<Object> responseEntity = ResponseEntity.ok(model.delete(entity));
+        var responseEntity = ResponseEntity.ok(model.delete(entity));
         log.debug(crudLogConstants.getDeletedResponse(), responseEntity);
         return responseEntity;
     }

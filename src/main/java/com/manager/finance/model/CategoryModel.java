@@ -24,8 +24,10 @@ public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<CategoryEntity> getCategory() {
-        var categoryEntity = categoryRepository.findAll();
+    public List<CategoryEntity> getAll(Principal principal) {
+        var user = getUserRepository().findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        var categoryEntity = categoryRepository.findByUser(user);
         log.debug(crudLogConstants.getListFiltered(), categoryEntity);
         return categoryEntity;
     }
@@ -42,8 +44,8 @@ public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
         return category;
     }
 
-    private void setDefaultValue(CategoryEntity category){
-        if (category.getParentCategory() == null){
+    private void setDefaultValue(CategoryEntity category) {
+        if (category.getParentCategory() == null) {
             category.setParentCategory(categoryRepository.findByName("Base"));
         }
     }

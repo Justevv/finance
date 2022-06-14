@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Long> {
 
-    @Query("SELECT ee FROM ExpenseEntity ee where ee.category = ?1")
-    List<ExpenseEntity> findByUser(long skip, long limit, UserEntity userEntity);
+//    List<ExpenseEntity> findByUser(long skip, long limit, UserEntity userEntity);
 
+    List<ExpenseEntity> findByUser(UserEntity userEntity);
 
     @Query("SELECT SUM(ee.sum) FROM ExpenseEntity ee")
     double selectSum();

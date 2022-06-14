@@ -33,7 +33,7 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     }
 
     @Cacheable(cacheNames = "expense")
-    public List<ExpenseEntity> getExpense(long startWith, long count, Principal principal) {
+    public List<ExpenseEntity> getAll(long startWith, long count, Principal principal) {
         log.debug("Input filter {}, search {}", startWith, count);
         List<ExpenseEntity> expenseEntities = new ArrayList<>();
         for (; startWith < count; startWith++) {
@@ -43,8 +43,10 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
         return expenseEntities;
     }
 
-    public List<ExpenseEntity> getExpense() {
-        var expenseEntities = expenseRepository.findAll();
+    public List<ExpenseEntity> getAll(Principal principal) {
+        var user = getUserRepository().findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        var expenseEntities = expenseRepository.findByUser(user);
         log.debug(crudLogConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }

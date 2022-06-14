@@ -35,7 +35,7 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public List<UserEntity> getUsers() {
+    public List<UserEntity> getAll() {
         return userRepository.findAll();
     }
 
@@ -44,7 +44,6 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
                 .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS_ERROR_MESSAGE));
     }
 
-    //        @Override
     public UserResponseDTO create(UserDTO userDTO) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputDataNew(), userDTO);
         checkUniqueAccountCreateParameters(userDTO);
@@ -85,7 +84,6 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
         return userRepository.findByUsername(username).isPresent();
     }
 
-    //        @Override
     @Transactional
     public UserResponseDTO update(UserEntity user, UserUpdateDTO userDTO) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputDataToChange(), userDTO, user);
@@ -121,13 +119,18 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
     }
 
     @Override
+    public List<UserEntity> getAll(Principal principal) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public CrudEntity create(UserDTO userDTO, Principal principal) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public CrudEntity update(UserEntity userEntity, UserDTO userDTO) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
