@@ -9,12 +9,13 @@ import com.manager.finance.repository.ExpenseRepository;
 import com.manager.finance.repository.PlaceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,12 +34,12 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     }
 
     @Cacheable(cacheNames = "expense")
-    public List<ExpenseEntity> getAll(long startWith, long count, Principal principal) {
-        log.debug("Input filter {}, search {}", startWith, count);
-        List<ExpenseEntity> expenseEntities = new ArrayList<>();
-        for (; startWith < count; startWith++) {
-            expenseRepository.findById(startWith).ifPresent(expenseEntities::add);
-        }
+    public List<ExpenseEntity> getAll(int page, int count, Principal principal) {
+        var user = getUserRepository().findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        log.debug("Input start page is {}, count on page is {}", page, count);
+        Pageable pageable = PageRequest.of(page, count);
+        var expenseEntities = expenseRepository.findByUser(user, pageable);
         log.debug(crudLogConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }

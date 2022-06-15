@@ -19,10 +19,8 @@ public class ExpenseEntity implements CrudEntity {
     private LocalDateTime date;
     @ManyToOne
     private UserEntity user;
-    @NotNull
     @ManyToOne
     private CategoryEntity category;
-    @NotNull
     @ManyToOne
     private PlaceEntity place;
     @ManyToOne

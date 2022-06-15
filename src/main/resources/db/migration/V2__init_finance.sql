@@ -15,9 +15,9 @@ create table expense
     sum              float8 not null,
     transaction_type int4,
     account_id       int8,
-    category_id      int8   not null,
+    category_id      int8,
     payment_type_id  int8,
-    place_id         int8   not null,
+    place_id         int8,
     user_id          int8,
     primary key (id)
 );

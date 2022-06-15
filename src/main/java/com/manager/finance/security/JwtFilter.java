@@ -1,5 +1,6 @@
 package com.manager.finance.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class JwtFilter extends GenericFilterBean {
     @Autowired
     private JwtProvider jwtProvider;
@@ -21,6 +23,7 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         var token = jwtProvider.resolveToken((HttpServletRequest) servletRequest);
+        log.debug("token is {}", token);
 
         try {
             if (token != null && jwtProvider.validateToken(token)) {
