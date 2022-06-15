@@ -26,6 +26,7 @@ public class CrudApiResponse<T extends CrudModel, V extends CrudEntity> {
     }
 
     public List<V> getAll(Principal principal) {
+        log.debug("Current principal is {}", principal);
         List<V> places = model.getAll(principal);
         log.debug(crudLogConstants.getListFiltered(), places);
         return places;
