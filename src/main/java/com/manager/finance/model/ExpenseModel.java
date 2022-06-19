@@ -7,7 +7,9 @@ import com.manager.finance.entity.ExpenseEntity;
 import com.manager.finance.repository.CategoryRepository;
 import com.manager.finance.repository.ExpenseRepository;
 import com.manager.finance.repository.PlaceRepository;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,11 +28,14 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     private final CategoryRepository categoryRepository;
     private final PlaceRepository placeRepository;
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(EXPENSE);
+    @Getter
+    private final ModelMapper mapper = new ModelMapper();
 
     public ExpenseModel(ExpenseRepository expenseRepository, CategoryRepository categoryRepository, PlaceRepository placeRepository) {
         this.expenseRepository = expenseRepository;
         this.categoryRepository = categoryRepository;
         this.placeRepository = placeRepository;
+        getMapper().getConfiguration().setSkipNullEnabled(true);
     }
 
     @Cacheable(cacheNames = "expense")

@@ -15,7 +15,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/place")
+@RequestMapping("/v1/place")
 @Slf4j
 public class Place extends CrudApiResponse<PlaceModel, PlaceEntity> {
     private static final String PLACE = "place";

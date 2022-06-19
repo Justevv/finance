@@ -54,7 +54,6 @@ public class CategoryModel extends CrudModel<CategoryEntity, CategoryDTO> {
     public CategoryEntity update(CategoryEntity category, CategoryDTO categoryDTO) {
         log.debug(crudLogConstants.getInputDataToChange(), category, categoryDTO);
         mapper.map(categoryDTO, category);
-        setDefaultValue(category);
         categoryRepository.save(category);
         log.info(crudLogConstants.getUpdatedToDatabase(), category);
         return category;

@@ -3,7 +3,6 @@ package com.manager.finance.controller;
 import com.manager.finance.config.CrudLogConstants;
 import com.manager.finance.dto.CategoryDTO;
 import com.manager.finance.entity.CategoryEntity;
-import com.manager.finance.entity.CrudEntity;
 import com.manager.finance.model.CategoryModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/v1/category")
 @Slf4j
 public class Category extends CrudApiResponse<CategoryModel, CategoryEntity> {
     private static final String CATEGORY = "category";

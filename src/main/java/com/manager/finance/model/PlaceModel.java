@@ -4,7 +4,9 @@ import com.manager.finance.config.CrudLogConstants;
 import com.manager.finance.dto.PlaceDTO;
 import com.manager.finance.entity.PlaceEntity;
 import com.manager.finance.repository.PlaceRepository;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ public class PlaceModel extends CrudModel<PlaceEntity, PlaceDTO> {
     private static final String PLACE = "place";
     private final PlaceRepository placeRepository;
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(PLACE);
+    @Getter
+    private final ModelMapper mapper = new ModelMapper();
 
     public PlaceModel(PlaceRepository placeRepository) {
         this.placeRepository = placeRepository;

@@ -1,4 +1,4 @@
-package com.manager.finance.helper;
+package com.manager.finance.helper.prepare;
 
 import com.manager.finance.entity.Permission;
 import com.manager.finance.entity.Role;

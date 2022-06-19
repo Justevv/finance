@@ -16,7 +16,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/expense")
+@RequestMapping("/v1/expense")
 @Slf4j
 public class Expense extends CrudApiResponse<ExpenseModel, ExpenseEntity> {
     private static final String EXPENSE = "expense";

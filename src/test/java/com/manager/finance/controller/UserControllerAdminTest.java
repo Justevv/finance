@@ -3,8 +3,8 @@ package com.manager.finance.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manager.Manager;
 import com.manager.finance.entity.UserEntity;
-import com.manager.finance.helper.PreparedUser;
-import com.manager.finance.helper.UserIdConverter;
+import com.manager.finance.helper.prepare.PreparedUser;
+import com.manager.finance.helper.converter.UserIdConverter;
 import com.manager.finance.repository.UserRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,7 +92,7 @@ class UserControllerAdminTest {
         var newPhone = "32245";
         var newEmail = "st@a.ru";
 
-        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
+        Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
         mockMvc.perform(MockMvcRequestBuilders.put("/v1/user/{id}", userEntity.getId())
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .param("username", newUsername)
@@ -109,22 +109,25 @@ class UserControllerAdminTest {
     @Test
     @SneakyThrows
     void postUser() {
+        var newUsername = "new";
+        var newPhone = "32245";
+        var newEmail = "st@a.ru";
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/user")
-                .param("username", "new")
+                .param("username", newUsername)
                 .param("password", "1")
-                .param("phone", "1")
-                .param("email", "st@a.ru")
+                .param("phone", newPhone)
+                .param("email", newEmail)
         )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.username").isString())
-                .andExpect(jsonPath("$.phone").isString())
-                .andExpect(jsonPath("$.email").isString());
+                .andExpect(jsonPath("$.username").value(newUsername))
+                .andExpect(jsonPath("$.phone").value(newPhone))
+                .andExpect(jsonPath("$.email").value(newEmail));
     }
 
     @Test
     @SneakyThrows
     void deleteUser() {
-        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
+        Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
         mockMvc.perform(MockMvcRequestBuilders.delete("/v1/user/{id}", userEntity.getId())
                 .header(HttpHeaders.AUTHORIZATION, token)
         )

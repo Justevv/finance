@@ -1,4 +1,4 @@
-package com.manager.finance.helper;
+package com.manager.finance.helper.converter;
 
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.repository.UserRepository;

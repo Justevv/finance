@@ -9,7 +9,9 @@ import com.manager.finance.entity.UserEntity;
 import com.manager.finance.exception.UserAlreadyExistException;
 import com.manager.finance.repository.RoleRepository;
 import com.manager.finance.repository.UserRepository;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -38,6 +40,8 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Getter
+    private final ModelMapper mapper = new ModelMapper();
 
 
     public List<UserEntity> getAll() {
