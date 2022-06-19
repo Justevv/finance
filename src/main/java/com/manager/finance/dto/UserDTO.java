@@ -14,6 +14,7 @@ public class UserDTO implements CrudDTO{
     @ToString.Exclude
     @NotBlank
     private String password;
+    @NotBlank
     @Email(message = "email", regexp = EMAIL_REGEXP)
     private String email;
     @NotBlank

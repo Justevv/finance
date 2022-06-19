@@ -27,10 +27,12 @@ public class Authentication {
 
     @PostMapping("/login")
     public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDTO authentication) {
+        log.debug("User {} try to authentication", authentication);
         try {
             Map<String, String> response = new HashMap<>();
             response.put("username", authentication.getUsername());
             response.put("token", authenticationModel.authenticate(authentication));
+            log.info("User {} was successfully authenticated", authentication.getUsername());
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             log.warn("Invalid username/password {}", authentication.getUsername());

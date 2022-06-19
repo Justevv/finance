@@ -11,11 +11,11 @@ values (2, 'ROLE_ADMIN');
 insert into role
 values (3, 'ROLE_USER');
 insert into permission
-values (1, 'users:read');
+values (1, 'user:read');
 insert into permission
-values (2, 'users:delete');
+values (2, 'user:delete');
 insert into permission
-values (3, 'users:update');
+values (3, 'user:write');
 insert into permission
 values (4, 'users:t');
 insert into users_roles

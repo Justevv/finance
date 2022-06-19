@@ -4,8 +4,10 @@ package com.manager.finance.controller;
 import com.manager.finance.config.CrudLogConstants;
 import com.manager.finance.dto.CrudResponseDTO;
 import com.manager.finance.dto.UserDTO;
+import com.manager.finance.dto.UserResponseDTO;
 import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.entity.UserEntity;
+import com.manager.finance.exception.UserAlreadyExistException;
 import com.manager.finance.model.UserModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +36,14 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
         this.userModel = userModel;
     }
 
-    @GetMapping
-    @PreAuthorize("hasAuthority('users:read')")
+    @GetMapping({"", "/all"})
+    @PreAuthorize("hasAuthority('user:read')")
     public List<UserEntity> getUsers() {
         return userModel.getAll();
     }
 
-    @GetMapping("/myself")
-    public UserEntity getUser(Principal principal) {
+    @GetMapping("/me")
+    public UserResponseDTO getUser(Principal principal) {
         return userModel.getUser(principal);
     }
 
@@ -64,7 +66,7 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
 //        return create(userDTO, bindingResult);
     }
 
-    @PutMapping("/myself")
+    @PutMapping("/me")
     public ResponseEntity<Object> updateUser(UserUpdateDTO crudDTO, Principal principal,
                                              BindingResult bindingResult) throws Exception {
         log.debug(crudLogConstants.getInputDataToChange(), principal, crudDTO);
@@ -82,7 +84,7 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
 //        return update(user, userDTO, bindingResult);
     }
 
-    @DeleteMapping("/myself")
+    @DeleteMapping("/me")
     public ResponseEntity<Void> deleteUser(Principal principal) {
         log.debug(crudLogConstants.getInputDataForDelete(), principal);
         var responseEntity = ResponseEntity.ok(userModel.delete(principal));
@@ -91,15 +93,27 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
 //        return delete(user);
     }
 
-    @PutMapping("{id}")
-    @PreAuthorize("hasAuthority('users:update')")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<Object> updateUser(@PathVariable("id") UserEntity user, UserUpdateDTO crudDTO,
-                                             BindingResult bindingResult) {
-        return update(user, crudDTO, bindingResult);
+                                             BindingResult bindingResult) throws UserAlreadyExistException {
+        log.debug(" {} {} {}", user, crudDTO, bindingResult );
+        log.debug(crudLogConstants.getInputDataToChange(), crudDTO, user);
+        ResponseEntity<Object> responseEntity;
+        if (!bindingResult.hasErrors()) {
+            responseEntity = ResponseEntity.ok(userModel.update(user, crudDTO));
+            log.debug(crudLogConstants.getSaveToDatabase(), crudDTO);
+        } else {
+            Map<String, String> errors = Utils.getErrors(bindingResult);
+            log.debug(crudLogConstants.getErrorChange(), errors);
+            responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
+        log.debug(crudLogConstants.getUpdatedResponse(), responseEntity);
+        return responseEntity;
     }
 
-    @DeleteMapping("{id}")
-    @PreAuthorize("hasAuthority('users:delete')")
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('user:delete')")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") UserEntity user) {
         return delete(user);
     }

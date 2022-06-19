@@ -11,6 +11,7 @@ import com.manager.finance.repository.RoleRepository;
 import com.manager.finance.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,31 +20,37 @@ import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.List;
 
+import static com.manager.finance.Constant.USER_DOES_NOT_EXISTS;
+
 @Service
 @Slf4j
 public class UserModel extends CrudModel<UserEntity, UserDTO> {
     private static final String CATEGORY = "user";
-    private final CrudLogConstants crudLogConstants = new CrudLogConstants(CATEGORY);
     private static final String EMAIL_EXISTS_ERROR_MESSAGE = "There is an account with that email address: ";
     private static final String PHONE_EXISTS_ERROR_MESSAGE = "There is an account with that phone: ";
     private static final String USERNAME_EXISTS_ERROR_MESSAGE = "There is an account with that username: ";
-    private static final String USER_DOES_NOT_EXISTS_ERROR_MESSAGE = "User doesn't exists";
+    private final CrudLogConstants crudLogConstants = new CrudLogConstants(CATEGORY);
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
 
     public List<UserEntity> getAll() {
         return userRepository.findAll();
     }
 
-    public UserEntity getUser(Principal principal) {
-        return userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS_ERROR_MESSAGE));
+    public UserResponseDTO getUser(Principal principal) {
+        UserEntity user = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+        return getMapper().map(user, UserResponseDTO.class);
     }
 
+    @Transactional
     public UserResponseDTO create(UserDTO userDTO) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputDataNew(), userDTO);
         checkUniqueAccountCreateParameters(userDTO);
@@ -54,15 +61,15 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
 
         userRepository.save(user);
         log.info(crudLogConstants.getSaveToDatabase(), user);
-
+//        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
         return getMapper().map(user, UserResponseDTO.class);
     }
 
     private void checkUniqueAccountCreateParameters(UserDTO userDTO) throws UserAlreadyExistException {
-        if (isEmailExists(userDTO.getEmail())) {
+        if (isEmailConfirmed(userDTO.getEmail())) {
             throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + userDTO.getEmail());
         }
-        if (isPhoneExists(userDTO.getPhone())) {
+        if (isPhoneConfirmed(userDTO.getPhone())) {
             throw new UserAlreadyExistException(PHONE_EXISTS_ERROR_MESSAGE + userDTO.getPhone());
         }
         if (isUsernameExists(userDTO.getUsername())) {
@@ -70,14 +77,14 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
         }
     }
 
-    private boolean isEmailExists(String email) {
+    private boolean isEmailConfirmed(String email) {
         var user = userRepository.findByEmail(email);
-        return user.isPresent() && user.get().isEmailConfirmed();
+        return user.stream().anyMatch(UserEntity::isEmailConfirmed);
     }
 
-    private boolean isPhoneExists(String phone) {
+    private boolean isPhoneConfirmed(String phone) {
         var user = userRepository.findByPhone(phone);
-        return user.isPresent() && user.get().isPhoneConfirmed();
+        return user.stream().anyMatch(UserEntity::isPhoneConfirmed);
     }
 
     private boolean isUsernameExists(String username) {
@@ -86,15 +93,24 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
 
     @Transactional
     public UserResponseDTO update(UserEntity user, UserUpdateDTO userDTO) throws UserAlreadyExistException {
-        log.debug(crudLogConstants.getInputDataToChange(), userDTO, user);
-        getMapper().map(userDTO, user);
+        log.debug(crudLogConstants.getInputDataToChange(), user, userDTO);
+        checkUniqueAccountUpdateParameters(user, userDTO);
+        if (userDTO.getUsername() != null && !user.getUsername().equals(userDTO.getUsername())) {
+            log.debug("The username was updated");
+            user.setUsername(userDTO.getUsername());
+        }
         if (userDTO.getEmail() != null && !user.getEmail().equals(userDTO.getEmail())) {
+            log.debug("The email was updated");
+            user.setEmail(userDTO.getEmail());
             user.setEmailConfirmed(false);
+//            eventPublisher.publishEvent(new OnEmailUpdateCompleteEvent(user));
         }
         if (userDTO.getPhone() != null && !user.getPhone().equals(userDTO.getPhone())) {
+            log.debug("The phone was updated");
+            user.setPhone(userDTO.getPhone());
             user.setPhoneConfirmed(false);
+//            eventPublisher.publishEvent(new OnPhoneUpdateCompleteEvent(user));
         }
-        checkUniqueAccountUpdateParameters(user, userDTO);
         if (userDTO.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
@@ -105,11 +121,11 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
 
     private void checkUniqueAccountUpdateParameters(UserEntity user, UserUpdateDTO userDTO) throws UserAlreadyExistException {
         var email = userDTO.getEmail();
-        if (!user.getEmail().equals(email) && isEmailExists(email)) {
+        if (!user.getEmail().equals(email) && isEmailConfirmed(email)) {
             throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + email);
         }
         var phone = userDTO.getPhone();
-        if (!user.getPhone().equals(phone) && isPhoneExists(phone)) {
+        if (!user.getPhone().equals(phone) && isPhoneConfirmed(phone)) {
             throw new UserAlreadyExistException(PHONE_EXISTS_ERROR_MESSAGE + phone);
         }
         var username = userDTO.getUsername();
@@ -143,20 +159,21 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
     }
 
     @Transactional
+    public UserResponseDTO update(Principal principal, UserUpdateDTO userDTO) throws UserAlreadyExistException {
+        log.debug(crudLogConstants.getInputDataToChange(), userDTO, principal);
+        var user = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+        return update(user, userDTO);
+    }
+
+    @Transactional
     public Void delete(Principal principal) {
         log.debug(crudLogConstants.getInputDataForDelete(), principal);
         var user = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS_ERROR_MESSAGE));
+                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
         delete(user);
         return null;
     }
 
-    @Transactional
-    public UserResponseDTO update(Principal principal, UserUpdateDTO userDTO) throws UserAlreadyExistException {
-        log.debug(crudLogConstants.getInputDataToChange(), userDTO, principal);
-        var user = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS_ERROR_MESSAGE));
-        return update(user, userDTO);
-    }
 
 }

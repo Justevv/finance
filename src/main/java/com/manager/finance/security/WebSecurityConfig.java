@@ -53,7 +53,7 @@ public class WebSecurityConfig {
                 .antMatchers(mainPagePath, cssPath, jsPath, imagesPath).permitAll()
                 .antMatchers(swaggerPath, webjarsPath, swaggerResourcesPath, apiDocsPath).permitAll()
 //                .antMatchers("/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/user", "/v1/auth/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/v1/user", "/v1/auth/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(jwtConfigure);

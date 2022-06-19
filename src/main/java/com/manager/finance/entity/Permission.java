@@ -18,6 +18,13 @@ public class Permission implements Serializable {
 
     @Column(unique = true)
     private String name;
+
+    public Permission() {
+    }
+
+    public Permission(String name) {
+        this.name = name;
+    }
 //    @ManyToMany(mappedBy = "permissions")
 //    @JsonIgnoreProperties("permissions")
 //    private Collection<Role> roles;
