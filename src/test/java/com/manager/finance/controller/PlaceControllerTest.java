@@ -1,6 +1,5 @@
 package com.manager.finance.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manager.Manager;
 import com.manager.finance.entity.PlaceEntity;
 import com.manager.finance.entity.UserEntity;
@@ -9,6 +8,7 @@ import com.manager.finance.helper.prepare.PreparedPlace;
 import com.manager.finance.helper.prepare.PreparedUser;
 import com.manager.finance.repository.PlaceRepository;
 import com.manager.finance.repository.UserRepository;
+import com.manager.finance.service.UserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,13 +18,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -38,45 +36,32 @@ class PlaceControllerTest {
     private UserRepository userRepository;
     @MockBean
     private PlaceRepository placeRepository;
+    @MockBean
+    private UserService userService;
     @Autowired
     private MockMvc mockMvc;
-    private UserEntity userEntity;
-    private PlaceEntity placeEntity;
     @Autowired
     private PreparedUser preparedUser;
     @Autowired
     private PreparedPlace preparedPlace;
-    private String token;
+    private UserEntity userEntity;
+    private PlaceEntity placeEntity;
 
     @BeforeEach
     void prepare() {
         userEntity = preparedUser.createUser();
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
+        Mockito.when(userService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
         placeEntity = preparedPlace.createPlace();
         Mockito.when(placeRepository.findById(placeEntity.getId())).thenReturn(Optional.of(placeEntity));
     }
 
-    @SneakyThrows
-    @BeforeEach
-    void getToken() {
-        var json = mockMvc.perform(MockMvcRequestBuilders.post("/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"any\",\"password\":\"1\"}"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> map = mapper.readValue(json, Map.class);
-        token = (String) map.get("token");
-    }
-
     @Test
+    @WithMockUser
     @SneakyThrows
     void getPlaces() {
         Mockito.when(placeRepository.findByUser(userEntity)).thenReturn((List.of(placeEntity)));
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/place")
-                .header(HttpHeaders.AUTHORIZATION, token))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/place"))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("[0].id").value(placeEntity.getId()))
                 .andExpect(jsonPath("[0].name").value(placeEntity.getName()))
@@ -85,11 +70,11 @@ class PlaceControllerTest {
     }
 
     @Test
+    @WithMockUser
     @SneakyThrows
     void getPlace() {
         Mockito.when(placeRepository.findByUser(userEntity)).thenReturn((List.of(placeEntity)));
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/place/{id}", placeEntity.getId())
-                .header(HttpHeaders.AUTHORIZATION, token))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/place/{id}", placeEntity.getId()))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").value(placeEntity.getId()))
                 .andExpect(jsonPath("$.name").value(placeEntity.getName()))
@@ -98,6 +83,7 @@ class PlaceControllerTest {
     }
 
     @Test
+    @WithMockUser
     @SneakyThrows
     void putPlace() {
         var newName = "newName";
@@ -105,10 +91,9 @@ class PlaceControllerTest {
 
         Mockito.when(placeRepository.findById(placeEntity.getId())).thenReturn(Optional.of(placeEntity));
         mockMvc.perform(MockMvcRequestBuilders.put("/v1/place/{id}", placeEntity.getId())
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .param("name", newName)
-                .param("address", newAddress)
-        )
+                        .param("name", newName)
+                        .param("address", newAddress)
+                )
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").value(placeEntity.getId()))
                 .andExpect(jsonPath("$.name").value(newName))
@@ -117,15 +102,15 @@ class PlaceControllerTest {
     }
 
     @Test
+    @WithMockUser
     @SneakyThrows
     void postPlace() {
         var newName = "newName";
         var newAddress = "newAddress";
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/place")
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .param("name", newName)
-                .param("address", newAddress)
-        )
+                        .param("name", newName)
+                        .param("address", newAddress)
+                )
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.name").value(newName))
@@ -134,12 +119,11 @@ class PlaceControllerTest {
     }
 
     @Test
+    @WithMockUser
     @SneakyThrows
     void deletePlace() {
         Mockito.when(placeRepository.findById(placeEntity.getId())).thenReturn(Optional.of(placeEntity));
-        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/place/{id}", placeEntity.getId())
-                .header(HttpHeaders.AUTHORIZATION, token)
-        )
+        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/place/{id}", placeEntity.getId()))
                 .andExpect(status().is(200));
     }
 

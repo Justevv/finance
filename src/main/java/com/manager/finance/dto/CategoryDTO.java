@@ -8,11 +8,4 @@ public class CategoryDTO implements CrudDTO {
     private String name;
     private CategoryEntity parentCategory;
 
-    public CategoryDTO() {
-    }
-
-    public CategoryDTO(String name, CategoryEntity parentCategory) {
-        this.name = name;
-        this.parentCategory = parentCategory;
-    }
 }

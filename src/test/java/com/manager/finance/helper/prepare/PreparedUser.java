@@ -11,29 +11,6 @@ import java.util.List;
 @TestConfiguration
 public class PreparedUser {
 
-    public UserEntity createSuperAdmin() {
-        var userEntity = createMainUser();
-        Collection<Permission> permissions = List.of(new Permission("user:read"),
-                new Permission("user:write"), new Permission("user:delete"), new Permission("all:read"),
-                new Permission("all:write"), new Permission("user:delete"));
-        var role = new Role();
-        role.setName("ROLE_SUPER_ADMIN");
-        role.setPermissions(permissions);
-        userEntity.setRoles(List.of(role));
-        return userEntity;
-    }
-
-    public UserEntity createAdmin() {
-        var userEntity = createMainUser();
-        Collection<Permission> permissions = List.of(new Permission("user:read"),
-                new Permission("user:write"), new Permission("user:delete"));
-        var role = new Role();
-        role.setName("ROLE_ADMIN");
-        role.setPermissions(permissions);
-        userEntity.setRoles(List.of(role));
-        return userEntity;
-    }
-
     public UserEntity createUser() {
         var userEntity = createMainUser();
         Collection<Permission> permissions = List.of(new Permission("user"));
@@ -47,9 +24,9 @@ public class PreparedUser {
     private UserEntity createMainUser() {
         var userEntity = new UserEntity();
         userEntity.setId(1);
-        userEntity.setUsername("any");
+        userEntity.setUsername("user");
         userEntity.setPhone("phone");
-        userEntity.setPassword("$2a$04$nJrdi9bRvGBTNYKf1BCQu.kMPTGLJzmZcaKLsUKput4gfzsWq8Uty");
+        userEntity.setPassword("$2a$04$kLf5hQQ8yshxEfcMk9etVupP2It5u889YM9KLVpuAnSEAvc3oDq.6");
         userEntity.setEmail("email");
         userEntity.setEmailConfirmed(true);
         userEntity.setPhoneConfirmed(true);

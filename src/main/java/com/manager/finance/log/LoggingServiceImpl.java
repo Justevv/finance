@@ -2,6 +2,8 @@ package com.manager.finance.log;
 
 import com.manager.finance.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -23,10 +25,10 @@ public class LoggingServiceImpl implements LoggingService {
     public void logRequest(HttpServletRequest httpServletRequest, Object body) {
         var stringBuilder = new StringBuilder();
         var parameters = buildParametersMap(httpServletRequest);
-        var user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userInfo = principal instanceof UserEntity user ? user.getUsername() : principal.toString();
         stringBuilder.append("REQUEST ");
-        stringBuilder.append("principal=[").append(user.getUsername()).append("] ");
+        stringBuilder.append("principal=[").append(userInfo).append("] ");
         stringBuilder.append("method=[").append(httpServletRequest.getMethod()).append("] ");
         stringBuilder.append("path=[").append(httpServletRequest.getRequestURI()).append("] ");
         stringBuilder.append("headers=[").append(buildHeadersMap(httpServletRequest)).append("] ");
