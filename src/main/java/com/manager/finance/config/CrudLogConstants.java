@@ -6,9 +6,6 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 public class CrudLogConstants {
-    private final String updatedResponse;
-    private final String savedResponse;
-    private final String deletedResponse;
     private final String errorAdd;
     private final String listFiltered;
     private final String input;
@@ -21,9 +18,6 @@ public class CrudLogConstants {
     private final String inputDataForDelete;
 
     public CrudLogConstants(@NotNull String property) {
-        updatedResponse = String.format("Updated response for %s is {}", property);
-        savedResponse = String.format("Saved response for %s is {}", property);
-        deletedResponse = String.format("Deleted response for %s is {}", property);
         errorAdd = String.format("Error add %s {}", property);
         listFiltered = String.format("List filtered %s {}", property);
         input = String.format("Input %s {}", property);

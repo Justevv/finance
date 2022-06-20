@@ -49,7 +49,6 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
 
     @PostMapping
     public ResponseEntity<Object> createUser(@Valid UserDTO userDTO, BindingResult bindingResult) throws Exception {
-        log.debug(crudLogConstants.getInputDataNew(), userDTO);
         ResponseEntity<Object> responseEntity;
 
         if (!bindingResult.hasErrors()) {
@@ -61,7 +60,6 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
             log.debug(crudLogConstants.getErrorAdd(), errors);
             responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-        log.debug(crudLogConstants.getSavedResponse(), responseEntity);
         return responseEntity;
 //        return create(userDTO, bindingResult);
     }
@@ -69,7 +67,6 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
     @PutMapping("/me")
     public ResponseEntity<Object> updateUser(UserUpdateDTO crudDTO, Principal principal,
                                              BindingResult bindingResult) throws Exception {
-        log.debug(crudLogConstants.getInputDataToChange(), principal, crudDTO);
         ResponseEntity<Object> responseEntity;
         if (!bindingResult.hasErrors()) {
             responseEntity = ResponseEntity.ok(userModel.update(principal, crudDTO));
@@ -79,17 +76,13 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
             log.debug(crudLogConstants.getErrorChange(), errors);
             responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-        log.debug(crudLogConstants.getUpdatedResponse(), responseEntity);
         return responseEntity;
 //        return update(user, userDTO, bindingResult);
     }
 
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteUser(Principal principal) {
-        log.debug(crudLogConstants.getInputDataForDelete(), principal);
-        var responseEntity = ResponseEntity.ok(userModel.delete(principal));
-        log.debug(crudLogConstants.getDeletedResponse(), responseEntity);
-        return responseEntity;
+        return ResponseEntity.ok(userModel.delete(principal));
 //        return delete(user);
     }
 
@@ -97,8 +90,6 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<Object> updateUser(@PathVariable("id") UserEntity user, UserUpdateDTO crudDTO,
                                              BindingResult bindingResult) throws UserAlreadyExistException {
-        log.debug(" {} {} {}", user, crudDTO, bindingResult );
-        log.debug(crudLogConstants.getInputDataToChange(), crudDTO, user);
         ResponseEntity<Object> responseEntity;
         if (!bindingResult.hasErrors()) {
             responseEntity = ResponseEntity.ok(userModel.update(user, crudDTO));
@@ -108,7 +99,6 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
             log.debug(crudLogConstants.getErrorChange(), errors);
             responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-        log.debug(crudLogConstants.getUpdatedResponse(), responseEntity);
         return responseEntity;
     }
 

@@ -26,15 +26,10 @@ public class CrudApiResponse<T extends CrudModel, V extends CrudEntity> {
     }
 
     public List<V> getAll(Principal principal) {
-        log.debug("Current principal is {}", principal);
-        List<V> places = model.getAll(principal);
-        log.debug(crudLogConstants.getListFiltered(), places);
-        return places;
+        return model.getAll(principal);
     }
 
     public ResponseEntity<Object> create(CrudDTO dto, Principal principal, BindingResult bindingResult) throws UserPrincipalNotFoundException {
-        log.debug(crudLogConstants.getInputDataNew(), dto);
-        log.debug("Current principal is {}", principal);
         if (principal == null) {
             throw new UsernameNotFoundException("Principal is null");
         }
@@ -48,12 +43,10 @@ public class CrudApiResponse<T extends CrudModel, V extends CrudEntity> {
             log.debug(crudLogConstants.getErrorAdd(), errors);
             responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-        log.debug(crudLogConstants.getSavedResponse(), responseEntity);
         return responseEntity;
     }
 
     public ResponseEntity<Object> update(CrudEntity entity, CrudDTO dto, BindingResult bindingResult) {
-        log.debug(crudLogConstants.getInputDataToChange(), entity, dto);
         ResponseEntity<Object> responseEntity;
         if (!bindingResult.hasErrors()) {
             responseEntity = ResponseEntity.ok(model.update(entity, dto));
@@ -63,15 +56,11 @@ public class CrudApiResponse<T extends CrudModel, V extends CrudEntity> {
             log.debug(crudLogConstants.getErrorChange(), errors);
             responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-        log.debug(crudLogConstants.getUpdatedResponse(), responseEntity);
         return responseEntity;
     }
 
     public ResponseEntity<Void> delete(CrudEntity entity) {
-        log.debug(crudLogConstants.getInputDataForDelete(), entity);
-        var responseEntity = ResponseEntity.ok(model.delete(entity));
-        log.debug(crudLogConstants.getDeletedResponse(), responseEntity);
-        return responseEntity;
+        return ResponseEntity.ok(model.delete(entity));
     }
 
 }
