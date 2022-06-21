@@ -24,10 +24,12 @@ public class UserEntity implements UserDetails, CrudEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
+    @NotNull
     @NotBlank
     @Column(unique = true)
     private String username;
     @NotNull
+    @NotBlank
     @ToString.Exclude
     private String password;
     @NotNull

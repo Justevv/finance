@@ -39,7 +39,7 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
     @GetMapping({"", "/all"})
     @PreAuthorize("hasAuthority('user:read')")
     public List<UserEntity> getUsers() {
-        return userModel.getAll();
+        return userModel.getUsersAllInfo();
     }
 
     @GetMapping("/me")
@@ -65,7 +65,7 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<Object> updateUser(UserUpdateDTO crudDTO, Principal principal,
+    public ResponseEntity<Object> updateUser(Principal principal, @Valid UserUpdateDTO crudDTO,
                                              BindingResult bindingResult) throws Exception {
         ResponseEntity<Object> responseEntity;
         if (!bindingResult.hasErrors()) {
@@ -88,7 +88,7 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<Object> updateUser(@PathVariable("id") UserEntity user, UserUpdateDTO crudDTO,
+    public ResponseEntity<Object> updateUser(@PathVariable("id") UserEntity user, @Valid UserUpdateDTO crudDTO,
                                              BindingResult bindingResult) throws UserAlreadyExistException {
         ResponseEntity<Object> responseEntity;
         if (!bindingResult.hasErrors()) {

@@ -44,8 +44,13 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
     private final ModelMapper mapper = new ModelMapper();
 
 
-    public List<UserEntity> getAll() {
+    public List<UserEntity> getUsersAllInfo() {
         return userRepository.findAll();
+    }
+
+    public List<UserResponseDTO> getUsers() {
+        List<UserEntity> userEntities = userRepository.findAll();
+        return userEntities.stream().map(x -> getMapper().map(x, UserResponseDTO.class)).toList();
     }
 
     public UserResponseDTO getUser(Principal principal) {

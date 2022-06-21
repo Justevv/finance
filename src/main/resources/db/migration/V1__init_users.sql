@@ -46,6 +46,18 @@ create table users
     primary key (id)
 );
 
+create table verification
+  (
+      id          int8 not null,
+      code        varchar(255),
+      expire_time timestamp,
+      type        int4,
+      user_id     int8,
+      primary key (id)
+  );
+
+  alter table if exists verification add constraint FK_verification_users foreign key (user_id) references users on delete cascade;
+
 alter table if exists permission add constraint UK_2ojme20jpga3r4r79tdso17gi unique (name);
 alter table if exists role add constraint UK_8sewwnpamngi6b1dwaa88askk unique (name);
 alter table if exists users add constraint UK_users_username unique (username);
