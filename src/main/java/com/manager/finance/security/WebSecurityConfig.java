@@ -22,6 +22,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Slf4j
 public class WebSecurityConfig {
     private static final int STRENGTH_PASSWORD = 8;
+    private static final String CREATE_USER_API = "/v1/user";
+    private static final String LOGIN_API = "/v1/auth/login";
+    private static final String VERIFICATION_API = "/v1/verification/**";
     @Autowired
     private JwtConfigure jwtConfigure;
     @Autowired
@@ -53,7 +56,7 @@ public class WebSecurityConfig {
                 .antMatchers(mainPagePath, cssPath, jsPath, imagesPath).permitAll()
                 .antMatchers(swaggerPath, webjarsPath, swaggerResourcesPath, apiDocsPath).permitAll()
 //                .antMatchers("/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/v1/user", "/v1/auth/login").permitAll()
+                .antMatchers(HttpMethod.POST, CREATE_USER_API, LOGIN_API, VERIFICATION_API).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(jwtConfigure);

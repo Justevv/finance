@@ -1,6 +1,6 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.config.CrudLogConstants;
+import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.dto.CategoryDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.model.CategoryModel;
@@ -32,7 +32,6 @@ public class Category extends CrudApiResponse<CategoryModel, CategoryEntity> {
 
     @GetMapping("{id}")
     public CategoryEntity getCategory(@PathVariable("id") CategoryEntity categoryEntity) {
-        log.debug(crudLogConstants.getInput(), categoryEntity);
         return categoryEntity;
     }
 

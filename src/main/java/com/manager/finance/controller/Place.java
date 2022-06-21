@@ -1,6 +1,6 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.config.CrudLogConstants;
+import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.dto.PlaceDTO;
 import com.manager.finance.entity.PlaceEntity;
 import com.manager.finance.model.PlaceModel;
@@ -32,7 +32,6 @@ public class Place extends CrudApiResponse<PlaceModel, PlaceEntity> {
 
     @GetMapping("{id}")
     public PlaceEntity get(@PathVariable("id") PlaceEntity place) {
-        log.debug(crudLogConstants.getInput(), place);
         return place;
     }
 

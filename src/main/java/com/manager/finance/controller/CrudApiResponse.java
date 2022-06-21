@@ -1,6 +1,6 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.config.CrudLogConstants;
+import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.dto.CrudDTO;
 import com.manager.finance.entity.CrudEntity;
 import com.manager.finance.model.CrudModel;
@@ -36,11 +36,10 @@ public class CrudApiResponse<T extends CrudModel, V extends CrudEntity> {
         ResponseEntity<Object> responseEntity;
         if (!bindingResult.hasErrors()) {
             var entity = model.create(dto, principal);
-            log.debug(crudLogConstants.getSaveToDatabase(), entity);
             responseEntity = ResponseEntity.ok(entity);
         } else {
             Map<String, String> errors = Utils.getErrors(bindingResult);
-            log.debug(crudLogConstants.getErrorAdd(), errors);
+            log.debug(crudLogConstants.getErrorsAdded(), errors);
             responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
@@ -50,10 +49,9 @@ public class CrudApiResponse<T extends CrudModel, V extends CrudEntity> {
         ResponseEntity<Object> responseEntity;
         if (!bindingResult.hasErrors()) {
             responseEntity = ResponseEntity.ok(model.update(entity, dto));
-            log.debug(crudLogConstants.getSaveToDatabase(), dto);
         } else {
             Map<String, String> errors = Utils.getErrors(bindingResult);
-            log.debug(crudLogConstants.getErrorChange(), errors);
+            log.debug(crudLogConstants.getErrorsAdded(), errors);
             responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
         return responseEntity;

@@ -1,6 +1,6 @@
 package com.manager.finance.model;
 
-import com.manager.finance.config.CrudLogConstants;
+import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.dto.ExpenseDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.entity.ExpenseEntity;
@@ -10,6 +10,7 @@ import com.manager.finance.repository.PlaceRepository;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,13 +30,13 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     private final PlaceRepository placeRepository;
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(EXPENSE);
     @Getter
-    private final ModelMapper mapper = new ModelMapper();
+    @Autowired
+    private ModelMapper mapper;
 
     public ExpenseModel(ExpenseRepository expenseRepository, CategoryRepository categoryRepository, PlaceRepository placeRepository) {
         this.expenseRepository = expenseRepository;
         this.categoryRepository = categoryRepository;
         this.placeRepository = placeRepository;
-        getMapper().getConfiguration().setSkipNullEnabled(true);
     }
 
     @Cacheable(cacheNames = "expense")
@@ -59,14 +60,14 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
 
     @Override
     public ExpenseEntity create(ExpenseDTO expenseDTO, Principal principal) {
-        log.debug(crudLogConstants.getInputDataNew(), expenseDTO);
+        log.debug(crudLogConstants.getInputNewDTO(), expenseDTO);
         var expense = getMapper().map(expenseDTO, ExpenseEntity.class);
         expense.setUser(getUserRepository().findByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found")));
         expense.setDate(LocalDateTime.now());
         setDefaultValue(expense);
         expenseRepository.save(expense);
-        log.info(crudLogConstants.getSaveToDatabase(), expense);
+        log.info(crudLogConstants.getSaveEntityToDatabase(), expense);
         return expense;
     }
 
@@ -81,19 +82,18 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
 
     @Override
     public ExpenseEntity update(ExpenseEntity expense, ExpenseDTO expenseDTO) {
-        log.debug(crudLogConstants.getInputDataToChange(), expenseDTO, expense);
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), expenseDTO, expense);
         getMapper().map(expenseDTO, expense);
         setDefaultValue(expense);
         expenseRepository.save(expense);
-        log.info(crudLogConstants.getUpdatedToDatabase(), expense);
+        log.info(crudLogConstants.getSaveEntityToDatabase(), expense);
         return expense;
     }
 
     @Override
     public Void delete(ExpenseEntity expenseEntity) {
-        log.debug(crudLogConstants.getInputDataForDelete(), expenseEntity);
+        log.debug(crudLogConstants.getDeleteEntityFromDatabase(), expenseEntity);
         expenseRepository.delete(expenseEntity);
-        log.info(crudLogConstants.getDeletedFromDatabase(), expenseEntity);
         return null;
     }
 

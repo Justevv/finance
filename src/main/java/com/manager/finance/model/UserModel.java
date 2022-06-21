@@ -1,11 +1,15 @@
 package com.manager.finance.model;
 
-import com.manager.finance.config.CrudLogConstants;
+import com.manager.finance.ConfirmationHelper;
+import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.dto.UserDTO;
 import com.manager.finance.dto.UserResponseDTO;
 import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.entity.CrudEntity;
 import com.manager.finance.entity.UserEntity;
+import com.manager.finance.entity.VerificationType;
+import com.manager.finance.event.OnEmailUpdateCompleteEvent;
+import com.manager.finance.event.OnPhoneUpdateCompleteEvent;
 import com.manager.finance.exception.UserAlreadyExistException;
 import com.manager.finance.repository.RoleRepository;
 import com.manager.finance.repository.UserRepository;
@@ -27,30 +31,34 @@ import static com.manager.finance.Constant.USER_DOES_NOT_EXISTS;
 @Service
 @Slf4j
 public class UserModel extends CrudModel<UserEntity, UserDTO> {
-    private static final String CATEGORY = "user";
     private static final String EMAIL_EXISTS_ERROR_MESSAGE = "There is an account with that email address: ";
     private static final String PHONE_EXISTS_ERROR_MESSAGE = "There is an account with that phone: ";
     private static final String USERNAME_EXISTS_ERROR_MESSAGE = "There is an account with that username: ";
-    private final CrudLogConstants crudLogConstants = new CrudLogConstants(CATEGORY);
+    private static final String USER_LOG_NAME = "user";
+    private final CrudLogConstants crudLogConstants = new CrudLogConstants(USER_LOG_NAME);
+    @Getter
+    @Autowired
+    private ModelMapper mapper;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
+    private VerificationModel verificationModel;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
-    @Getter
-    private final ModelMapper mapper = new ModelMapper();
-
-
-    public List<UserEntity> getUsersAllInfo() {
-        return userRepository.findAll();
-    }
+    @Autowired
+    private ConfirmationHelper confirmationHelper;
 
     public List<UserResponseDTO> getUsers() {
         List<UserEntity> userEntities = userRepository.findAll();
         return userEntities.stream().map(x -> getMapper().map(x, UserResponseDTO.class)).toList();
+    }
+
+    public List<UserEntity> getUsersAllInfo() {
+        return userRepository.findAll();
     }
 
     public UserResponseDTO getUser(Principal principal) {
@@ -61,7 +69,7 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
 
     @Transactional
     public UserResponseDTO create(UserDTO userDTO) throws UserAlreadyExistException {
-        log.debug(crudLogConstants.getInputDataNew(), userDTO);
+        log.debug(crudLogConstants.getInputNewDTO(), userDTO);
         checkUniqueAccountCreateParameters(userDTO);
 
         var user = getMapper().map(userDTO, UserEntity.class);
@@ -69,31 +77,26 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
         user.setRoles(List.of(roleRepository.findByName("ROLE_USER").orElseThrow()));
 
         userRepository.save(user);
-        log.info(crudLogConstants.getSaveToDatabase(), user);
-//        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
-        return getMapper().map(user, UserResponseDTO.class);
+        log.info(crudLogConstants.getSaveEntityToDatabase(), user);
+        var verificationEmail = verificationModel.createAndSaveVerification(user, VerificationType.EMAIL);
+        eventPublisher.publishEvent(new OnEmailUpdateCompleteEvent(verificationEmail));
+        var verificationPhone = verificationModel.createAndSaveVerification(user, VerificationType.PHONE);
+        eventPublisher.publishEvent(new OnPhoneUpdateCompleteEvent(verificationPhone));
+        var userResponseDTO = getMapper().map(user, UserResponseDTO.class);
+        log.debug(crudLogConstants.getOutputDTOAfterMapping(), userResponseDTO);
+        return userResponseDTO;
     }
 
     private void checkUniqueAccountCreateParameters(UserDTO userDTO) throws UserAlreadyExistException {
-        if (isEmailConfirmed(userDTO.getEmail())) {
+        if (confirmationHelper.isEmailAlreadyConfirmed(userDTO.getEmail())) {
             throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + userDTO.getEmail());
         }
-        if (isPhoneConfirmed(userDTO.getPhone())) {
+        if (confirmationHelper.isPhoneAlreadyConfirmed(userDTO.getPhone())) {
             throw new UserAlreadyExistException(PHONE_EXISTS_ERROR_MESSAGE + userDTO.getPhone());
         }
         if (isUsernameExists(userDTO.getUsername())) {
             throw new UserAlreadyExistException(USERNAME_EXISTS_ERROR_MESSAGE + userDTO.getUsername());
         }
-    }
-
-    private boolean isEmailConfirmed(String email) {
-        var user = userRepository.findByEmail(email);
-        return user.stream().anyMatch(UserEntity::isEmailConfirmed);
-    }
-
-    private boolean isPhoneConfirmed(String phone) {
-        var user = userRepository.findByPhone(phone);
-        return user.stream().anyMatch(UserEntity::isPhoneConfirmed);
     }
 
     private boolean isUsernameExists(String username) {
@@ -102,7 +105,7 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
 
     @Transactional
     public UserResponseDTO update(UserEntity user, UserUpdateDTO userDTO) throws UserAlreadyExistException {
-        log.debug(crudLogConstants.getInputDataToChange(), user, userDTO);
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), user, userDTO);
         checkUniqueAccountUpdateParameters(user, userDTO);
         if (userDTO.getUsername() != null && !user.getUsername().equals(userDTO.getUsername())) {
             log.debug("The username was updated");
@@ -112,35 +115,66 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
             log.debug("The email was updated");
             user.setEmail(userDTO.getEmail());
             user.setEmailConfirmed(false);
-//            eventPublisher.publishEvent(new OnEmailUpdateCompleteEvent(user));
+            var verification = verificationModel.createAndSaveVerification(user, VerificationType.EMAIL);
+            eventPublisher.publishEvent(new OnEmailUpdateCompleteEvent(verification));
         }
         if (userDTO.getPhone() != null && !user.getPhone().equals(userDTO.getPhone())) {
             log.debug("The phone was updated");
             user.setPhone(userDTO.getPhone());
             user.setPhoneConfirmed(false);
-//            eventPublisher.publishEvent(new OnPhoneUpdateCompleteEvent(user));
+            var verification = verificationModel.createAndSaveVerification(user, VerificationType.PHONE);
+            eventPublisher.publishEvent(new OnPhoneUpdateCompleteEvent(verification));
         }
         if (userDTO.getPassword() != null) {
+            log.debug("The password was updated");
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
         userRepository.save(user);
-        log.info(crudLogConstants.getUpdatedToDatabase(), user);
-        return getMapper().map(user, UserResponseDTO.class);
+        log.info(crudLogConstants.getUpdateEntityToDatabase(), user);
+        UserResponseDTO userResponseDTO = getMapper().map(user, UserResponseDTO.class);
+        log.debug(crudLogConstants.getOutputDTOAfterMapping(), userResponseDTO);
+        return userResponseDTO;
     }
 
     private void checkUniqueAccountUpdateParameters(UserEntity user, UserUpdateDTO userDTO) throws UserAlreadyExistException {
         var email = userDTO.getEmail();
-        if (!user.getEmail().equals(email) && isEmailConfirmed(email)) {
+        if (!user.getEmail().equals(email) && confirmationHelper.isEmailAlreadyConfirmed(email)) {
             throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + email);
         }
         var phone = userDTO.getPhone();
-        if (!user.getPhone().equals(phone) && isPhoneConfirmed(phone)) {
+        if (!user.getPhone().equals(phone) && confirmationHelper.isPhoneAlreadyConfirmed(phone)) {
             throw new UserAlreadyExistException(PHONE_EXISTS_ERROR_MESSAGE + phone);
         }
         var username = userDTO.getUsername();
         if (!user.getUsername().equals(username) && isUsernameExists(username)) {
             throw new UserAlreadyExistException(USERNAME_EXISTS_ERROR_MESSAGE + username);
         }
+    }
+
+
+    @Transactional
+    public Void delete(UserEntity user) {
+        log.debug(crudLogConstants.getInputEntityForDelete(), user);
+        userRepository.delete(user);
+        log.info(crudLogConstants.getDeleteEntityFromDatabase(), user);
+        return null;
+    }
+
+    @Transactional
+    public UserResponseDTO update(Principal principal, UserUpdateDTO userDTO) throws UserAlreadyExistException {
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), userDTO, principal);
+        var user = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+        return update(user, userDTO);
+    }
+
+    @Transactional
+    public Void delete(Principal principal) {
+        log.debug(crudLogConstants.getInputEntityForDelete(), principal);
+        var user = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+        delete(user);
+        return null;
     }
 
     @Override
@@ -157,32 +191,4 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
     public CrudEntity update(UserEntity userEntity, UserDTO userDTO) {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    @Transactional
-    public Void delete(UserEntity user) {
-        log.debug(crudLogConstants.getInputDataForDelete(), user);
-        userRepository.delete(user);
-        log.info(crudLogConstants.getDeletedFromDatabase(), user);
-        return null;
-    }
-
-    @Transactional
-    public UserResponseDTO update(Principal principal, UserUpdateDTO userDTO) throws UserAlreadyExistException {
-        log.debug(crudLogConstants.getInputDataToChange(), userDTO, principal);
-        var user = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
-        return update(user, userDTO);
-    }
-
-    @Transactional
-    public Void delete(Principal principal) {
-        log.debug(crudLogConstants.getInputDataForDelete(), principal);
-        var user = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
-        delete(user);
-        return null;
-    }
-
-
 }

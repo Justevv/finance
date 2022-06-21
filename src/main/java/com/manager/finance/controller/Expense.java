@@ -1,6 +1,6 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.config.CrudLogConstants;
+import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.dto.ExpenseDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.entity.ExpenseEntity;
@@ -37,7 +37,6 @@ public class Expense extends CrudApiResponse<ExpenseModel, ExpenseEntity> {
 
     @GetMapping("{id}")
     public ExpenseEntity getExpense(@PathVariable("id") ExpenseEntity expenseEntity) {
-        log.debug(crudLogConstants.getInput(), expenseEntity);
         return expenseEntity;
     }
 
