@@ -2,6 +2,7 @@ package com.manager.finance.controller;
 
 import com.manager.finance.model.AuthenticationModel;
 import com.manager.finance.security.AuthenticationRequestDTO;
+import eu.bitwalker.useragentutils.UserAgent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,8 +27,10 @@ public class Authentication {
     AuthenticationModel authenticationModel;
 
     @PostMapping("/login")
-    public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDTO authentication) {
+    public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDTO authentication, HttpServletRequest request) {
         log.debug("User {} try to authentication", authentication);
+        UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
+        authenticationModel.saveAuthenticateLog(userAgent, request.getRemoteAddr(), authentication.getUsername());
         try {
             Map<String, String> response = new HashMap<>();
             response.put("username", authentication.getUsername());
