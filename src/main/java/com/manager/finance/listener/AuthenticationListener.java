@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class AuthenticationListener {
     @Autowired
-    AuthenticationLogRepository authenticationLogRepository;
+    private AuthenticationLogRepository authenticationLogRepository;
 
     @Async
     @EventListener

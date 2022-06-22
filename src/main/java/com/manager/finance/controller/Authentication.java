@@ -16,30 +16,28 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("v1/auth")
 @Slf4j
 public class Authentication {
+    private static final String INVALID_USERNAME_PASSWORD = "Invalid username/password";
     @Autowired
-    AuthenticationModel authenticationModel;
+    private AuthenticationModel authenticationModel;
 
     @PostMapping("/login")
-    public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDTO authentication, HttpServletRequest request) {
-        log.debug("User {} try to authentication", authentication);
-        UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
-        authenticationModel.saveAuthenticateLog(userAgent, request.getRemoteAddr(), authentication.getUsername());
+    public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDTO authenticationDTO, HttpServletRequest request) {
+        log.debug("User {} try to authentication", authenticationDTO);
+        var userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
         try {
-            Map<String, String> response = new HashMap<>();
-            response.put("username", authentication.getUsername());
-            response.put("token", authenticationModel.authenticate(authentication));
-            log.info("User {} was successfully authenticated", authentication.getUsername());
-            return ResponseEntity.ok(response);
+            var authentication = authenticationModel.authenticate(userAgent, request.getRemoteAddr(), authenticationDTO);
+            log.info("User {} was successfully authenticated", authenticationDTO);
+            return ResponseEntity.ok(authentication);
         } catch (AuthenticationException e) {
-            log.warn("Invalid username/password {}", authentication.getUsername());
-            return new ResponseEntity<>("Invalid username/password", HttpStatus.FORBIDDEN);
+            log.warn(INVALID_USERNAME_PASSWORD + " for user {}", authenticationDTO);
+            var error = Map.of("error", INVALID_USERNAME_PASSWORD);
+            return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
         }
     }
 

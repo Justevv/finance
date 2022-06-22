@@ -45,3 +45,6 @@ URI:
 
 confirmationExpiredTime: 86400
 
+authentication:
+  maxFailedLoginAttempts: 100
+  blockPeriodInMinutes: 10

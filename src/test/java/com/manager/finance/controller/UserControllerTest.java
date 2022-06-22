@@ -77,6 +77,17 @@ class UserControllerTest {
     }
 
     @Test
+    @SneakyThrows
+    void authenticate_shouldReturnUnauthorized_when_userIsNotExists() {
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"username":"user","password":"1"}"""))
+                .andExpect(status().is(401))
+                .andExpect(content().contentType("application/json"));
+    }
+
+    @Test
     @WithMockUser
     @SneakyThrows
     void getUser_shouldReturnUserAndOk_when_userIsExists() {
