@@ -25,13 +25,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/user")
 @Slf4j
-public class User extends CrudApiResponse<UserModel, UserEntity> {
+public class User {
     private static final String USER_LOG_NAME = "user";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(USER_LOG_NAME);
     private final UserModel userModel;
 
     public User(UserModel userModel) {
-        super(userModel, USER_LOG_NAME);
         this.userModel = userModel;
     }
 
@@ -59,7 +58,6 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
             responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
-//        return create(userDTO, bindingResult);
     }
 
     @PutMapping("/me")
@@ -74,13 +72,11 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
             responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
-//        return update(user, userDTO, bindingResult);
     }
 
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteUser(Principal principal) {
         return ResponseEntity.ok(userModel.delete(principal));
-//        return delete(user);
     }
 
     @PutMapping("/{id}")
@@ -101,7 +97,7 @@ public class User extends CrudApiResponse<UserModel, UserEntity> {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('user:delete')")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") UserEntity user) {
-        return delete(user);
+        return ResponseEntity.ok(userModel.delete(user));
     }
 
 }

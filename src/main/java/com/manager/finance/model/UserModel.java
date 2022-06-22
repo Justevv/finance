@@ -30,7 +30,7 @@ import static com.manager.finance.Constant.USER_DOES_NOT_EXISTS;
 
 @Service
 @Slf4j
-public class UserModel extends CrudModel<UserEntity, UserDTO> {
+public class UserModel {
     private static final String EMAIL_EXISTS_ERROR_MESSAGE = "There is an account with that email address: ";
     private static final String PHONE_EXISTS_ERROR_MESSAGE = "There is an account with that phone: ";
     private static final String USERNAME_EXISTS_ERROR_MESSAGE = "There is an account with that username: ";
@@ -70,7 +70,7 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
     @Transactional
     public UserResponseDTO create(UserDTO userDTO) throws UserAlreadyExistException {
         var user = createUser(userDTO);
-        createUserEvent(user);
+        publishCreateUserEvent(user);
         return convertUserToUserResponseDTO(user);
     }
 
@@ -83,12 +83,11 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
         user.setRoles(List.of(roleRepository.findByName("ROLE_USER").orElseThrow()));
 
         userRepository.save(user);
-        createUserEvent(user);
         log.info(crudLogConstants.getSaveEntityToDatabase(), user);
         return user;
     }
 
-    private void createUserEvent(UserEntity user) {
+    private void publishCreateUserEvent(UserEntity user) {
         var verificationEmail = verificationModel.createAndSaveVerification(user, VerificationType.EMAIL);
         eventPublisher.publishEvent(new OnEmailUpdateCompleteEvent(verificationEmail));
         var verificationPhone = verificationModel.createAndSaveVerification(user, VerificationType.PHONE);
@@ -165,7 +164,6 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
         }
     }
 
-
     @Transactional
     public Void delete(UserEntity user) {
         log.debug(crudLogConstants.getInputEntityForDelete(), user);
@@ -191,18 +189,4 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
         return null;
     }
 
-    @Override
-    public List<UserEntity> getAll(Principal principal) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public CrudEntity create(UserDTO userDTO, Principal principal) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public CrudEntity update(UserEntity userEntity, UserDTO userDTO) {
-        throw new UnsupportedOperationException();
-    }
 }
