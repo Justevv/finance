@@ -69,6 +69,12 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
 
     @Transactional
     public UserResponseDTO create(UserDTO userDTO) throws UserAlreadyExistException {
+        var user = createUser(userDTO);
+        createUserEvent(user);
+        return convertUserToUserResponseDTO(user);
+    }
+
+    private UserEntity createUser(UserDTO userDTO) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputNewDTO(), userDTO);
         checkUniqueAccountCreateParameters(userDTO);
 
@@ -77,11 +83,19 @@ public class UserModel extends CrudModel<UserEntity, UserDTO> {
         user.setRoles(List.of(roleRepository.findByName("ROLE_USER").orElseThrow()));
 
         userRepository.save(user);
+        createUserEvent(user);
         log.info(crudLogConstants.getSaveEntityToDatabase(), user);
+        return user;
+    }
+
+    private void createUserEvent(UserEntity user) {
         var verificationEmail = verificationModel.createAndSaveVerification(user, VerificationType.EMAIL);
         eventPublisher.publishEvent(new OnEmailUpdateCompleteEvent(verificationEmail));
         var verificationPhone = verificationModel.createAndSaveVerification(user, VerificationType.PHONE);
         eventPublisher.publishEvent(new OnPhoneUpdateCompleteEvent(verificationPhone));
+    }
+
+    private UserResponseDTO convertUserToUserResponseDTO(UserEntity user) {
         var userResponseDTO = getMapper().map(user, UserResponseDTO.class);
         log.debug(crudLogConstants.getOutputDTOAfterMapping(), userResponseDTO);
         return userResponseDTO;
