@@ -27,7 +27,7 @@ public class PreparedUser {
         userEntity.setUsername("user");
         userEntity.setPhone("phone");
         userEntity.setPassword("$2a$04$kLf5hQQ8yshxEfcMk9etVupP2It5u889YM9KLVpuAnSEAvc3oDq.6");
-        userEntity.setEmail("email");
+        userEntity.setEmail("email@email.ru");
         userEntity.setEmailConfirmed(true);
         userEntity.setPhoneConfirmed(true);
         return userEntity;

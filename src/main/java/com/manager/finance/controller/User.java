@@ -2,15 +2,14 @@ package com.manager.finance.controller;
 
 
 import com.manager.finance.dto.CrudResponseDTO;
-import com.manager.finance.dto.UserDTO;
-import com.manager.finance.dto.UserResponseDTO;
-import com.manager.finance.dto.UserUpdateDTO;
+import com.manager.finance.dto.user.UserDTO;
+import com.manager.finance.dto.user.UserResponseDTO;
+import com.manager.finance.dto.user.UserUpdateDTO;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.exception.UserAlreadyExistException;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.model.UserModel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

@@ -2,9 +2,9 @@ package com.manager.finance.model;
 
 import com.manager.finance.service.ConfirmationService;
 import com.manager.finance.log.CrudLogConstants;
-import com.manager.finance.dto.UserDTO;
-import com.manager.finance.dto.UserResponseDTO;
-import com.manager.finance.dto.UserUpdateDTO;
+import com.manager.finance.dto.user.UserDTO;
+import com.manager.finance.dto.user.UserResponseDTO;
+import com.manager.finance.dto.user.UserUpdateDTO;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.entity.VerificationType;
 import com.manager.finance.event.OnEmailUpdateCompleteEvent;

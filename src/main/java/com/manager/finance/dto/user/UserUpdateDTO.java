@@ -1,11 +1,12 @@
-package com.manager.finance.dto;
+package com.manager.finance.dto.user;
 
+import com.manager.finance.dto.CrudDTO;
 import lombok.Data;
 import lombok.ToString;
 
 import javax.validation.constraints.Email;
 
-import static com.manager.finance.dto.UserDTO.EMAIL_REGEXP;
+import static com.manager.finance.dto.user.UserDTO.EMAIL_REGEXP;
 
 @Data
 public class UserUpdateDTO implements CrudDTO {

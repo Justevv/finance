@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost/postgres
+    username: postgres
+    password: postGereeT
+    driverClassName: org.postgresql.Driver
+
+  mail:
+    host: smtp.yandex.ru
+    port: 465
+    username: test
+    password: test
+    properties:
+      "mail.transport.protocol": smtp
+      "mail.smtp.auth": true
+      "mail.smtp.starttls.enable": true
+      "mail.debug": false
+      "mail.smtp.ssl.enable": true
+
+  jpa:
+    show-sql: false
+    hibernate.ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: test
+
+  flyway:
+    schemas: test
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: INFO
+    org.springframework.web: INFO
+    org.hibernate: INFO
+    com.manager: TRACE
+    org:
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG
+
+URI:
+  application: http://localhost:8080

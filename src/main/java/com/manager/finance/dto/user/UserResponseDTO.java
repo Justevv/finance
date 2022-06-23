@@ -1,5 +1,6 @@
-package com.manager.finance.dto;
+package com.manager.finance.dto.user;
 
+import com.manager.finance.dto.CrudResponseDTO;
 import lombok.Data;
 
 @Data

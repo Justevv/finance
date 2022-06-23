@@ -25,6 +25,8 @@ public class WebSecurityConfig {
     private static final String CREATE_USER_API = "/v1/user";
     private static final String LOGIN_API = "/v1/auth/login";
     private static final String VERIFICATION_API = "/v1/verification/**";
+    private static final String RESET_PASSWORD_API = "/v1/user/password/reset";
+    private static final String FORGET_PASSWORD_API = "/v1/user/password/forget";
     @Autowired
     private JwtConfigure jwtConfigure;
     @Autowired
@@ -57,6 +59,7 @@ public class WebSecurityConfig {
                 .antMatchers(swaggerPath, webjarsPath, swaggerResourcesPath, apiDocsPath).permitAll()
 //                .antMatchers("/**").permitAll()
                 .antMatchers(HttpMethod.POST, CREATE_USER_API, LOGIN_API, VERIFICATION_API).permitAll()
+                .antMatchers(HttpMethod.POST, FORGET_PASSWORD_API, RESET_PASSWORD_API).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(jwtConfigure);

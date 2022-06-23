@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
 @Import({PreparedUser.class, UserIdConverter.class})
+@ActiveProfiles("test")
 class UserControllerTest {
     private static final String USER_HIMSELF_API = "/v1/user/me";
     private static final String USER_WITH_ID_API = "/v1/user/{id}";

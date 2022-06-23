@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
 @Import({PreparedUser.class, UserIdConverter.class})
-class VerificationTest {
+class VerificationControllerTest {
     private static final String VERIFICATION_CODE = "100500";
     private static final String VERIFICATION_PHONE_API = "/v1/verification/{userId}/phone";
     private static final String VERIFICATION_EMAIL_API = "/v1/verification/{userId}/email";
