@@ -62,7 +62,7 @@ class VerificationModelTest {
 
     @Test
     void confirmPhone_shouldReturnFalse_when_verificationAlreadyExists() {
-        Mockito.when(userRepository.findByPhoneAndIsPhoneConfirmed(userEntity.getPhone(), true)).thenReturn(List.of(userEntity));
+        Mockito.when(userRepository.findByPhoneAndIsPhoneConfirmed(userEntity.getPhone(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.PHONE)).thenReturn(Optional.of(verificationCode));
 
         Assertions.assertFalse(verificationModel.confirmPhone(userEntity.getId(), VERIFICATION_CODE));
@@ -70,7 +70,7 @@ class VerificationModelTest {
 
     @Test
     void confirmEmail_shouldReturnFalse_when_verificationAlreadyExists() {
-        Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(List.of(userEntity));
+        Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.EMAIL)).thenReturn(Optional.of(verificationCode));
 
         Assertions.assertFalse(verificationModel.confirmEmail(userEntity.getId(), VERIFICATION_CODE));

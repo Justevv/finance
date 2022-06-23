@@ -1,6 +1,6 @@
 package com.manager.finance.listener;
 
-import com.manager.finance.ConfirmationHelper;
+import com.manager.finance.service.ConfirmationService;
 import com.manager.finance.event.OnEmailUpdateCompleteEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class UpdateEmailListener {
     @Autowired
-    private ConfirmationHelper confirmationHelper;
+    private ConfirmationService confirmationService;
 
     @Async
     @EventListener
     public void onApplicationEvent(OnEmailUpdateCompleteEvent event) {
         log.debug("Event start {}", event);
-        confirmationHelper.sendConfirmEmail(event.getVerification());
+        confirmationService.sendConfirmEmail(event.getVerification());
     }
 }

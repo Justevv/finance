@@ -1,11 +1,10 @@
 package com.manager.finance.model;
 
-import com.manager.finance.ConfirmationHelper;
+import com.manager.finance.service.ConfirmationService;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.dto.UserDTO;
 import com.manager.finance.dto.UserResponseDTO;
 import com.manager.finance.dto.UserUpdateDTO;
-import com.manager.finance.entity.CrudEntity;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.entity.VerificationType;
 import com.manager.finance.event.OnEmailUpdateCompleteEvent;
@@ -50,7 +49,7 @@ public class UserModel {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
     @Autowired
-    private ConfirmationHelper confirmationHelper;
+    private ConfirmationService confirmationService;
 
     public List<UserResponseDTO> getUsers() {
         List<UserEntity> userEntities = userRepository.findAll();
@@ -76,7 +75,7 @@ public class UserModel {
 
     private UserEntity createUser(UserDTO userDTO) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputNewDTO(), userDTO);
-        checkUniqueAccountCreateParameters(userDTO);
+        checkUniqueCreateParameters(userDTO);
 
         var user = getMapper().map(userDTO, UserEntity.class);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -100,11 +99,11 @@ public class UserModel {
         return userResponseDTO;
     }
 
-    private void checkUniqueAccountCreateParameters(UserDTO userDTO) throws UserAlreadyExistException {
-        if (confirmationHelper.isEmailAlreadyConfirmed(userDTO.getEmail())) {
+    private void checkUniqueCreateParameters(UserDTO userDTO) throws UserAlreadyExistException {
+        if (confirmationService.isEmailAlreadyConfirmed(userDTO.getEmail())) {
             throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + userDTO.getEmail());
         }
-        if (confirmationHelper.isPhoneAlreadyConfirmed(userDTO.getPhone())) {
+        if (confirmationService.isPhoneAlreadyConfirmed(userDTO.getPhone())) {
             throw new UserAlreadyExistException(PHONE_EXISTS_ERROR_MESSAGE + userDTO.getPhone());
         }
         if (isUsernameExists(userDTO.getUsername())) {
@@ -119,7 +118,7 @@ public class UserModel {
     @Transactional
     public UserResponseDTO update(UserEntity user, UserUpdateDTO userDTO) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), user, userDTO);
-        checkUniqueAccountUpdateParameters(user, userDTO);
+        checkUniqueUpdateParameters(user, userDTO);
         if (userDTO.getUsername() != null && !user.getUsername().equals(userDTO.getUsername())) {
             log.debug("The username was updated");
             user.setUsername(userDTO.getUsername());
@@ -149,13 +148,13 @@ public class UserModel {
         return userResponseDTO;
     }
 
-    private void checkUniqueAccountUpdateParameters(UserEntity user, UserUpdateDTO userDTO) throws UserAlreadyExistException {
+    private void checkUniqueUpdateParameters(UserEntity user, UserUpdateDTO userDTO) throws UserAlreadyExistException {
         var email = userDTO.getEmail();
-        if (!user.getEmail().equals(email) && confirmationHelper.isEmailAlreadyConfirmed(email)) {
+        if (!user.getEmail().equals(email) && confirmationService.isEmailAlreadyConfirmed(email)) {
             throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + email);
         }
         var phone = userDTO.getPhone();
-        if (!user.getPhone().equals(phone) && confirmationHelper.isPhoneAlreadyConfirmed(phone)) {
+        if (!user.getPhone().equals(phone) && confirmationService.isPhoneAlreadyConfirmed(phone)) {
             throw new UserAlreadyExistException(PHONE_EXISTS_ERROR_MESSAGE + phone);
         }
         var username = userDTO.getUsername();

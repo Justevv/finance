@@ -63,7 +63,7 @@ class VerificationTest {
         mockMvc.perform(MockMvcRequestBuilders.post(VERIFICATION_PHONE_API, userEntity.getId())
                         .param(CODE_PARAM_NAME, verificationCode.getCode()))
                 .andExpect(status().is(200))
-                .andExpect(content().string("true"));
+                .andExpect(content().contentType("application/json"));
     }
 
     @Test
@@ -73,28 +73,28 @@ class VerificationTest {
         mockMvc.perform(MockMvcRequestBuilders.post(VERIFICATION_EMAIL_API, userEntity.getId())
                         .param(CODE_PARAM_NAME, verificationCode.getCode()))
                 .andExpect(status().is(200))
-                .andExpect(content().string("true"));
+                .andExpect(content().contentType("application/json"));
     }
 
     @Test
     @SneakyThrows
     void confirmPhone_shouldReturnFalse_when_verificationAlreadyExists() {
-        Mockito.when(userRepository.findByPhoneAndIsPhoneConfirmed(userEntity.getPhone(), true)).thenReturn(List.of(userEntity));
+        Mockito.when(userRepository.findByPhoneAndIsPhoneConfirmed(userEntity.getPhone(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.PHONE)).thenReturn(Optional.of(verificationCode));
         mockMvc.perform(MockMvcRequestBuilders.post(VERIFICATION_PHONE_API, userEntity.getId())
                         .param(CODE_PARAM_NAME, verificationCode.getCode()))
                 .andExpect(status().is(200))
-                .andExpect(content().string("false"));
+                .andExpect(content().contentType("application/json"));
     }
 
     @Test
     @SneakyThrows
     void confirmEmail_shouldReturnFalse_when_verificationAlreadyExists() {
-        Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(List.of(userEntity));
+        Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.EMAIL)).thenReturn(Optional.of(verificationCode));
         mockMvc.perform(MockMvcRequestBuilders.post(VERIFICATION_EMAIL_API, userEntity.getId())
                         .param(CODE_PARAM_NAME, verificationCode.getCode()))
                 .andExpect(status().is(200))
-                .andExpect(content().string("false"));
+                .andExpect(content().contentType("application/json"));
     }
 }

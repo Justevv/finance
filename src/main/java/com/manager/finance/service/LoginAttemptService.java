@@ -14,9 +14,9 @@ public class LoginAttemptService {
     private int maxFailedLoginAttempts;
     private final LoadingCache<String, Integer> attemptsCache;
 
-    public LoginAttemptService(@Value("${authentication.blockPeriodInMinutes}") int blockPeriodInMinutes) {
+    public LoginAttemptService(@Value("${authentication.blockPeriod}") int blockPeriod) {
         attemptsCache = CacheBuilder.newBuilder().
-                expireAfterWrite(blockPeriodInMinutes, TimeUnit.MINUTES).build(new CacheLoader<>() {
+                expireAfterWrite(blockPeriod, TimeUnit.SECONDS).build(new CacheLoader<>() {
                     public Integer load(String key) {
                         return 0;
                     }
