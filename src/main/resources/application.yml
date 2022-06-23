@@ -42,9 +42,11 @@ path:
 URI:
   image: /img/**
   static: /static/**
+  application: http://localhost:8080
 
-confirmationExpiredTime: 86400
+confirmationRegistrationCodeExpiredTime: 86400
+resetPasswordTokenExpiredTime: 86400
 
 authentication:
   maxFailedLoginAttempts: 100
-  blockPeriodInMinutes: 10
+  blockPeriod: 600
