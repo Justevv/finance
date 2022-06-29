@@ -21,7 +21,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-@SpringBootTest(classes = Manager.class)
+@SpringBootTest
 @Import({PreparedUser.class})
 class UserModelTest {
     @MockBean

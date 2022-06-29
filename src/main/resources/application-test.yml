@@ -33,7 +33,7 @@ logging:
     org.springframework.security: INFO
     org.springframework.web: INFO
     org.hibernate: INFO
-    ru.webinnovaitons:.mlm: DEBUG
+    com.manager: DEBUG
     org:
       springframework:
         web:
