@@ -4,8 +4,8 @@ import com.manager.Manager;
 import com.manager.finance.entity.ExpenseEntity;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.helper.converter.ExpenseIdConverter;
-import com.manager.finance.helper.prepare.PreparedExpense;
-import com.manager.finance.helper.prepare.PreparedUser;
+import com.manager.finance.helper.prepare.ExpensePrepareHelper;
+import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.ExpenseRepository;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.service.UserService;
@@ -33,8 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
-@Import({PreparedUser.class, ExpenseIdConverter.class, PreparedExpense.class})
-class ExpenseControllerTest {
+@Import({UserPrepareHelper.class, ExpenseIdConverter.class, ExpensePrepareHelper.class})
+class ExpenseTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean
@@ -44,18 +44,18 @@ class ExpenseControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private PreparedUser preparedUser;
+    private UserPrepareHelper userPrepareHelper;
     @Autowired
-    private PreparedExpense preparedExpense;
+    private ExpensePrepareHelper expensePrepareHelper;
     private UserEntity userEntity;
     private ExpenseEntity expenseEntity;
 
     @BeforeEach
     void prepare() {
-        userEntity = preparedUser.createUser();
+        userEntity = userPrepareHelper.createUser();
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         Mockito.when(userService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
-        expenseEntity = preparedExpense.createExpense();
+        expenseEntity = expensePrepareHelper.createExpense();
         Mockito.when(expenseRepository.findById(expenseEntity.getId())).thenReturn(Optional.of(expenseEntity));
     }
 

@@ -5,7 +5,7 @@ import com.manager.finance.entity.UserEntity;
 import com.manager.finance.entity.VerificationEntity;
 import com.manager.finance.entity.VerificationType;
 import com.manager.finance.helper.converter.UserIdConverter;
-import com.manager.finance.helper.prepare.PreparedUser;
+import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.repository.VerificationRepository;
 import lombok.SneakyThrows;
@@ -28,8 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
-@Import({PreparedUser.class, UserIdConverter.class})
-class VerificationControllerTest {
+@Import({UserPrepareHelper.class, UserIdConverter.class})
+class VerificationTest {
     private static final String VERIFICATION_CODE = "100500";
     private static final String VERIFICATION_PHONE_API = "/v1/verification/{userId}/phone";
     private static final String VERIFICATION_EMAIL_API = "/v1/verification/{userId}/email";
@@ -41,13 +41,13 @@ class VerificationControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private PreparedUser preparedUser;
+    private UserPrepareHelper userPrepareHelper;
     private UserEntity userEntity;
     private VerificationEntity verificationCode;
 
     @BeforeEach
     private void prepareData() {
-        userEntity = preparedUser.createUser();
+        userEntity = userPrepareHelper.createUser();
         verificationCode = new VerificationEntity();
         verificationCode.setUser(userEntity);
         verificationCode.setCode(VERIFICATION_CODE);

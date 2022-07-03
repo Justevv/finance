@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "permission")
 @Data
-public class Permission implements Serializable {
+public class PermissionEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 9178661439383356177L;
     @Id
@@ -19,10 +19,10 @@ public class Permission implements Serializable {
     @Column(unique = true)
     private String name;
 
-    public Permission() {
+    public PermissionEntity() {
     }
 
-    public Permission(String name) {
+    public PermissionEntity(String name) {
         this.name = name;
     }
 //    @ManyToMany(mappedBy = "permissions")

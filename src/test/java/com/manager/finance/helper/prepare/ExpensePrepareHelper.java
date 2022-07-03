@@ -8,24 +8,24 @@ import org.springframework.context.annotation.Import;
 import java.time.LocalDateTime;
 
 @TestConfiguration
-@Import({PreparedUser.class, PreparedCategory.class, PreparedPlace.class})
-public class PreparedExpense {
+@Import({UserPrepareHelper.class, CategoryPrepareHelper.class, PlacePrepareHelper.class})
+public class ExpensePrepareHelper {
     @Autowired
-    private PreparedUser preparedUser;
+    private UserPrepareHelper userPrepareHelper;
     @Autowired
-    private PreparedCategory preparedCategory;
+    private CategoryPrepareHelper categoryPrepareHelper;
     @Autowired
-    private PreparedPlace preparedPlace;
+    private PlacePrepareHelper placePrepareHelper;
 
     public ExpenseEntity createExpense() {
         var expenseEntity = new ExpenseEntity();
         expenseEntity.setId(1);
-        expenseEntity.setCategory(preparedCategory.createCategory());
-        expenseEntity.setPlace(preparedPlace.createPlace());
+        expenseEntity.setCategory(categoryPrepareHelper.createCategory());
+        expenseEntity.setPlace(placePrepareHelper.createPlace());
         expenseEntity.setDate(LocalDateTime.now());
         expenseEntity.setDescription("expenseDescription");
         expenseEntity.setSum(700);
-        expenseEntity.setUser(preparedUser.createUser());
+        expenseEntity.setUser(userPrepareHelper.createUser());
         return expenseEntity;
     }
 

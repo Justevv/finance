@@ -1,10 +1,8 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
-import com.manager.finance.entity.PasswordResetToken;
-import com.manager.finance.entity.UserEntity;
-import com.manager.finance.helper.prepare.PreparedPasswordResetToken;
-import com.manager.finance.helper.prepare.PreparedUser;
+import com.manager.finance.helper.prepare.PasswordResetTokenPrepareHelper;
+import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.PasswordResetTokenRepository;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.service.UserService;
@@ -27,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
-@Import({PreparedUser.class, PreparedPasswordResetToken.class})
+@Import({UserPrepareHelper.class, PasswordResetTokenPrepareHelper.class})
 class PasswordTest {
     private final static String RESET_PASSWORD_API = "/v1/user/password/reset";
     private final static String FORGET_PASSWORD_API = "/v1/user/password/forget";
@@ -40,14 +38,14 @@ class PasswordTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private PreparedUser preparedUser;
+    private UserPrepareHelper userPrepareHelper;
     @Autowired
-    private PreparedPasswordResetToken preparedPasswordResetToken;
+    private PasswordResetTokenPrepareHelper passwordResetTokenPrepareHelper;
 
     @BeforeEach
     void prepare() {
-        var userEntity = preparedUser.createUser();
-        var passwordResetToken = preparedPasswordResetToken.createPasswordResetToken();
+        var userEntity = userPrepareHelper.createUser();
+        var passwordResetToken = passwordResetTokenPrepareHelper.createPasswordResetToken();
         Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(passwordResetTokenRepository.findByToken(passwordResetToken.getToken())).thenReturn(Optional.of(passwordResetToken));
     }

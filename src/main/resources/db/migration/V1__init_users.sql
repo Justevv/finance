@@ -1,11 +1,4 @@
-create sequence hibernate_sequence start 3 increment 1;
-create table account
-(
-    id      int8 not null,
-    name    varchar(255),
-    user_id int8,
-    primary key (id)
-);
+create sequence hibernate_sequence start 100 increment 1;
 
 create table permission
 (
@@ -24,13 +17,15 @@ create table role
 create table roles_permissions
 (
     role_id        int8 not null,
-    permissions_id int8 not null
+    permissions_id int8 not null,
+    primary key (role_id, permissions_id)
 );
 
 create table users_roles
 (
     user_id int8 not null,
-    role_id int8 not null
+    role_id int8 not null,
+    primary key (user_id, role_id)
 );
 
 create table users
@@ -47,22 +42,20 @@ create table users
 );
 
 create table verification
-  (
-      id          int8 not null,
-      code        varchar(255),
-      expire_time timestamp,
-      type        int4,
-      user_id     int8,
-      primary key (id)
-  );
+(
+    id          int8 not null,
+    code        varchar(255),
+    expire_time timestamp,
+    type        int4,
+    user_id     int8,
+    primary key (id)
+);
 
-  alter table if exists verification add constraint FK_verification_users foreign key (user_id) references users on delete cascade;
-
-alter table if exists permission add constraint UK_2ojme20jpga3r4r79tdso17gi unique (name);
-alter table if exists role add constraint UK_8sewwnpamngi6b1dwaa88askk unique (name);
+alter table if exists verification add constraint FK_verification_users foreign key (user_id) references users on delete cascade;
+alter table if exists permission add constraint UK_permission_name unique (name);
+alter table if exists role add constraint UK_role_name unique (name);
 alter table if exists users add constraint UK_users_username unique (username);
-alter table if exists account add constraint FKra7xoi9wtlcq07tmoxxe5jrh4 foreign key (user_id) references users;
-alter table if exists roles_permissions add constraint FKsidab0lpqi82o4o15bwde2c5f foreign key (permissions_id) references permission;
-alter table if exists roles_permissions add constraint FKa6jx8n8xkesmjmv6jqug6bg68 foreign key (role_id) references role;
-alter table if exists users_roles add constraint FKa68196081fvovjhkek5m97n3y foreign key (role_id) references role;
-alter table if exists users_roles add constraint FKj345gk1bovqvfame88rcx7yyx foreign key (user_id) references users;
+alter table if exists roles_permissions add constraint FK_roles_permissions_permission foreign key (permissions_id) references permission;
+alter table if exists roles_permissions add constraint FK_roles_permissions_role foreign key (role_id) references role;
+alter table if exists users_roles add constraint FK_users_roles_role foreign key (role_id) references role;
+alter table if exists users_roles add constraint FK_users_roles_users foreign key (user_id) references users;

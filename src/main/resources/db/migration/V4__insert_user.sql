@@ -18,6 +18,8 @@ insert into permission
 values (3, 'user:write');
 insert into permission
 values (4, 'users:t');
+insert into permission
+values (5, 'role:crud');
 insert into users_roles
 values (1, 1);
 insert into users_roles
@@ -33,6 +35,8 @@ values (1, 3);
 insert into roles_permissions
 values (1, 4);
 insert into roles_permissions
+values (1, 5);
+insert into roles_permissions
 values (2, 1);
 insert into roles_permissions
 values (2, 2);
@@ -40,5 +44,7 @@ insert into roles_permissions
 values (2, 3);
 insert into roles_permissions
 values (2, 4);
+insert into roles_permissions
+values (2, 5);
 insert into roles_permissions
 values (3, 4);

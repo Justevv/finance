@@ -1,27 +1,21 @@
 package com.manager.finance.helper.prepare;
 
-import com.manager.finance.entity.Permission;
-import com.manager.finance.entity.Role;
+import com.manager.finance.entity.PermissionEntity;
+import com.manager.finance.entity.RoleEntity;
 import com.manager.finance.entity.UserEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Import;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 @TestConfiguration
-public class PreparedUser {
+@Import({RolePrepareHelper.class})
+public class UserPrepareHelper {
+    @Autowired
+    private RolePrepareHelper rolePrepareHelper;
 
     public UserEntity createUser() {
-        var userEntity = createMainUser();
-        Collection<Permission> permissions = List.of(new Permission("user"));
-        var role = new Role();
-        role.setName("ROLE_USER");
-        role.setPermissions(permissions);
-        userEntity.setRoles(List.of(role));
-        return userEntity;
-    }
-
-    private UserEntity createMainUser() {
         var userEntity = new UserEntity();
         userEntity.setId(1);
         userEntity.setUsername("user");
@@ -30,6 +24,7 @@ public class PreparedUser {
         userEntity.setEmail("email@email.ru");
         userEntity.setEmailConfirmed(true);
         userEntity.setPhoneConfirmed(true);
+        userEntity.setRoles(Set.of(rolePrepareHelper.createRole()));
         return userEntity;
     }
 }

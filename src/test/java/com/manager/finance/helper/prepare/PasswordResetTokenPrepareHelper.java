@@ -7,15 +7,15 @@ import org.springframework.boot.test.context.TestConfiguration;
 import java.time.LocalDateTime;
 
 @TestConfiguration
-public class PreparedPasswordResetToken {
+public class PasswordResetTokenPrepareHelper {
     @Autowired
-    private PreparedUser preparedUser;
+    private UserPrepareHelper userPrepareHelper;
 
     public PasswordResetToken createPasswordResetToken() {
         var passwordResetToken = new PasswordResetToken();
         passwordResetToken.setId(1L);
         passwordResetToken.setToken("token");
-        passwordResetToken.setUser(preparedUser.createUser());
+        passwordResetToken.setUser(userPrepareHelper.createUser());
         passwordResetToken.setExpireTime(LocalDateTime.MAX);
         return passwordResetToken;
     }

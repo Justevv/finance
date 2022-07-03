@@ -4,8 +4,8 @@ import com.manager.Manager;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.helper.converter.CategoryIdConverter;
-import com.manager.finance.helper.prepare.PreparedCategory;
-import com.manager.finance.helper.prepare.PreparedUser;
+import com.manager.finance.helper.prepare.CategoryPrepareHelper;
+import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.CategoryRepository;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.service.UserService;
@@ -30,8 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
-@Import({PreparedUser.class, PreparedCategory.class, CategoryIdConverter.class})
-class CategoryControllerTest {
+@Import({UserPrepareHelper.class, CategoryPrepareHelper.class, CategoryIdConverter.class})
+class CategoryTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean
@@ -41,18 +41,18 @@ class CategoryControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private PreparedUser preparedUser;
+    private UserPrepareHelper userPrepareHelper;
     @Autowired
-    private PreparedCategory preparedCategory;
+    private CategoryPrepareHelper categoryPrepareHelper;
     private UserEntity userEntity;
     private CategoryEntity categoryEntity;
 
     @BeforeEach
     void prepare() {
-        userEntity = preparedUser.createUser();
+        userEntity = userPrepareHelper.createUser();
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         Mockito.when(userService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
-        categoryEntity = preparedCategory.createCategory();
+        categoryEntity = categoryPrepareHelper.createCategory();
     }
 
     @Test

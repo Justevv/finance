@@ -1,3 +1,11 @@
+create table account
+(
+    id      int8 not null,
+    name    varchar(255),
+    user_id int8,
+    primary key (id)
+);
+
 create table category
 (
     id                 int8 not null,

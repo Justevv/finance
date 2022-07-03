@@ -5,12 +5,12 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "role")
 @Data
-public class Role implements Serializable {
+public class RoleEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 9178661439456356177L;
 
@@ -29,5 +29,5 @@ public class Role implements Serializable {
             name = "roles_permissions",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permissions_id"))
-    private Collection<Permission> permissions;
+    private Set<PermissionEntity> permissions;
 }

@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -50,7 +51,7 @@ public class UserEntity implements UserDetails, CrudEntity {
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<Role> roles;
+    private Set<RoleEntity> roles;
 
     @Override
     public boolean isAccountNonExpired() {
@@ -78,9 +79,9 @@ public class UserEntity implements UserDetails, CrudEntity {
         return getGrantedAuthorities(roles);
     }
 
-    private List<SimpleGrantedAuthority> getGrantedAuthorities(Collection<Role> roles) {
+    private List<SimpleGrantedAuthority> getGrantedAuthorities(Collection<RoleEntity> roles) {
         var privileges = roles.stream()
-                .flatMap(x -> x.getPermissions().stream().map(Permission::getName))
+                .flatMap(x -> x.getPermissions().stream().map(PermissionEntity::getName))
                 .collect(Collectors.toList());
         roles.forEach(x -> privileges.add(x.getName()));
         return privileges.stream().map(SimpleGrantedAuthority::new).toList();

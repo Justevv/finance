@@ -4,7 +4,7 @@ import com.manager.Manager;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.entity.VerificationEntity;
 import com.manager.finance.entity.VerificationType;
-import com.manager.finance.helper.prepare.PreparedUser;
+import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.repository.VerificationRepository;
 import org.junit.jupiter.api.Assertions;
@@ -17,11 +17,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest(classes = Manager.class)
-@Import({PreparedUser.class})
+@Import({UserPrepareHelper.class})
 class VerificationModelTest {
     private static final String VERIFICATION_CODE = "100500";
     @Autowired
@@ -31,13 +30,13 @@ class VerificationModelTest {
     @MockBean
     private VerificationRepository verificationRepository;
     @Autowired
-    private PreparedUser preparedUser;
+    private UserPrepareHelper userPrepareHelper;
     private UserEntity userEntity;
     private VerificationEntity verificationCode;
 
     @BeforeEach
     private void prepareData() {
-        userEntity = preparedUser.createUser();
+        userEntity = userPrepareHelper.createUser();
         verificationCode = new VerificationEntity();
         verificationCode.setId(1);
         verificationCode.setUser(userEntity);

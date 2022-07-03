@@ -5,15 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 
 @TestConfiguration
-public class PreparedCategory {
+public class CategoryPrepareHelper {
     @Autowired
-    private PreparedUser preparedUser;
+    private UserPrepareHelper userPrepareHelper;
 
     public CategoryEntity createCategory() {
         var categoryEntity = new CategoryEntity();
         categoryEntity.setId(1);
         categoryEntity.setName("categoryName");
-        categoryEntity.setUser(preparedUser.createUser());
+        categoryEntity.setUser(userPrepareHelper.createUser());
         return categoryEntity;
     }
 }

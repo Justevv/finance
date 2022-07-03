@@ -4,8 +4,8 @@ import com.manager.Manager;
 import com.manager.finance.entity.PlaceEntity;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.helper.converter.PlaceIdConverter;
-import com.manager.finance.helper.prepare.PreparedPlace;
-import com.manager.finance.helper.prepare.PreparedUser;
+import com.manager.finance.helper.prepare.PlacePrepareHelper;
+import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.PlaceRepository;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.service.UserService;
@@ -30,8 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
-@Import({PreparedUser.class, PreparedPlace.class, PlaceIdConverter.class})
-class PlaceControllerTest {
+@Import({UserPrepareHelper.class, PlacePrepareHelper.class, PlaceIdConverter.class})
+class PlaceTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean
@@ -41,18 +41,18 @@ class PlaceControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private PreparedUser preparedUser;
+    private UserPrepareHelper userPrepareHelper;
     @Autowired
-    private PreparedPlace preparedPlace;
+    private PlacePrepareHelper placePrepareHelper;
     private UserEntity userEntity;
     private PlaceEntity placeEntity;
 
     @BeforeEach
     void prepare() {
-        userEntity = preparedUser.createUser();
+        userEntity = userPrepareHelper.createUser();
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         Mockito.when(userService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
-        placeEntity = preparedPlace.createPlace();
+        placeEntity = placePrepareHelper.createPlace();
         Mockito.when(placeRepository.findById(placeEntity.getId())).thenReturn(Optional.of(placeEntity));
     }
 
