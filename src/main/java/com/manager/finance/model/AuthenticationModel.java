@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.manager.finance.Constant.USER_DOES_NOT_EXISTS;
+import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 
 @Service
 @Slf4j

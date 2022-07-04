@@ -2,14 +2,12 @@ package com.manager.finance.entity;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "PaymentType")
 @Data
-public class PaymentTypeEntity  implements CrudEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+public class PaymentTypeEntity extends CrudEntity {
     private String name;
 }

@@ -1,7 +1,7 @@
 package com.manager.finance.controller;
 
 import com.manager.finance.dto.PasswordUpdateDTO;
-import com.manager.finance.dto.user.UserUpdateDTO;
+import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.model.PasswordModel;
 import lombok.extern.slf4j.Slf4j;

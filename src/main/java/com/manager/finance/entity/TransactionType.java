@@ -1,6 +1,6 @@
 package com.manager.finance.entity;
 
-public enum Type {
+public enum TransactionType {
     Income, consumption
 
 }

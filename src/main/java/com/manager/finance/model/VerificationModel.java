@@ -15,7 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.manager.finance.Constant.USER_DOES_NOT_EXISTS;
+import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
+
 
 @Service
 @Slf4j

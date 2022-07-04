@@ -1,14 +1,15 @@
 package com.manager.finance.model;
 
-import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.dto.PlaceDTO;
+import com.manager.finance.dto.response.PlaceResponseDTO;
 import com.manager.finance.entity.PlaceEntity;
+import com.manager.finance.helper.UserHelper;
+import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.repository.PlaceRepository;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -16,44 +17,49 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class PlaceModel extends CrudModel<PlaceEntity, PlaceDTO> {
+public class PlaceModel implements CrudModel<PlaceEntity, PlaceDTO, PlaceResponseDTO> {
     private static final String PLACE = "place";
     private final PlaceRepository placeRepository;
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(PLACE);
     @Getter
     @Autowired
     private ModelMapper mapper;
+    @Autowired
+    private UserHelper userHelper;
 
     public PlaceModel(PlaceRepository placeRepository) {
         this.placeRepository = placeRepository;
     }
 
-    public List<PlaceEntity> getAll(Principal principal) {
-        var user = getUserRepository().findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        List<PlaceEntity> categoryEntity = placeRepository.findByUser(user);
+    @Override
+    public PlaceResponseDTO get(PlaceEntity entity) {
+        return convertEntityToResponseDTO(entity);
+    }
+
+    public List<PlaceResponseDTO> getAll(Principal principal) {
+        var user = userHelper.getUser(principal);
+        var categoryEntity = placeRepository.findByUser(user);
         log.debug(crudLogConstants.getListFiltered(), categoryEntity);
-        return categoryEntity;
+        return categoryEntity.stream().map(this::convertEntityToResponseDTO).toList();
     }
 
     @Override
-    public PlaceEntity create(PlaceDTO placeDTO, Principal principal) {
+    public PlaceResponseDTO create(Principal principal, PlaceDTO placeDTO) {
         log.debug(crudLogConstants.getInputNewDTO(), placeDTO);
         var place = getMapper().map(placeDTO, PlaceEntity.class);
-        place.setUser(getUserRepository().findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
+        place.setUser(userHelper.getUser(principal));
         placeRepository.save(place);
         log.info(crudLogConstants.getSaveEntityToDatabase(), place);
-        return place;
+        return convertEntityToResponseDTO(place);
     }
 
     @Override
-    public PlaceEntity update(PlaceEntity place, PlaceDTO placeDTO) {
+    public PlaceResponseDTO update(PlaceEntity place, PlaceDTO placeDTO) {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), placeDTO, place);
         getMapper().map(placeDTO, place);
         placeRepository.save(place);
         log.info(crudLogConstants.getUpdateEntityToDatabase(), place);
-        return place;
+        return convertEntityToResponseDTO(place);
     }
 
     @Override
@@ -61,6 +67,12 @@ public class PlaceModel extends CrudModel<PlaceEntity, PlaceDTO> {
         log.debug(crudLogConstants.getDeleteEntityFromDatabase(), categoryEntity);
         placeRepository.delete(categoryEntity);
         return null;
+    }
+
+    private PlaceResponseDTO convertEntityToResponseDTO(PlaceEntity place) {
+        var responseDTO = mapper.map(place, PlaceResponseDTO.class);
+        log.debug(crudLogConstants.getOutputDTOAfterMapping(), responseDTO);
+        return responseDTO;
     }
 
 }

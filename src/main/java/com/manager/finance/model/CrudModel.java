@@ -1,25 +1,22 @@
 package com.manager.finance.model;
 
 import com.manager.finance.dto.CrudDTO;
+import com.manager.finance.dto.response.CrudResponseDTO;
 import com.manager.finance.entity.CrudEntity;
-import com.manager.finance.repository.UserRepository;
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.security.Principal;
 import java.util.List;
 
-@Getter
-public abstract class CrudModel<T extends CrudEntity, V extends CrudDTO> {
-    @Autowired
-    private UserRepository userRepository;
+public interface CrudModel<E extends CrudEntity, D extends CrudDTO, R extends CrudResponseDTO> {
 
-    public abstract List<T> getAll(Principal principal);
+    R get(E entity);
 
-    public abstract CrudEntity create(V v, Principal principal);
+    List<R> getAll(Principal principal);
 
-    public abstract CrudEntity update(T t, V v);
+    R create(Principal principal, D dto);
 
-    public abstract Void delete(T t);
+    R update(E entity, D dto);
+
+    Void delete(E entity);
 
 }

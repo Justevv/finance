@@ -1,7 +1,7 @@
 package com.manager.finance.helper;
 
 
-import com.manager.finance.dto.user.UserDTO;
+import com.manager.finance.dto.UserDTO;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.entity.VerificationType;
 import com.manager.finance.event.OnEmailUpdateCompleteEvent;
@@ -13,10 +13,14 @@ import com.manager.finance.service.ConfirmationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import java.security.Principal;
+
+import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 
 @Service
 @Slf4j
@@ -99,6 +103,14 @@ public class UserHelper {
             log.debug("The username was updated");
             user.setUsername(username);
         }
+    }
+
+    public UserEntity getUser(Principal principal) {
+        log.debug("input principal is {}", principal);
+        var userEntity = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+        log.debug("Current user is {}", userEntity);
+        return userEntity;
     }
 
 }

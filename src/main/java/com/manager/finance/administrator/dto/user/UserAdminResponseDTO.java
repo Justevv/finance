@@ -1,6 +1,6 @@
 package com.manager.finance.administrator.dto.user;
 
-import com.manager.finance.dto.user.UserResponseDTO;
+import com.manager.finance.dto.response.UserResponseDTO;
 import com.manager.finance.entity.RoleEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

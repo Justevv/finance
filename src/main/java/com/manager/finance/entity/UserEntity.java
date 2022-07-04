@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "users")
 @Data
-public class UserEntity implements UserDetails, CrudEntity {
+public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;

@@ -8,10 +8,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "account")
 @Data
-public class AccountEntity implements CrudEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class AccountEntity extends CrudEntity {
     @Size(min = 2, message = "Name small size")
     private String name;
 

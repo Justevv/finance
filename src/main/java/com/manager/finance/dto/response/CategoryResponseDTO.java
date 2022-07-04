@@ -1,10 +1,10 @@
-package com.manager.finance.dto;
+package com.manager.finance.dto.response;
 
 import com.manager.finance.entity.CategoryEntity;
 import lombok.Data;
 
 @Data
-public class CategoryDTO extends BaseCrudDTO {
+public class CategoryResponseDTO extends BaseCrudResponseDTO {
     private String name;
     private CategoryEntity parentCategory;
 

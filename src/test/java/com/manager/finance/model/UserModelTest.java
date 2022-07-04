@@ -1,7 +1,7 @@
 package com.manager.finance.model;
 
-import com.manager.finance.dto.user.UserDTO;
-import com.manager.finance.dto.user.UserUpdateDTO;
+import com.manager.finance.dto.UserDTO;
+import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.UserRepository;

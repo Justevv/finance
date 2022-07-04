@@ -1,9 +1,11 @@
 package com.manager.finance.model;
 
-import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.dto.ExpenseDTO;
+import com.manager.finance.dto.response.ExpenseResponseDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.entity.ExpenseEntity;
+import com.manager.finance.helper.UserHelper;
+import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.repository.CategoryRepository;
 import com.manager.finance.repository.ExpenseRepository;
 import com.manager.finance.repository.PlaceRepository;
@@ -14,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -23,15 +24,17 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
-    private static final String EXPENSE = "expense";
+public class ExpenseModel implements CrudModel<ExpenseEntity, ExpenseDTO, ExpenseResponseDTO> {
+    private static final String EXPENSE_LOG_NAME = "expense";
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
     private final PlaceRepository placeRepository;
-    private final CrudLogConstants crudLogConstants = new CrudLogConstants(EXPENSE);
+    private final CrudLogConstants crudLogConstants = new CrudLogConstants(EXPENSE_LOG_NAME);
     @Getter
     @Autowired
     private ModelMapper mapper;
+    @Autowired
+    private UserHelper userHelper;
 
     public ExpenseModel(ExpenseRepository expenseRepository, CategoryRepository categoryRepository, PlaceRepository placeRepository) {
         this.expenseRepository = expenseRepository;
@@ -39,36 +42,39 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
         this.placeRepository = placeRepository;
     }
 
-    @Cacheable(cacheNames = "expense")
-    public List<ExpenseEntity> getAll(int page, int count, Principal principal) {
-        var user = getUserRepository().findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        log.debug("Input start page is {}, count on page is {}", page, count);
-        Pageable pageable = PageRequest.of(page, count);
-        var expenseEntities = expenseRepository.findByUser(user, pageable);
-        log.debug(crudLogConstants.getListFiltered(), expenseEntities);
-        return expenseEntities;
+    @Override
+    public ExpenseResponseDTO get(ExpenseEntity entity) {
+        return convertEntityToResponseDTO(entity);
     }
 
-    public List<ExpenseEntity> getAll(Principal principal) {
-        var user = getUserRepository().findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    @Cacheable(cacheNames = "expense")
+    public List<ExpenseResponseDTO> getAll(int page, int countPerPage, Principal principal) {
+        var user = userHelper.getUser(principal);
+        log.debug("Input start page is {}, count on page is {}", page, countPerPage);
+        Pageable pageable = PageRequest.of(page, countPerPage);
+        var expenseEntities = expenseRepository.findByUser(user, pageable);
+        log.debug(crudLogConstants.getListFiltered(), expenseEntities);
+        return expenseEntities.stream().map(this::convertEntityToResponseDTO).toList();
+    }
+
+
+    public List<ExpenseResponseDTO> getAll(Principal principal) {
+        var user = userHelper.getUser(principal);
         var expenseEntities = expenseRepository.findByUser(user);
         log.debug(crudLogConstants.getListFiltered(), expenseEntities);
-        return expenseEntities;
+        return expenseEntities.stream().map(this::convertEntityToResponseDTO).toList();
     }
 
     @Override
-    public ExpenseEntity create(ExpenseDTO expenseDTO, Principal principal) {
+    public ExpenseResponseDTO create(Principal principal, ExpenseDTO expenseDTO) {
         log.debug(crudLogConstants.getInputNewDTO(), expenseDTO);
         var expense = getMapper().map(expenseDTO, ExpenseEntity.class);
-        expense.setUser(getUserRepository().findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
+        expense.setUser(userHelper.getUser(principal));
         expense.setDate(LocalDateTime.now());
         setDefaultValue(expense);
         expenseRepository.save(expense);
         log.info(crudLogConstants.getSaveEntityToDatabase(), expense);
-        return expense;
+        return convertEntityToResponseDTO(expense);
     }
 
     private void setDefaultValue(ExpenseEntity expense) {
@@ -81,13 +87,13 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
     }
 
     @Override
-    public ExpenseEntity update(ExpenseEntity expense, ExpenseDTO expenseDTO) {
+    public ExpenseResponseDTO update(ExpenseEntity expense, ExpenseDTO expenseDTO) {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), expenseDTO, expense);
         getMapper().map(expenseDTO, expense);
         setDefaultValue(expense);
         expenseRepository.save(expense);
         log.info(crudLogConstants.getSaveEntityToDatabase(), expense);
-        return expense;
+        return convertEntityToResponseDTO(expense);
     }
 
     @Override
@@ -103,6 +109,12 @@ public class ExpenseModel extends CrudModel<ExpenseEntity, ExpenseDTO> {
 
     public double getSum(CategoryEntity categoryEntity) {
         return expenseRepository.selectSum(categoryEntity);
+    }
+
+    private ExpenseResponseDTO convertEntityToResponseDTO(ExpenseEntity expense) {
+        var responseDTO = mapper.map(expense, ExpenseResponseDTO.class);
+        log.debug(crudLogConstants.getOutputDTOAfterMapping(), responseDTO);
+        return responseDTO;
     }
 }
 

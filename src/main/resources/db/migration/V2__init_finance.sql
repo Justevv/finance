@@ -32,8 +32,9 @@ create table expense
 
 create table payment_type
 (
-    id   int8 not null,
-    name varchar(255),
+    id      int8 not null,
+    name    varchar(255),
+    user_id int8,
     primary key (id)
 );
 
@@ -48,7 +49,12 @@ create table place
 
 
 alter table if exists category add constraint FK_category_category foreign key (parent_category_id) references category;
+alter table if exists category add constraint FK_category_users foreign key (user_id) references users;
 alter table if exists expense add constraint FK_expense_account foreign key (account_id) references account;
 alter table if exists expense add constraint FK_expense_category foreign key (category_id) references category;
 alter table if exists expense add constraint FK_expense_payment_type foreign key (payment_type_id) references payment_type;
 alter table if exists expense add constraint FK_expense_users foreign key (user_id) references users;
+alter table if exists expense add constraint FK_expense_place foreign key (place_id) references place;
+alter table if exists account add constraint FK_account_users foreign key (user_id) references users;
+alter table if exists payment_type add constraint FK_payment_type_users foreign key (user_id) references users;
+alter table if exists place add constraint FK_place_users foreign key (user_id) references users;

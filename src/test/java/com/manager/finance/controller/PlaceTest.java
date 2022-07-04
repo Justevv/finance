@@ -65,8 +65,7 @@ class PlaceTest {
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("[0].id").value(placeEntity.getId()))
                 .andExpect(jsonPath("[0].name").value(placeEntity.getName()))
-                .andExpect(jsonPath("[0].address").value(placeEntity.getAddress()))
-                .andExpect(jsonPath("[0].user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("[0].address").value(placeEntity.getAddress()));
     }
 
     @Test
@@ -78,8 +77,7 @@ class PlaceTest {
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").value(placeEntity.getId()))
                 .andExpect(jsonPath("$.name").value(placeEntity.getName()))
-                .andExpect(jsonPath("$.address").value(placeEntity.getAddress()))
-                .andExpect(jsonPath("$.user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("$.address").value(placeEntity.getAddress()));
     }
 
     @Test
@@ -97,8 +95,7 @@ class PlaceTest {
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").value(placeEntity.getId()))
                 .andExpect(jsonPath("$.name").value(newName))
-                .andExpect(jsonPath("$.address").value(newAddress))
-                .andExpect(jsonPath("$.user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("$.address").value(newAddress));
     }
 
     @Test
@@ -114,8 +111,7 @@ class PlaceTest {
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.name").value(newName))
-                .andExpect(jsonPath("$.address").value(newAddress))
-                .andExpect(jsonPath("$.user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("$.address").value(newAddress));
     }
 
     @Test

@@ -1,7 +1,7 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.dto.PlaceDTO;
+import com.manager.finance.dto.response.PlaceResponseDTO;
 import com.manager.finance.entity.PlaceEntity;
 import com.manager.finance.model.PlaceModel;
 import lombok.extern.slf4j.Slf4j;
@@ -12,43 +12,41 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/place")
 @Slf4j
-public class Place extends CrudApiResponse<PlaceModel, PlaceEntity> {
-    private static final String PLACE = "place";
-    private final CrudLogConstants crudLogConstants = new CrudLogConstants(PLACE);
+public class Place extends CrudApiResponse<PlaceModel, PlaceEntity, PlaceDTO, PlaceResponseDTO> {
+    private static final String PLACE_MODEL_TYPE = "place";
 
     public Place(PlaceModel placeModel) {
-        super(placeModel, PLACE);
+        super(placeModel, PLACE_MODEL_TYPE);
     }
 
     @GetMapping
-    public List<PlaceEntity> get(Principal principal) {
+    public ResponseEntity<Object> getPlace(Principal principal) {
         return getAll(principal);
     }
 
     @GetMapping("{id}")
-    public PlaceEntity get(@PathVariable("id") PlaceEntity place) {
-        return place;
+    public ResponseEntity<Object> getPlaces(Principal principal, @PathVariable("id") PlaceEntity place) {
+        return get(principal, place);
     }
 
     @PostMapping
-    public ResponseEntity<Object> createPlace(PlaceDTO placeDTO, Principal principal, BindingResult bindingResult) throws UserPrincipalNotFoundException {
-        return create(placeDTO, principal, bindingResult);
+    public ResponseEntity<Object> createPlace(Principal principal, @Valid PlaceDTO placeDTO, BindingResult bindingResult) throws UserPrincipalNotFoundException {
+        return create(principal, placeDTO, bindingResult);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Object> updatePlace(@PathVariable("id") PlaceEntity placeEntity, @Valid PlaceDTO placeDTO,
+    public ResponseEntity<Object> updatePlace(Principal principal, @PathVariable("id") PlaceEntity placeEntity, @Valid PlaceDTO placeDTO,
                                               BindingResult bindingResult) {
-        return update(placeEntity, placeDTO, bindingResult);
+        return update(principal, placeEntity, placeDTO, bindingResult);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletePlace(@PathVariable("id") PlaceEntity placeEntity) {
-        return delete(placeEntity);
+    public ResponseEntity<Object> deletePlace(Principal principal, @PathVariable("id") PlaceEntity placeEntity) {
+        return delete(principal, placeEntity);
     }
 
 }

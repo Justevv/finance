@@ -14,13 +14,10 @@ public class PasswordResetToken {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-
     @ToString.Exclude
     private String token;
-
     @OneToOne(fetch = FetchType.EAGER)
     private UserEntity user;
-
     private LocalDateTime expireTime;
 
     public PasswordResetToken() {

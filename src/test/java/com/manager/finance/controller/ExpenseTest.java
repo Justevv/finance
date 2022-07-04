@@ -63,9 +63,24 @@ class ExpenseTest {
     @WithMockUser
     @SneakyThrows
     void getExpenses() {
-        Mockito.when(expenseRepository.findByUser(eq(userEntity), any(PageRequest.class))).thenReturn((List.of(expenseEntity)));
+        Mockito.when(expenseRepository.findByUser(userEntity)).thenReturn((List.of(expenseEntity)));
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/expense")
-                        .param("startWith", "0")
+                )
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("[0].id").value(expenseEntity.getId()))
+                .andExpect(jsonPath("[0].description").value(expenseEntity.getDescription()))
+                .andExpect(jsonPath("[0].date").isString())
+                .andExpect(jsonPath("[0].category.name").value(expenseEntity.getCategory().getName()))
+                .andExpect(jsonPath("[0].place.name").value(expenseEntity.getPlace().getName()))
+                .andExpect(jsonPath("[0].sum").value(expenseEntity.getSum()));
+    }
+
+    @Test
+    @WithMockUser
+    @SneakyThrows
+    void getExpensesPage() {
+        Mockito.when(expenseRepository.findByUser(eq(userEntity), any(PageRequest.class))).thenReturn((List.of(expenseEntity)));
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/expense/page/1")
                         .param("count", "10")
                 )
                 .andExpect(status().is(200))
@@ -74,8 +89,7 @@ class ExpenseTest {
                 .andExpect(jsonPath("[0].date").isString())
                 .andExpect(jsonPath("[0].category.name").value(expenseEntity.getCategory().getName()))
                 .andExpect(jsonPath("[0].place.name").value(expenseEntity.getPlace().getName()))
-                .andExpect(jsonPath("[0].sum").value(expenseEntity.getSum()))
-                .andExpect(jsonPath("[0].user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("[0].sum").value(expenseEntity.getSum()));
     }
 
     @Test
@@ -93,8 +107,7 @@ class ExpenseTest {
                 .andExpect(jsonPath("$.date").isString())
                 .andExpect(jsonPath("$.category.name").value(expenseEntity.getCategory().getName()))
                 .andExpect(jsonPath("$.place.name").value(expenseEntity.getPlace().getName()))
-                .andExpect(jsonPath("$.sum").value(expenseEntity.getSum()))
-                .andExpect(jsonPath("$.user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("$.sum").value(expenseEntity.getSum()));
     }
 
     @Test
@@ -114,8 +127,7 @@ class ExpenseTest {
                 .andExpect(jsonPath("$.date").isString())
                 .andExpect(jsonPath("$.category.name").value(expenseEntity.getCategory().getName()))
                 .andExpect(jsonPath("$.place.name").value(expenseEntity.getPlace().getName()))
-                .andExpect(jsonPath("$.sum").value(newSum))
-                .andExpect(jsonPath("$.user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("$.sum").value(newSum));
     }
 
     @Test
@@ -132,8 +144,7 @@ class ExpenseTest {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.description").value(newDescription))
                 .andExpect(jsonPath("$.date").isString())
-                .andExpect(jsonPath("$.sum").value(newSum))
-                .andExpect(jsonPath("$.user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("$.sum").value(newSum));
     }
 
     @Test

@@ -15,6 +15,7 @@ public class CrudLogConstants {
     private final String deleteEntityFromDatabase;
     private final String inputEntityForDelete;
     private final String outputDTOAfterMapping;
+    private final String entityTypeNotFound;
 
     public CrudLogConstants(@NotNull String property) {
         errorsAdded = String.format("Errors was added for %s: {}", property);
@@ -26,6 +27,7 @@ public class CrudLogConstants {
         deleteEntityFromDatabase = String.format("%s was deleted from database {}", property);
         inputEntityForDelete = String.format("Input entity for delete %s is: {}", property);
         outputDTOAfterMapping = String.format("Output %s DTO after mapping is: {}", property);
+        entityTypeNotFound = String.format("This %s not found", property);
     }
 
 }

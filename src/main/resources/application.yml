@@ -8,17 +8,7 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
-  mail:
-    host: smtp.yandex.ru
-    port: 465
-    username: test
-    password: test
-    properties:
-      "mail.transport.protocol": smtp
-      "mail.smtp.auth": true
-      "mail.smtp.starttls.enable": true
-      "mail.debug": false
-      "mail.smtp.ssl.enable": true
+
 
 #spring.freemarker.expose-request-attributes=true
 

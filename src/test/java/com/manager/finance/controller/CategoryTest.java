@@ -63,8 +63,7 @@ class CategoryTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/category"))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("[0].id").value(categoryEntity.getId()))
-                .andExpect(jsonPath("[0].name").value(categoryEntity.getName()))
-                .andExpect(jsonPath("[0].user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("[0].name").value(categoryEntity.getName()));
     }
 
     @Test
@@ -75,8 +74,7 @@ class CategoryTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/category/{id}", categoryEntity.getId()))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").value(categoryEntity.getId()))
-                .andExpect(jsonPath("$.name").value(categoryEntity.getName()))
-                .andExpect(jsonPath("$.user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("$.name").value(categoryEntity.getName()));
     }
 
 
@@ -92,8 +90,7 @@ class CategoryTest {
                 )
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").value(categoryEntity.getId()))
-                .andExpect(jsonPath("$.name").value(newName))
-                .andExpect(jsonPath("$.user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("$.name").value(newName));
     }
 
     @Test
@@ -106,8 +103,7 @@ class CategoryTest {
                 )
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").isNumber())
-                .andExpect(jsonPath("$.name").value(newName))
-                .andExpect(jsonPath("$.user.username").value(userEntity.getUsername()));
+                .andExpect(jsonPath("$.name").value(newName));
     }
 
     @Test

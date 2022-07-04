@@ -1,64 +1,88 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.log.CrudLogConstants;
-import com.manager.finance.dto.CrudDTO;
+import com.manager.finance.dto.BaseCrudDTO;
+import com.manager.finance.dto.response.BaseCrudResponseDTO;
 import com.manager.finance.entity.CrudEntity;
+import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.model.CrudModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
-public class CrudApiResponse<T extends CrudModel, V extends CrudEntity> {
+public class CrudApiResponse<M extends CrudModel<E, D, R>, E extends CrudEntity, D extends BaseCrudDTO, R extends BaseCrudResponseDTO> {
     private final CrudLogConstants crudLogConstants;
-    private final T model;
+    private final M model;
 
-    public CrudApiResponse(T model, String type) {
+    public CrudApiResponse(M model, String type) {
         this.model = model;
         crudLogConstants = new CrudLogConstants(type);
     }
 
-    public List<V> getAll(Principal principal) {
-        return model.getAll(principal);
+    public ResponseEntity<Object> get(Principal principal, E entity) {
+        var responseEntity = checkEntityBelongPrincipal(principal, entity);
+        if (responseEntity == null) {
+            responseEntity = ResponseEntity.ok(model.get(entity));
+        }
+        return responseEntity;
     }
 
-    public ResponseEntity<Object> create(CrudDTO dto, Principal principal, BindingResult bindingResult) throws UserPrincipalNotFoundException {
-        if (principal == null) {
-            throw new UsernameNotFoundException("Principal is null");
-        }
+    public ResponseEntity<Object> getAll(Principal principal) {
+        return ResponseEntity.ok(model.getAll(principal));
+    }
+
+    public ResponseEntity<Object> create(Principal principal, D dto, BindingResult bindingResult) {
         ResponseEntity<Object> responseEntity;
         if (!bindingResult.hasErrors()) {
-            var entity = model.create(dto, principal);
+            var entity = model.create(principal, dto);
             responseEntity = ResponseEntity.ok(entity);
         } else {
-            Map<String, String> errors = Utils.getErrors(bindingResult);
+            var errors = Utils.getErrors(bindingResult);
             log.debug(crudLogConstants.getErrorsAdded(), errors);
-            responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+            responseEntity = ResponseEntity.badRequest().body(errors);
         }
         return responseEntity;
     }
 
-    public ResponseEntity<Object> update(CrudEntity entity, CrudDTO dto, BindingResult bindingResult) {
-        ResponseEntity<Object> responseEntity;
-        if (!bindingResult.hasErrors()) {
-            responseEntity = ResponseEntity.ok(model.update(entity, dto));
-        } else {
-            Map<String, String> errors = Utils.getErrors(bindingResult);
-            log.debug(crudLogConstants.getErrorsAdded(), errors);
-            responseEntity = new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+
+    public ResponseEntity<Object> update(Principal principal, E entity, D dto, BindingResult bindingResult) {
+        var responseEntity = checkEntityBelongPrincipal(principal, entity);
+        if (responseEntity == null) {
+            if (!bindingResult.hasErrors()) {
+                responseEntity = ResponseEntity.ok(model.update(entity, dto));
+            } else {
+                var errors = Utils.getErrors(bindingResult);
+                log.debug(crudLogConstants.getErrorsAdded(), errors);
+                responseEntity = ResponseEntity.badRequest().body(errors);
+            }
         }
         return responseEntity;
     }
 
-    public ResponseEntity<Void> delete(CrudEntity entity) {
-        return ResponseEntity.ok(model.delete(entity));
+    public ResponseEntity<Object> delete(Principal principal, E entity) {
+        var responseEntity = checkEntityBelongPrincipal(principal, entity);
+        if (responseEntity == null) {
+            responseEntity = ResponseEntity.ok(model.delete(entity));
+        }
+        return responseEntity;
+    }
+
+    public ResponseEntity<Object> checkEntityBelongPrincipal(Principal principal, CrudEntity entity) {
+        ResponseEntity<Object> responseEntity = null;
+        if (!isEntityBelongPrincipal(principal, entity)) {
+            responseEntity = new ResponseEntity<>(crudLogConstants.getEntityTypeNotFound(), HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
+    }
+
+    private boolean isEntityBelongPrincipal(Principal principal, CrudEntity entity) {
+        var username = principal.getName();
+        var entityOwner = entity.getUser().getUsername();
+        log.trace("Current username is {}, entity {} belongs {}", username, entity, entityOwner);
+        return username.equals(entityOwner);
     }
 
 }

@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
-    //    CategoryEntity findById(long id);
     List<CategoryEntity> findByUser(UserEntity userEntity);
 
     CategoryEntity findByName(String name);

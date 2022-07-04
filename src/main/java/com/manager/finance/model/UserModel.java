@@ -1,8 +1,8 @@
 package com.manager.finance.model;
 
-import com.manager.finance.dto.user.UserDTO;
-import com.manager.finance.dto.user.UserResponseDTO;
-import com.manager.finance.dto.user.UserUpdateDTO;
+import com.manager.finance.dto.UserDTO;
+import com.manager.finance.dto.response.UserResponseDTO;
+import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.exception.UserAlreadyExistException;
 import com.manager.finance.helper.UserHelper;
@@ -15,15 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.Set;
-
-import static com.manager.finance.Constant.USER_DOES_NOT_EXISTS;
 
 @Service
 @Slf4j
@@ -49,8 +46,7 @@ public class UserModel {
     private UserHelper userHelper;
 
     public UserResponseDTO getUser(Principal principal) {
-        var user = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+        var user = userHelper.getUser(principal);
         return getMapper().map(user, UserResponseDTO.class);
     }
 
@@ -89,8 +85,7 @@ public class UserModel {
     @Transactional
     public UserResponseDTO update(Principal principal, UserUpdateDTO userUpdateDTO) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), userUpdateDTO, principal);
-        var user = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+        var user = userHelper.getUser(principal);
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), user, userUpdateDTO);
         userHelper.updateUsername(user, userUpdateDTO.getUsername());
         userHelper.updateEmail(user, userUpdateDTO.getEmail());
@@ -106,8 +101,7 @@ public class UserModel {
     @Transactional
     public Void delete(Principal principal) {
         log.debug(crudLogConstants.getInputEntityForDelete(), principal);
-        var user = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+        var user = userHelper.getUser(principal);
         log.debug(crudLogConstants.getInputEntityForDelete(), user);
         userRepository.delete(user);
         log.info(crudLogConstants.getDeleteEntityFromDatabase(), user);
