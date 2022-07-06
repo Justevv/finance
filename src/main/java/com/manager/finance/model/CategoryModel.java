@@ -6,6 +6,7 @@ import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.helper.UserHelper;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.repository.CategoryRepository;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,9 @@ import java.util.List;
 @Service
 @Slf4j
 public class CategoryModel implements CrudModel<CategoryEntity, CategoryDTO, CategoryResponseDTO> {
-    private static final String CATEGORY_LOG_NAME = "category";
-    private final CrudLogConstants crudLogConstants = new CrudLogConstants(CATEGORY_LOG_NAME);
+    @Getter
+    private final String entityTypeName;
+    private final CrudLogConstants crudLogConstants;
     private final CategoryRepository categoryRepository;
     @Autowired
     private ModelMapper mapper;
@@ -27,6 +29,8 @@ public class CategoryModel implements CrudModel<CategoryEntity, CategoryDTO, Cat
 
     public CategoryModel(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
+        entityTypeName = "category";
+        crudLogConstants = new CrudLogConstants(entityTypeName);
     }
 
     @Override

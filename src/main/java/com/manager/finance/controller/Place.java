@@ -10,17 +10,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
 
 @RestController
 @RequestMapping("/v1/place")
 @Slf4j
-public class Place extends CrudApiResponse<PlaceModel, PlaceEntity, PlaceDTO, PlaceResponseDTO> {
-    private static final String PLACE_MODEL_TYPE = "place";
+public class Place extends CrudApiResponse<PlaceEntity, PlaceDTO, PlaceResponseDTO> {
 
     public Place(PlaceModel placeModel) {
-        super(placeModel, PLACE_MODEL_TYPE);
+        super(placeModel);
     }
 
     @GetMapping
@@ -34,7 +32,7 @@ public class Place extends CrudApiResponse<PlaceModel, PlaceEntity, PlaceDTO, Pl
     }
 
     @PostMapping
-    public ResponseEntity<Object> createPlace(Principal principal, @Valid PlaceDTO placeDTO, BindingResult bindingResult) throws UserPrincipalNotFoundException {
+    public ResponseEntity<Object> createPlace(Principal principal, @Valid PlaceDTO placeDTO, BindingResult bindingResult) {
         return create(principal, placeDTO, bindingResult);
     }
 

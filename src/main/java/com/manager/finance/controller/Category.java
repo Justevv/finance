@@ -10,18 +10,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
 
 @RestController
 @RequestMapping("/v1/category")
 @Slf4j
-public class Category extends CrudApiResponse<CategoryModel, CategoryEntity, CategoryDTO, CategoryResponseDTO> {
-    private static final String CATEGORY_MODEL_TYPE = "category";
-
-
+public class Category extends CrudApiResponse<CategoryEntity, CategoryDTO, CategoryResponseDTO> {
     public Category(CategoryModel categoryModel) {
-        super(categoryModel, CATEGORY_MODEL_TYPE);
+        super(categoryModel);
     }
 
     @GetMapping
@@ -35,8 +31,7 @@ public class Category extends CrudApiResponse<CategoryModel, CategoryEntity, Cat
     }
 
     @PostMapping
-    public ResponseEntity<Object> addCategory(Principal principal, @Valid CategoryDTO categoryDTO, BindingResult bindingResult)
-            throws UserPrincipalNotFoundException {
+    public ResponseEntity<Object> addCategory(Principal principal, @Valid CategoryDTO categoryDTO, BindingResult bindingResult) {
         return create(principal, categoryDTO, bindingResult);
     }
 

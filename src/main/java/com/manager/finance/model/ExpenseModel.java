@@ -25,11 +25,12 @@ import java.util.List;
 @Service
 @Slf4j
 public class ExpenseModel implements CrudModel<ExpenseEntity, ExpenseDTO, ExpenseResponseDTO> {
-    private static final String EXPENSE_LOG_NAME = "expense";
+    @Getter
+    private final String entityTypeName;
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
     private final PlaceRepository placeRepository;
-    private final CrudLogConstants crudLogConstants = new CrudLogConstants(EXPENSE_LOG_NAME);
+    private final CrudLogConstants crudLogConstants;
     @Getter
     @Autowired
     private ModelMapper mapper;
@@ -40,6 +41,8 @@ public class ExpenseModel implements CrudModel<ExpenseEntity, ExpenseDTO, Expens
         this.expenseRepository = expenseRepository;
         this.categoryRepository = categoryRepository;
         this.placeRepository = placeRepository;
+        entityTypeName = "expense";
+        crudLogConstants = new CrudLogConstants(entityTypeName);
     }
 
     @Override

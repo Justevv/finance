@@ -18,9 +18,10 @@ import java.util.List;
 @Service
 @Slf4j
 public class PlaceModel implements CrudModel<PlaceEntity, PlaceDTO, PlaceResponseDTO> {
-    private static final String PLACE = "place";
+    @Getter
+    private final String entityTypeName;
     private final PlaceRepository placeRepository;
-    private final CrudLogConstants crudLogConstants = new CrudLogConstants(PLACE);
+    private final CrudLogConstants crudLogConstants;
     @Getter
     @Autowired
     private ModelMapper mapper;
@@ -29,6 +30,8 @@ public class PlaceModel implements CrudModel<PlaceEntity, PlaceDTO, PlaceRespons
 
     public PlaceModel(PlaceRepository placeRepository) {
         this.placeRepository = placeRepository;
+        entityTypeName = "place";
+        crudLogConstants = new CrudLogConstants(entityTypeName);
     }
 
     @Override

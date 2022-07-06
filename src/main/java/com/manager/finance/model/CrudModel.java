@@ -19,4 +19,6 @@ public interface CrudModel<E extends CrudEntity, D extends CrudDTO, R extends Cr
 
     Void delete(E entity);
 
+    String getEntityTypeName();
+
 }

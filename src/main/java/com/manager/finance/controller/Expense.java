@@ -11,25 +11,23 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/v1/expense")
 @Slf4j
-public class Expense extends CrudApiResponse<ExpenseModel, ExpenseEntity, ExpenseDTO, ExpenseResponseDTO> {
-    private static final String EXPENSE_MODEL_TYPE = "expense";
+public class Expense extends CrudApiResponse<ExpenseEntity, ExpenseDTO, ExpenseResponseDTO> {
     private final ExpenseModel expenseModel;
 
     public Expense(ExpenseModel expenseModel) {
-        super(expenseModel, EXPENSE_MODEL_TYPE);
+        super(expenseModel);
         this.expenseModel = expenseModel;
     }
 
     @GetMapping("/page/{page}")
     public List<ExpenseResponseDTO> getExpensesPage(Principal principal, @PathVariable("page") int page,
-                                       @RequestParam(defaultValue = "500") int countPerPage) {
+                                                    @RequestParam(defaultValue = "500") int countPerPage) {
         log.debug("Input filter {}, search {}", page, countPerPage);
         return expenseModel.getAll(page, countPerPage, principal);
     }
@@ -45,8 +43,7 @@ public class Expense extends CrudApiResponse<ExpenseModel, ExpenseEntity, Expens
     }
 
     @PostMapping
-    public ResponseEntity<Object> addExpense(Principal principal, @Valid ExpenseDTO expenseDTO,
-                                             BindingResult bindingResult) throws UserPrincipalNotFoundException {
+    public ResponseEntity<Object> addExpense(Principal principal, @Valid ExpenseDTO expenseDTO, BindingResult bindingResult) {
         return create(principal, expenseDTO, bindingResult);
     }
 

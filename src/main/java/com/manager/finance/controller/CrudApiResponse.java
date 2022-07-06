@@ -13,13 +13,13 @@ import org.springframework.validation.BindingResult;
 import java.security.Principal;
 
 @Slf4j
-public class CrudApiResponse<M extends CrudModel<E, D, R>, E extends CrudEntity, D extends BaseCrudDTO, R extends BaseCrudResponseDTO> {
+public class CrudApiResponse<E extends CrudEntity, D extends BaseCrudDTO, R extends BaseCrudResponseDTO> {
     private final CrudLogConstants crudLogConstants;
-    private final M model;
+    private final CrudModel<E, D, R> model;
 
-    public CrudApiResponse(M model, String type) {
+    public CrudApiResponse(CrudModel<E, D, R> model) {
         this.model = model;
-        crudLogConstants = new CrudLogConstants(type);
+        crudLogConstants = new CrudLogConstants(model.getEntityTypeName());
     }
 
     public ResponseEntity<Object> get(Principal principal, E entity) {
