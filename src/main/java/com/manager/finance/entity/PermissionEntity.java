@@ -1,32 +1,24 @@
 package com.manager.finance.entity;
 
-import lombok.Data;
 
-import javax.persistence.*;
-import java.io.Serial;
-import java.io.Serializable;
+public enum PermissionEntity {
+    ALL_READ("all:read"),
+    ALL_DELETE( "all:delete"),
+    ALL_WRITE("all:write"),
+    USER_READ("user:read"),
+    USER_DELETE("user:delete"),
+    USER_WRITE("user:write"),
+    ROLE_CRUD("role:crud")
+    ;
 
-@Entity
-@Table(name = "permission")
-@Data
-public class PermissionEntity implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 9178661439383356177L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private final String permission;
 
-    @Column(unique = true)
-    private String name;
-
-    public PermissionEntity() {
+    PermissionEntity( String permission) {
+        this.permission = permission;
     }
 
-    public PermissionEntity(String name) {
-        this.name = name;
+    public String getPermission(){
+        return permission;
     }
-//    @ManyToMany(mappedBy = "permissions")
-//    @JsonIgnoreProperties("permissions")
-//    private Collection<Role> roles;
 
 }

@@ -1,6 +1,7 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
+import com.manager.finance.entity.PermissionEntity;
 import com.manager.finance.entity.RoleEntity;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.helper.converter.RoleIdConverter;
@@ -77,7 +78,7 @@ class UserAdminTest {
                 .andExpect(jsonPath("[0].phoneConfirmed").value(user.isPhoneConfirmed()))
                 .andExpect(jsonPath("[0].emailConfirmed").value(user.isEmailConfirmed()))
                 .andExpect(jsonPath("[0].roles.[0].name").value(role.getName()))
-                .andExpect(jsonPath("[0].roles.[0].permissions.[0].name").value(role.getPermissions().iterator().next().getName()));
+                .andExpect(jsonPath("[0].roles.[0].permissions").value(PermissionEntity.ALL_READ.toString()));
     }
 
     @Test
@@ -93,7 +94,7 @@ class UserAdminTest {
                 .andExpect(jsonPath("$.phoneConfirmed").value(user.isPhoneConfirmed()))
                 .andExpect(jsonPath("$.emailConfirmed").value(user.isEmailConfirmed()))
                 .andExpect(jsonPath("$.roles.[0].name").value(role.getName()))
-                .andExpect(jsonPath("$.roles.[0].permissions.[0].name").value(role.getPermissions().iterator().next().getName()));
+                .andExpect(jsonPath("$.roles.[0].permissions").value(PermissionEntity.ALL_READ.toString()));
     }
 
     @Test
@@ -175,7 +176,7 @@ class UserAdminTest {
                 .andExpect(jsonPath("$.phone").value(NEW_PHONE))
                 .andExpect(jsonPath("$.email").value(NEW_EMAIL))
                 .andExpect(jsonPath("$.roles.[0].name").value(role.getName()))
-                .andExpect(jsonPath("$.roles.[0].permissions.[0].name").value(role.getPermissions().iterator().next().getName()));
+                .andExpect(jsonPath("$.roles.[0].permissions").value(PermissionEntity.ALL_READ.toString()));
     }
 
     @Test

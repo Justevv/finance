@@ -1,11 +1,5 @@
 create sequence hibernate_sequence start 100 increment 1;
 
-create table permission
-(
-    id   int8 not null,
-    name varchar(255),
-    primary key (id)
-);
 
 create table role
 (
@@ -16,9 +10,8 @@ create table role
 
 create table roles_permissions
 (
-    role_id        int8 not null,
-    permissions_id int8 not null,
-    primary key (role_id, permissions_id)
+    role_id     int8 not null,
+    permissions varchar(255)
 );
 
 create table users_roles
@@ -52,10 +45,8 @@ create table verification
 );
 
 alter table if exists verification add constraint FK_verification_users foreign key (user_id) references users on delete cascade;
-alter table if exists permission add constraint UK_permission_name unique (name);
 alter table if exists role add constraint UK_role_name unique (name);
 alter table if exists users add constraint UK_users_username unique (username);
-alter table if exists roles_permissions add constraint FK_roles_permissions_permission foreign key (permissions_id) references permission;
 alter table if exists roles_permissions add constraint FK_roles_permissions_role foreign key (role_id) references role;
 alter table if exists users_roles add constraint FK_users_roles_role foreign key (role_id) references role;
 alter table if exists users_roles add constraint FK_users_roles_users foreign key (user_id) references users;

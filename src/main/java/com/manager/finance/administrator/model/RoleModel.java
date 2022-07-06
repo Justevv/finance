@@ -2,18 +2,14 @@ package com.manager.finance.administrator.model;
 
 
 import com.manager.finance.administrator.dto.RoleDTO;
+import com.manager.finance.entity.PermissionEntity;
 import com.manager.finance.entity.RoleEntity;
 import com.manager.finance.exception.UserAlreadyExistException;
-import com.manager.finance.helper.UserHelper;
 import com.manager.finance.log.CrudLogConstants;
-import com.manager.finance.repository.PermissionRepository;
 import com.manager.finance.repository.RoleRepository;
-import com.manager.finance.service.ConfirmationService;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +24,6 @@ public class RoleModel {
     private ModelMapper mapper;
     @Autowired
     private RoleRepository roleRepository;
-    @Autowired
-    private PermissionRepository permissionRepository;
 
     public List<RoleEntity> getAll() {
         return roleRepository.findAll();
@@ -61,18 +55,18 @@ public class RoleModel {
         return null;
     }
 
-    public RoleEntity addPermission(RoleEntity role, List<Long> permissionIds) {
+    public RoleEntity addPermission(RoleEntity role, List<String> permissionIds) {
         log.debug("For role {} will be add the permissions with id: {}", role, permissionIds);
-        var permissionEntities = permissionRepository.findAllById(permissionIds);
+        var permissionEntities = permissionIds.stream().map(PermissionEntity::valueOf).toList();
         log.debug("For role {} will be add the permissions: {}", role, permissionEntities);
         role.getPermissions().addAll(permissionEntities);
         roleRepository.save(role);
         return role;
     }
 
-    public RoleEntity deletePermission(RoleEntity role, List<Long> permissionIds) {
+    public RoleEntity deletePermission(RoleEntity role, List<String> permissionIds) {
         log.debug("For role {} will be remove the permissions with id: {}", role, permissionIds);
-        var permissionEntities = permissionRepository.findAllById(permissionIds);
+        var permissionEntities = permissionIds.stream().map(PermissionEntity::valueOf).toList();
         log.debug("For role {} will be remove the permissions: {}", role, permissionEntities);
         permissionEntities.forEach(role.getPermissions()::remove);
         roleRepository.save(role);

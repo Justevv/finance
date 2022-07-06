@@ -81,7 +81,7 @@ public class UserEntity implements UserDetails {
 
     private List<SimpleGrantedAuthority> getGrantedAuthorities(Collection<RoleEntity> roles) {
         var privileges = roles.stream()
-                .flatMap(x -> x.getPermissions().stream().map(PermissionEntity::getName))
+                .flatMap(x -> x.getPermissions().stream().map(PermissionEntity::getPermission))
                 .collect(Collectors.toList());
         roles.forEach(x -> privileges.add(x.getName()));
         return privileges.stream().map(SimpleGrantedAuthority::new).toList();

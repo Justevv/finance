@@ -1,13 +1,10 @@
 package com.manager.finance.controller;
 
-
 import com.manager.Manager;
 import com.manager.finance.entity.PermissionEntity;
 import com.manager.finance.entity.RoleEntity;
-import com.manager.finance.helper.converter.PermissionIdConverter;
 import com.manager.finance.helper.converter.RoleIdConverter;
 import com.manager.finance.helper.prepare.RolePrepareHelper;
-import com.manager.finance.repository.PermissionRepository;
 import com.manager.finance.repository.RoleRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,25 +27,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
-@Import({RoleIdConverter.class, PermissionIdConverter.class, RolePrepareHelper.class})
+@Import({RoleIdConverter.class, RolePrepareHelper.class})
 @ActiveProfiles("test")
 class RoleTest {
     private static final String ROLE_API = "/v1/admin/role";
     @MockBean
     private RoleRepository roleRepository;
-    @MockBean
-    private PermissionRepository permissionRepository;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private RolePrepareHelper rolePrepareHelper;
     private RoleEntity role;
-    private PermissionEntity permission;
 
     @BeforeEach
     private void prepare() {
         role = rolePrepareHelper.createRole();
-        permission = role.getPermissions().iterator().next();
         Mockito.when(roleRepository.findById(role.getId())).thenReturn(Optional.ofNullable(role));
     }
 
@@ -76,20 +69,18 @@ class RoleTest {
     @WithMockUser(authorities = {"role:crud"})
     @SneakyThrows
     void createRole_shouldReturnRoleEntityAndOk_when_roleIsOk() {
-        Mockito.when(permissionRepository.findById(permission.getId())).thenReturn(Optional.of(permission));
         mockMvc.perform(MockMvcRequestBuilders.post(ROLE_API)
                         .param("name", role.getName())
-                        .param("permissions", String.valueOf(permission.getId())))
+                        .param("permissions", PermissionEntity.ALL_READ.toString()))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.name").value(role.getName()))
-                .andExpect(jsonPath("$.permissions.[0].name").value(permission.getName()));
+                .andExpect(jsonPath("$.permissions").value(PermissionEntity.ALL_READ.toString()));
     }
 
     @Test
     @WithMockUser(authorities = {"role:crud"})
     @SneakyThrows
     void createRole_shouldReturnExceptionAndBadResponse_when_roleIsInvalid() {
-        Mockito.when(permissionRepository.findById(permission.getId())).thenReturn(Optional.of(permission));
         mockMvc.perform(MockMvcRequestBuilders.post(ROLE_API)
                         .param("name", role.getName())
                         .param("permissions", "10"))

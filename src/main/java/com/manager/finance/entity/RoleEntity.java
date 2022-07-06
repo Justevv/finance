@@ -20,14 +20,10 @@ public class RoleEntity implements Serializable {
 
     @Column(unique = true)
     private String name;
-//    @ManyToMany(mappedBy = "roles")
-//    @JsonIgnoreProperties("roles")
-//    private Collection<UserEntity> users;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = PermissionEntity.class, fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_permissions",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "permissions_id"))
+            joinColumns = @JoinColumn(name = "role_id"))
     private Set<PermissionEntity> permissions;
 }

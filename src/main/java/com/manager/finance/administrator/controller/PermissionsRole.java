@@ -19,14 +19,14 @@ public class PermissionsRole {
 
     @PostMapping
     @PreAuthorize("hasAuthority('role:crud')")
-    public ResponseEntity<Object> addPermissions(@PathVariable("roleId") RoleEntity role, @RequestParam List<Long> permissionIds) {
+    public ResponseEntity<Object> addPermissions(@PathVariable("roleId") RoleEntity role, @RequestParam List<String> permissionIds) {
         var responseDTO = roleModel.addPermission(role, permissionIds);
         return ResponseEntity.ok(responseDTO);
     }
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('role:crud')")
-    public ResponseEntity<Object> deletePermissions(@PathVariable("roleId") RoleEntity role, @RequestParam List<Long> permissionIds) {
+    public ResponseEntity<Object> deletePermissions(@PathVariable("roleId") RoleEntity role, @RequestParam List<String> permissionIds) {
         var responseDTO = roleModel.deletePermission(role, permissionIds);
         return ResponseEntity.ok(responseDTO);
     }
