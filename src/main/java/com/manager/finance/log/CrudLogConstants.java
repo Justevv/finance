@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 public class CrudLogConstants {
-    private final String errorsAdded;
     private final String listFiltered;
     private final String inputNewDTO;
     private final String inputDTOToChangeEntity;
@@ -15,10 +14,8 @@ public class CrudLogConstants {
     private final String deleteEntityFromDatabase;
     private final String inputEntityForDelete;
     private final String outputDTOAfterMapping;
-    private final String entityTypeNotFound;
 
     public CrudLogConstants(@NotNull String property) {
-        errorsAdded = String.format("Errors was added for %s: {}", property);
         inputNewDTO = String.format("Input data for new %s is: {}", property);
         listFiltered = String.format("List filtered %s: {}", property);
         inputDTOToChangeEntity = String.format("Input DTO to change %s is: {}, old %s was: {} ", property, property);
@@ -27,7 +24,6 @@ public class CrudLogConstants {
         deleteEntityFromDatabase = String.format("%s was deleted from database {}", property);
         inputEntityForDelete = String.format("Input entity for delete %s is: {}", property);
         outputDTOAfterMapping = String.format("Output %s DTO after mapping is: {}", property);
-        entityTypeNotFound = String.format("This %s not found", property);
     }
 
 }
