@@ -35,13 +35,7 @@ public class UserModel {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
-    private VerificationModel verificationModel;
-    @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
-    @Autowired
-    private ConfirmationService confirmationService;
     @Autowired
     private UserHelper userHelper;
 

@@ -35,11 +35,9 @@ public class UserEntity implements UserDetails {
     private String password;
     @NotNull
     @NotBlank
-    @Column(unique = true)
     private String phone;
     @NotNull
     @NotBlank
-    @Column(unique = true)
     private String email;
     @ColumnDefault("0")
     private BigDecimal balance = BigDecimal.ZERO;
@@ -60,7 +58,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return isEmailConfirmed && isPhoneConfirmed;
+        return true;
     }
 
     @Override

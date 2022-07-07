@@ -37,7 +37,7 @@ public class PasswordModel {
 
     @Transactional
     public boolean createPasswordResetToken(String email) {
-        log.debug("User with email {} try to reset password", email);
+        log.debug("User with email {} tries to reset password", email);
         var user = userRepository.findByEmailAndIsEmailConfirmed(email, true)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_EMAIL_DOES_NOT_EXISTS));
         var passwordToken = createPasswordResetToken(user);

@@ -1,5 +1,6 @@
 package com.manager.finance.model;
 
+import com.manager.finance.event.ConfirmationCompleteEvent;
 import com.manager.finance.service.ConfirmationService;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.entity.VerificationEntity;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +34,12 @@ public class VerificationModel {
     @Autowired
     private ConfirmationService confirmationService;
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
     @Transactional
-    public boolean confirmPhone(long userId, String code) {
-        log.debug("Try to confirm phone for userId {}", userId);
+    public boolean verifyPhone(long userId, String code) {
+        log.debug("Trying to verify phone for userId {}", userId);
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
 
@@ -44,6 +49,7 @@ public class VerificationModel {
                 && !phoneVerificationCode.isExpire() && !confirmationService.isPhoneAlreadyConfirmed(user.getPhone())) {
             user.setPhoneConfirmed(true);
             verificationRepository.delete(phoneVerificationCode);
+            eventPublisher.publishEvent(new ConfirmationCompleteEvent(user));
             log.info("Phone for user {} was confirmed successfully", user);
             return true;
         }
@@ -52,8 +58,8 @@ public class VerificationModel {
     }
 
     @Transactional
-    public boolean confirmEmail(long userId, String code) {
-        log.debug("Try to confirm email for userId {}", userId);
+    public boolean verifyEmail(long userId, String code) {
+        log.debug("Trying to verify email for userId {}", userId);
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
 
@@ -63,6 +69,7 @@ public class VerificationModel {
                 && !emailVerificationCode.isExpire() && !confirmationService.isEmailAlreadyConfirmed(user.getEmail())) {
             user.setEmailConfirmed(true);
             verificationRepository.delete(emailVerificationCode);
+            eventPublisher.publishEvent(new ConfirmationCompleteEvent(user));
             log.info("Email for user {} was confirmed successfully", user);
             return true;
         }

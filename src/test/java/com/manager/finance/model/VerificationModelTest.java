@@ -49,14 +49,14 @@ class VerificationModelTest {
     void confirmPhone_shouldReturnTrue_when_verificationIsValid() {
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.PHONE)).thenReturn(Optional.of(verificationCode));
 
-        Assertions.assertTrue(verificationModel.confirmPhone(userEntity.getId(), VERIFICATION_CODE));
+        Assertions.assertTrue(verificationModel.verifyPhone(userEntity.getId(), VERIFICATION_CODE));
     }
 
     @Test
     void confirmEmail_shouldReturnTrue_when_verificationIsValid() {
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.EMAIL)).thenReturn(Optional.of(verificationCode));
 
-        Assertions.assertTrue(verificationModel.confirmEmail(userEntity.getId(), VERIFICATION_CODE));
+        Assertions.assertTrue(verificationModel.verifyEmail(userEntity.getId(), VERIFICATION_CODE));
     }
 
     @Test
@@ -64,7 +64,7 @@ class VerificationModelTest {
         Mockito.when(userRepository.findByPhoneAndIsPhoneConfirmed(userEntity.getPhone(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.PHONE)).thenReturn(Optional.of(verificationCode));
 
-        Assertions.assertFalse(verificationModel.confirmPhone(userEntity.getId(), VERIFICATION_CODE));
+        Assertions.assertFalse(verificationModel.verifyPhone(userEntity.getId(), VERIFICATION_CODE));
     }
 
     @Test
@@ -72,7 +72,7 @@ class VerificationModelTest {
         Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.EMAIL)).thenReturn(Optional.of(verificationCode));
 
-        Assertions.assertFalse(verificationModel.confirmEmail(userEntity.getId(), VERIFICATION_CODE));
+        Assertions.assertFalse(verificationModel.verifyEmail(userEntity.getId(), VERIFICATION_CODE));
     }
 
 }

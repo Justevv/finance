@@ -28,7 +28,7 @@ public class Authentication {
 
     @PostMapping("/login")
     public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDTO authenticationDTO, HttpServletRequest request) {
-        log.debug("User {} try to authentication", authenticationDTO);
+        log.debug("User {} tries to authenticate", authenticationDTO);
         var userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
         try {
             var authentication = authenticationModel.authenticate(userAgent, request.getRemoteAddr(), authenticationDTO);

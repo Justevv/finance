@@ -17,8 +17,8 @@ public class Verification {
 
     @PostMapping("/phone")
     public ResponseEntity<Map<String, Boolean>> confirmPhone(@PathVariable("userId") long user, @RequestParam String code) {
-        log.debug("User {} try to verify phone", user);
-        var isConfirmed = verificationModel.confirmPhone(user, code);
+        log.debug("User {} tries to verify phone", user);
+        var isConfirmed = verificationModel.verifyPhone(user, code);
         var response = Map.of("Phone confirmed", isConfirmed);
         log.debug("Is user {} confirm his phone: {}", user, isConfirmed);
         return ResponseEntity.ok(response);
@@ -26,8 +26,8 @@ public class Verification {
 
     @PostMapping("/email")
     public ResponseEntity<Map<String, Boolean>> confirmEmail(@PathVariable("userId") long user, @RequestParam String code) {
-        log.debug("User {} try to verify email", user);
-        var isConfirmed = verificationModel.confirmEmail(user, code);
+        log.debug("User {} tries to verify email", user);
+        var isConfirmed = verificationModel.verifyEmail(user, code);
         var response = Map.of("Email confirmed", isConfirmed);
         log.debug("Is user {} confirm his email: {}", user, isConfirmed);
         return ResponseEntity.ok(response);

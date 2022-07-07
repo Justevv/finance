@@ -15,15 +15,15 @@ public class CrudLogConstants {
     private final String inputEntityForDelete;
     private final String outputDTOAfterMapping;
 
-    public CrudLogConstants(@NotNull String property) {
-        inputNewDTO = String.format("Input data for new %s is: {}", property);
-        listFiltered = String.format("List filtered %s: {}", property);
-        inputDTOToChangeEntity = String.format("Input DTO to change %s is: {}, old %s was: {} ", property, property);
-        saveEntityToDatabase = String.format("%s was saved to database {}", property);
-        updateEntityToDatabase = String.format("%s was updated to database {}", property);
-        deleteEntityFromDatabase = String.format("%s was deleted from database {}", property);
-        inputEntityForDelete = String.format("Input entity for delete %s is: {}", property);
-        outputDTOAfterMapping = String.format("Output %s DTO after mapping is: {}", property);
+    public CrudLogConstants(@NotNull String entityTypeName) {
+        inputNewDTO = String.format("Input data for new %s is: {}", entityTypeName);
+        listFiltered = String.format("List filtered %s: {}", entityTypeName);
+        inputDTOToChangeEntity = String.format("Input DTO to change %s is: {}, old %s was: {} ", entityTypeName, entityTypeName);
+        saveEntityToDatabase = String.format("%s was saved to database {}", entityTypeName);
+        updateEntityToDatabase = String.format("%s was updated to database {}", entityTypeName);
+        deleteEntityFromDatabase = String.format("%s was deleted from database {}", entityTypeName);
+        inputEntityForDelete = String.format("Input entity for delete %s is: {}", entityTypeName);
+        outputDTOAfterMapping = String.format("Output %s DTO after mapping is: {}", entityTypeName);
     }
 
 }

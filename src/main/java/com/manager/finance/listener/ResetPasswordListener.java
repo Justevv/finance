@@ -31,14 +31,15 @@ public class ResetPasswordListener {
         log.debug("Event start {}", event);
 
         var passwordResetToken = event.getPasswordToken();
+        log.debug("Trying to send reset password email");
         var subject = "Reset password";
         var link = applicationURI + PASSWORD_RESET_LINK + passwordResetToken.getToken();
 
         var messageText = """
                 <a href="$link">Reset password</a>"""
                 .replace("$link", link);
+        log.debug("Nem email {}", messageText);
 
-        log.debug("Try send reset password email");
         emailService.sendHTMLMessage(subject, messageText, event.getPasswordToken().getUser().getEmail());
         throw new UnsupportedOperationException("fix text letter and other");
     }

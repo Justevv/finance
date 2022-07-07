@@ -23,7 +23,7 @@ public class ConfirmationService {
 
     @SneakyThrows
     public void sendConfirmEmail(VerificationEntity verification) {
-        log.debug("Try send email confirmation message");
+        log.debug("Trying to send an email verification message");
         var subject = "Registration Confirmation";
 
         var messageText = verification.getCode();
@@ -33,7 +33,7 @@ public class ConfirmationService {
     }
 
     public void sendConfirmPhone(VerificationEntity verification) {
-        log.debug("Try send phone confirmation message");
+        log.debug("Trying to send a phone verification message");
 
         var recipientAddress = verification.getUser().getPhone();
 
