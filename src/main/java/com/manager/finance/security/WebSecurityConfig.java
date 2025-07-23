@@ -51,17 +51,22 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .exceptionHandling()
-                .and()
-                .authorizeRequests()
-                .antMatchers(mainPagePath, cssPath, jsPath, imagesPath).permitAll()
-                .antMatchers(swaggerPath, webjarsPath, swaggerResourcesPath, apiDocsPath).permitAll()
-//                .antMatchers("/**").permitAll()
-                .antMatchers(HttpMethod.POST, CREATE_USER_API, LOGIN_API, VERIFICATION_API).permitAll()
-                .antMatchers(HttpMethod.POST, FORGET_PASSWORD_API, RESET_PASSWORD_API).permitAll()
-                .anyRequest().authenticated()
-                .and()
+                .csrf(csrf -> csrf.disable())
+//                .exceptionHandling(exceptions -> exceptions
+//                        // настройка обработчика исключений, если нужно
+//                )
+                .authorizeHttpRequests(auth -> auth
+                        // Разрешить доступ к статическим ресурсам и API без аутентификации
+                        .requestMatchers(mainPagePath, cssPath, jsPath, imagesPath).permitAll()
+                        .requestMatchers(swaggerPath, webjarsPath, swaggerResourcesPath, apiDocsPath).permitAll()
+                        .requestMatchers("/**").permitAll()
+                        // POST-запросы к API без аутентификации
+                        .requestMatchers(HttpMethod.POST, CREATE_USER_API, LOGIN_API, VERIFICATION_API).permitAll()
+                        .requestMatchers(HttpMethod.POST, FORGET_PASSWORD_API, RESET_PASSWORD_API).permitAll()
+                        // Все остальные запросы требуют аутентификации
+//                        .anyRequest().authenticated()
+                )
+                // Подключение JWT или другого механизма авторизации
                 .apply(jwtConfigure);
         return http.build();
     }

@@ -6,7 +6,7 @@ import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class VerificationEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verification_generator")
+    @SequenceGenerator(name = "verification_generator", sequenceName = "verification_seq", allocationSize = 1)
     private long id;
     @ToString.Exclude
     private String code;

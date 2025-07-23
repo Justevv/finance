@@ -1,6 +1,6 @@
 package com.manager.finance.service;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 
 public interface EmailService {
 

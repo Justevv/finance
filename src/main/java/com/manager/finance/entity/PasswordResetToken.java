@@ -3,7 +3,7 @@ package com.manager.finance.entity;
 import lombok.Data;
 import lombok.ToString;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 public class PasswordResetToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "password_reset_token_generator")
+    @SequenceGenerator(name = "password_reset_token_generator", sequenceName = "password_reset_token_seq", allocationSize = 1)
     private Long id;
     @ToString.Exclude
     private String token;

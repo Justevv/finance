@@ -2,7 +2,7 @@ package com.manager.finance.entity;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
@@ -15,7 +15,8 @@ public class RoleEntity implements Serializable {
     private static final long serialVersionUID = 9178661439456356177L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_generator")
+    @SequenceGenerator(name = "role_generator", sequenceName = "role_seq", allocationSize = 1)
     private Long id;
 
     @Column(unique = true)

@@ -2,7 +2,7 @@ package com.manager.finance.log;
 
 import lombok.Getter;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Getter
 public class CrudLogConstants {

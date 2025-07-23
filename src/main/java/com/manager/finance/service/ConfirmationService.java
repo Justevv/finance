@@ -38,7 +38,7 @@ public class ConfirmationService {
         var recipientAddress = verification.getUser().getPhone();
 
         log.debug("New phoneVerificationCode {}", verification.getCode());
-        throw new UnsupportedOperationException("implement the logic");
+//        throw new UnsupportedOperationException("implement the logic");
     }
 
     public boolean isPhoneAlreadyConfirmed(String phone) {

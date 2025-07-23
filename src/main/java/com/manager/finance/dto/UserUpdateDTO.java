@@ -3,7 +3,7 @@ package com.manager.finance.dto;
 import lombok.Data;
 import lombok.ToString;
 
-import javax.validation.constraints.Email;
+import jakarta.validation.constraints.Email;
 
 import static com.manager.finance.dto.UserDTO.EMAIL_REGEXP;
 

@@ -7,7 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 
 @Service
 @Slf4j
@@ -25,6 +25,7 @@ public class EmailServiceImpl implements EmailService {
         helper.setTo(receiver);
         helper.setSubject(subject);
         helper.setFrom(sender);
-        mailSender.send(mimeMessage);
+        System.out.println(mimeMessage);
+//        mailSender.send(mimeMessage);
     }
 }
