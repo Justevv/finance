@@ -1,5 +1,3 @@
-create sequence hibernate_sequence start 100 increment 1;
-
 create table role
 (
     id   int8 not null,

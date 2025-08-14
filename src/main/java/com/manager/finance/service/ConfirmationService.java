@@ -29,7 +29,7 @@ public class ConfirmationService {
         var messageText = verification.getCode();
         log.debug("Nem email {}", messageText);
         emailService.sendHTMLMessage(subject, messageText, verification.getUser().getEmail());
-        throw new UnsupportedOperationException("fix text letter and other");
+//        throw new UnsupportedOperationException("fix text letter and other");
     }
 
     public void sendConfirmPhone(VerificationEntity verification) {

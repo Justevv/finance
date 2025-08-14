@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres:17.5-alpine3.22
+    container_name: manager_database
+    environment:
+      POSTGRES_DB: puplic
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: sa
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "sa"]
+    networks:
+      - manager_network
+
+  backend:
+    image: manager:1
+    container_name: manager_backend
+    environment:
+      host: database
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - manager_network
+
+volumes:
+  pg_data:
+
+networks:
+  manager_network:
+    driver: bridge
