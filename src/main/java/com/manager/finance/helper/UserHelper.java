@@ -10,34 +10,30 @@ import com.manager.finance.exception.UserAlreadyExistException;
 import com.manager.finance.model.VerificationModel;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.service.ConfirmationService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.validation.Valid;
 import java.security.Principal;
 
 import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserHelper {
     private static final String EMAIL_EXISTS_ERROR_MESSAGE = "There is an account with that email address: ";
     private static final String PHONE_EXISTS_ERROR_MESSAGE = "There is an account with that phone: ";
     private static final String USERNAME_EXISTS_ERROR_MESSAGE = "There is an account with that username: ";
-    @Autowired
-    private VerificationModel verificationModel;
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
-    @Autowired
-    private ConfirmationService confirmationService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final VerificationModel verificationModel;
+    private final ApplicationEventPublisher eventPublisher;
+    private final ConfirmationService confirmationService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public void publishCreateUserEvent(UserEntity user) {
         var verificationEmail = verificationModel.createAndSaveVerification(user, VerificationType.EMAIL);

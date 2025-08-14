@@ -10,9 +10,9 @@ import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.service.ConfirmationService;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,22 +21,18 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserAdminModel {
     private static final String EMAIL_EXISTS_ERROR_MESSAGE = "There is an account with that email address: ";
     private static final String PHONE_EXISTS_ERROR_MESSAGE = "There is an account with that phone: ";
     private static final String USER_LOG_NAME = "adminUser";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(USER_LOG_NAME);
     @Getter
-    @Autowired
-    private ModelMapper mapper;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private ConfirmationService confirmationService;
-    @Autowired
-    private UserHelper userHelper;
+    private final ModelMapper mapper;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final ConfirmationService confirmationService;
+    private final UserHelper userHelper;
 
     public List<UserAdminResponseDTO> getAll() {
         var userEntities = userRepository.findAll();

@@ -4,25 +4,24 @@ import com.manager.finance.dto.PasswordUpdateDTO;
 import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.helper.ErrorHelper;
 import com.manager.finance.model.PasswordModel;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/user/password")
 @Slf4j
+@RequiredArgsConstructor
 public class Password {
-    @Autowired
-    private PasswordModel passwordModel;
-    @Autowired
-    private ErrorHelper errorHelper;
+    private final PasswordModel passwordModel;
+    private final ErrorHelper errorHelper;
 
     @PostMapping("/forget")
     public ResponseEntity<Object> forgetPassword(@Valid UserUpdateDTO userDTO, BindingResult bindingResult) {

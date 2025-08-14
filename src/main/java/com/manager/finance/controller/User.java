@@ -6,23 +6,22 @@ import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.dto.response.UserResponseDTO;
 import com.manager.finance.helper.ErrorHelper;
 import com.manager.finance.model.UserModel;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.security.Principal;
 
 @RestController
 @RequestMapping("/v1/user")
 @Slf4j
+@RequiredArgsConstructor
 public class User {
-    @Autowired
-    private UserModel userModel;
-    @Autowired
-    private ErrorHelper errorHelper;
+    private final UserModel userModel;
+    private final ErrorHelper errorHelper;
 
     @GetMapping
     public UserResponseDTO getUser(Principal principal) {

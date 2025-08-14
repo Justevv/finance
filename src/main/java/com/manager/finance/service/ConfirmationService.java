@@ -2,24 +2,22 @@ package com.manager.finance.service;
 
 import com.manager.finance.entity.VerificationEntity;
 import com.manager.finance.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ConfirmationService {
     @Value("${spring.mail.username}")
     private String sender;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private MessageSource messages;
-    @Autowired
-    private EmailService emailService;
+    private final UserRepository userRepository;
+    private final MessageSource messages;
+    private final EmailService emailService;
 
     @SneakyThrows
     public void sendConfirmEmail(VerificationEntity verification) {

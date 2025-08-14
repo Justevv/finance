@@ -7,8 +7,8 @@ import com.manager.finance.event.ResetPasswordEvent;
 import com.manager.finance.exception.PasswordResetTokenNotFoundException;
 import com.manager.finance.repository.PasswordResetTokenRepository;
 import com.manager.finance.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,16 +22,13 @@ import static com.manager.finance.constant.Constant.USER_EMAIL_DOES_NOT_EXISTS;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PasswordModel {
     private static final String PASSWORD_RESET_TOKEN_DOES_NOT_EXISTS_ERROR_MESSAGE = "Password reset token doesn't exists";
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordResetTokenRepository passwordResetTokenRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
+    private final UserRepository userRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final ApplicationEventPublisher eventPublisher;
     @Value("${resetPasswordTokenExpiredTime}")
     private int resetPasswordTokenExpiredTime;
 

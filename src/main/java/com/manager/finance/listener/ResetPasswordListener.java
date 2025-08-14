@@ -3,9 +3,9 @@ package com.manager.finance.listener;
 
 import com.manager.finance.event.ResetPasswordEvent;
 import com.manager.finance.service.EmailService;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -15,14 +15,14 @@ import org.springframework.stereotype.Component;
 @EnableAsync
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ResetPasswordListener {
     private static final String PASSWORD_RESET_LINK = "/api/v1/user/password/reset?token=";
     @Value("${spring.mail.username}")
     private String sender;
     @Value("${URI.application}")
     private String applicationURI;
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
 
     @Async
     @EventListener

@@ -1,8 +1,8 @@
 package com.manager.finance.controller;
 
 import com.manager.finance.model.VerificationModel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +11,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/verification/{userId}")
 @Slf4j
+@RequiredArgsConstructor
 public class Verification {
-    @Autowired
-    private VerificationModel verificationModel;
+    private final VerificationModel verificationModel;
 
     @PostMapping("/phone")
     public ResponseEntity<Map<String, Boolean>> confirmPhone(@PathVariable("userId") long user, @RequestParam String code) {

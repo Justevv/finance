@@ -1,43 +1,37 @@
 package com.manager.finance.model;
 
 import com.manager.finance.dto.UserDTO;
-import com.manager.finance.dto.response.UserResponseDTO;
 import com.manager.finance.dto.UserUpdateDTO;
+import com.manager.finance.dto.response.UserResponseDTO;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.exception.UserAlreadyExistException;
 import com.manager.finance.helper.UserHelper;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.repository.RoleRepository;
 import com.manager.finance.repository.UserRepository;
-import com.manager.finance.service.ConfirmationService;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
 import java.security.Principal;
 import java.util.Set;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserModel {
     private static final String USER_LOG_NAME = "user";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(USER_LOG_NAME);
     @Getter
-    @Autowired
-    private ModelMapper mapper;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserHelper userHelper;
+    private final ModelMapper mapper;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserHelper userHelper;
 
     public UserResponseDTO getUser(Principal principal) {
         var user = userHelper.getUser(principal);

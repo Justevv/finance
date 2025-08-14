@@ -3,8 +3,8 @@ package com.manager.finance.listener;
 import com.manager.finance.entity.AuthenticationLog;
 import com.manager.finance.event.AuthenticationEvent;
 import com.manager.finance.repository.AuthenticationLogRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @EnableAsync
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class AuthenticationListener {
-    @Autowired
-    private AuthenticationLogRepository authenticationLogRepository;
+    private final AuthenticationLogRepository authenticationLogRepository;
 
     @Async
     @EventListener

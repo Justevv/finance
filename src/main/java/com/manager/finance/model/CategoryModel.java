@@ -9,7 +9,6 @@ import com.manager.finance.repository.CategoryRepository;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -22,13 +21,13 @@ public class CategoryModel implements CrudModel<CategoryEntity, CategoryDTO, Cat
     private final String entityTypeName;
     private final CrudLogConstants crudLogConstants;
     private final CategoryRepository categoryRepository;
-    @Autowired
-    private ModelMapper mapper;
-    @Autowired
-    private UserHelper userHelper;
+    private final ModelMapper mapper;
+    private final UserHelper userHelper;
 
-    public CategoryModel(CategoryRepository categoryRepository) {
+    public CategoryModel(CategoryRepository categoryRepository, ModelMapper mapper, UserHelper userHelper) {
         this.categoryRepository = categoryRepository;
+        this.mapper = mapper;
+        this.userHelper = userHelper;
         entityTypeName = "category";
         crudLogConstants = new CrudLogConstants(entityTypeName);
     }

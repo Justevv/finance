@@ -1,8 +1,8 @@
 package com.manager.finance.security;
 
 import com.manager.finance.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Slf4j
+@RequiredArgsConstructor
 public class WebSecurityConfig {
     private static final int STRENGTH_PASSWORD = 8;
     private static final String CREATE_USER_API = "/v1/user";
@@ -27,10 +28,8 @@ public class WebSecurityConfig {
     private static final String VERIFICATION_API = "/v1/verification/**";
     private static final String RESET_PASSWORD_API = "/v1/user/password/reset";
     private static final String FORGET_PASSWORD_API = "/v1/user/password/forget";
-    @Autowired
-    private JwtConfigure jwtConfigure;
-    @Autowired
-    private UserService userService;
+    private final JwtConfigure jwtConfigure;
+    private final UserService userService;
     @Value("${path.mainPage}")
     private String mainPagePath;
     @Value("${path.css}")

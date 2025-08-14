@@ -4,12 +4,12 @@ import com.manager.finance.dto.PlaceDTO;
 import com.manager.finance.dto.response.PlaceResponseDTO;
 import com.manager.finance.entity.PlaceEntity;
 import com.manager.finance.model.PlaceModel;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.security.Principal;
 
 @RestController

@@ -7,24 +7,23 @@ import com.manager.finance.administrator.dto.user.UserAdminUpdateDTO;
 import com.manager.finance.administrator.model.UserAdminModel;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.helper.ErrorHelper;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/v1/admin/user")
 @Slf4j
+@RequiredArgsConstructor
 public class UserAdmin {
-    @Autowired
-    private UserAdminModel userAdminModel;
-    @Autowired
-    private ErrorHelper errorHelper;
+    private final UserAdminModel userAdminModel;
+    private final ErrorHelper errorHelper;
 
     @GetMapping
     @PreAuthorize("hasAuthority('user:read')")

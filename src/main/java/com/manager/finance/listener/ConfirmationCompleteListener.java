@@ -2,9 +2,9 @@ package com.manager.finance.listener;
 
 import com.manager.finance.event.ConfirmationCompleteEvent;
 import com.manager.finance.repository.RoleRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +12,9 @@ import java.util.Set;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ConfirmationCompleteListener {
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @EventListener
     @SneakyThrows

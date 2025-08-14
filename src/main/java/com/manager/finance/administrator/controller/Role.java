@@ -5,24 +5,23 @@ import com.manager.finance.administrator.dto.RoleDTO;
 import com.manager.finance.administrator.model.RoleModel;
 import com.manager.finance.entity.RoleEntity;
 import com.manager.finance.helper.ErrorHelper;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/v1/admin/role")
 @Slf4j
+@RequiredArgsConstructor
 public class Role {
-    @Autowired
-    private RoleModel roleModel;
-    @Autowired
-    private ErrorHelper errorHelper;
+    private final RoleModel roleModel;
+    private final ErrorHelper errorHelper;
 
     @GetMapping
     @PreAuthorize("hasAuthority('role:crud')")

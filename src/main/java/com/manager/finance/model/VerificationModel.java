@@ -1,16 +1,16 @@
 package com.manager.finance.model;
 
-import com.manager.finance.event.ConfirmationCompleteEvent;
-import com.manager.finance.service.ConfirmationService;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.entity.VerificationEntity;
 import com.manager.finance.entity.VerificationType;
+import com.manager.finance.event.ConfirmationCompleteEvent;
 import com.manager.finance.exception.VerificationNotFoundException;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.repository.VerificationRepository;
+import com.manager.finance.service.ConfirmationService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,20 +22,16 @@ import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class VerificationModel {
     private static final String VERIFICATION_DOES_NOT_EXISTS_ERROR_MESSAGE = "Verification doesn't exists";
     private static final int NUMBER_DIGITS_VERIFICATION_CODE = 6;
     @Value("${confirmationRegistrationCodeExpiredTime}")
     private int confirmationRegistrationCodeExpiredTime;
-    @Autowired
-    private VerificationRepository verificationRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ConfirmationService confirmationService;
-
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
+    private final VerificationRepository verificationRepository;
+    private final UserRepository userRepository;
+    private final ConfirmationService confirmationService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public boolean verifyPhone(long userId, String code) {

@@ -1,19 +1,17 @@
 package com.manager.finance.listener;
 
 import com.manager.finance.service.LoginAttemptService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.stereotype.Component;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 @Component
+@RequiredArgsConstructor
 public class AuthenticationFailureListener implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> {
-    @Autowired
-    private HttpServletRequest request;
-    @Autowired
-    private LoginAttemptService loginAttemptService;
+    private final HttpServletRequest request;
+    private final LoginAttemptService loginAttemptService;
 
     @Override
     public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent event) {

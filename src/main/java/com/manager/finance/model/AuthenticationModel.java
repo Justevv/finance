@@ -8,8 +8,8 @@ import com.manager.finance.security.AuthenticationRequestDTO;
 import com.manager.finance.security.JwtProvider;
 import com.manager.finance.service.LoginAttemptService;
 import eu.bitwalker.useragentutils.UserAgent;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,21 +25,16 @@ import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AuthenticationModel {
     @Value("${authentication.blockPeriod}")
     private int blockPeriod;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private JwtProvider jwtProvider;
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
-    @Autowired
-    private AuthenticationLogRepository authenticationLogRepository;
-    @Autowired
-    private LoginAttemptService loginAttemptService;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
+    private final ApplicationEventPublisher eventPublisher;
+    private final AuthenticationLogRepository authenticationLogRepository;
+    private final LoginAttemptService loginAttemptService;
 
     public Map<String, String> authenticate(UserAgent userAgent, String remoteAddr, AuthenticationRequestDTO authentication) {
         publishAuthenticateEvent(userAgent, remoteAddr, authentication.getUsername());

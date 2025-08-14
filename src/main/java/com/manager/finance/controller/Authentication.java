@@ -3,8 +3,10 @@ package com.manager.finance.controller;
 import com.manager.finance.model.AuthenticationModel;
 import com.manager.finance.security.AuthenticationRequestDTO;
 import eu.bitwalker.useragentutils.UserAgent;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -14,17 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @RestController
 @RequestMapping("v1/auth")
 @Slf4j
+@RequiredArgsConstructor
 public class Authentication {
     private static final String INVALID_USERNAME_PASSWORD = "Invalid username/password";
-    @Autowired
-    private AuthenticationModel authenticationModel;
+    private final AuthenticationModel authenticationModel;
 
     @PostMapping("/login")
     public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDTO authenticationDTO, HttpServletRequest request) {

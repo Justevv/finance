@@ -2,8 +2,8 @@ package com.manager.finance.administrator.controller;
 
 import com.manager.finance.administrator.model.RoleModel;
 import com.manager.finance.entity.RoleEntity;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/admin/role/{roleId}/permission")
 @Slf4j
+@RequiredArgsConstructor
 public class PermissionsRole {
-    @Autowired
-    private RoleModel roleModel;
+    private final RoleModel roleModel;
 
     @PostMapping
     @PreAuthorize("hasAuthority('role:crud')")

@@ -9,7 +9,6 @@ import com.manager.finance.repository.PlaceRepository;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -23,13 +22,13 @@ public class PlaceModel implements CrudModel<PlaceEntity, PlaceDTO, PlaceRespons
     private final PlaceRepository placeRepository;
     private final CrudLogConstants crudLogConstants;
     @Getter
-    @Autowired
-    private ModelMapper mapper;
-    @Autowired
-    private UserHelper userHelper;
+    private final ModelMapper mapper;
+    private final UserHelper userHelper;
 
-    public PlaceModel(PlaceRepository placeRepository) {
+    public PlaceModel(PlaceRepository placeRepository, ModelMapper mapper, UserHelper userHelper) {
         this.placeRepository = placeRepository;
+        this.mapper = mapper;
+        this.userHelper = userHelper;
         entityTypeName = "place";
         crudLogConstants = new CrudLogConstants(entityTypeName);
     }

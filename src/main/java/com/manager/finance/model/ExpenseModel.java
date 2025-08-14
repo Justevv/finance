@@ -12,7 +12,6 @@ import com.manager.finance.repository.PlaceRepository;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,24 +24,23 @@ import java.util.List;
 @Service
 @Slf4j
 public class ExpenseModel implements CrudModel<ExpenseEntity, ExpenseDTO, ExpenseResponseDTO> {
-    @Getter
-    private final String entityTypeName;
+    private static final String ENTITY_TYPE_NAME = "expense";
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
     private final PlaceRepository placeRepository;
     private final CrudLogConstants crudLogConstants;
     @Getter
-    @Autowired
-    private ModelMapper mapper;
-    @Autowired
-    private UserHelper userHelper;
+    private final ModelMapper mapper;
+    private final UserHelper userHelper;
 
-    public ExpenseModel(ExpenseRepository expenseRepository, CategoryRepository categoryRepository, PlaceRepository placeRepository) {
+    public ExpenseModel(ExpenseRepository expenseRepository, CategoryRepository categoryRepository, PlaceRepository placeRepository,
+                        ModelMapper mapper, UserHelper userHelper) {
         this.expenseRepository = expenseRepository;
         this.categoryRepository = categoryRepository;
         this.placeRepository = placeRepository;
-        entityTypeName = "expense";
-        crudLogConstants = new CrudLogConstants(entityTypeName);
+        this.mapper = mapper;
+        this.userHelper = userHelper;
+        crudLogConstants = new CrudLogConstants(ENTITY_TYPE_NAME);
     }
 
     @Override

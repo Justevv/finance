@@ -7,9 +7,9 @@ import com.manager.finance.entity.RoleEntity;
 import com.manager.finance.exception.UserAlreadyExistException;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.repository.RoleRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +17,12 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class RoleModel {
     private static final String ROLE_LOG_NAME = "role";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(ROLE_LOG_NAME);
-    @Autowired
-    private ModelMapper mapper;
-    @Autowired
-    private RoleRepository roleRepository;
+    private final ModelMapper mapper;
+    private final RoleRepository roleRepository;
 
     public List<RoleEntity> getAll() {
         return roleRepository.findAll();
