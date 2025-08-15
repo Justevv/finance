@@ -30,6 +30,14 @@ services:
         condition: service_healthy
     networks:
       - manager_network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1024M
+        reservations:
+          cpus: '1'
+          memory: 512M
 
 volumes:
   pg_data:
