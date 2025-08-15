@@ -33,7 +33,7 @@ logging:
     org.springframework.security: INFO
     org.springframework.web: INFO
     org.hibernate: INFO
-    com.manager: TRACE
+    com.manager: INFO
     org:
       springframework:
         web:
