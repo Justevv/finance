@@ -3,9 +3,9 @@ FROM jelastic/maven:3.9.5-openjdk-21 AS build
 WORKDIR /finance
 
 COPY pom.xml .
+RUN mvn verify --fail-never
 COPY src ./src
-
-RUN mvn clean package -DskipTests
+RUN mvn package -DskipTests
 
 
 FROM openjdk:21-slim
