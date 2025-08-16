@@ -1,4 +1,4 @@
-package com.manager.finance.model;
+package com.manager.finance.service;
 
 import com.manager.finance.dto.CrudDTO;
 import com.manager.finance.dto.response.CrudResponseDTO;
@@ -7,7 +7,7 @@ import com.manager.finance.entity.CrudEntity;
 import java.security.Principal;
 import java.util.List;
 
-public interface CrudModel<E extends CrudEntity, D extends CrudDTO, R extends CrudResponseDTO> {
+public interface CrudService<E extends CrudEntity, D extends CrudDTO, R extends CrudResponseDTO> {
 
     R get(E entity);
 

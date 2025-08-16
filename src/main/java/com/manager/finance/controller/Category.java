@@ -3,7 +3,7 @@ package com.manager.finance.controller;
 import com.manager.finance.dto.CategoryDTO;
 import com.manager.finance.dto.response.CategoryResponseDTO;
 import com.manager.finance.entity.CategoryEntity;
-import com.manager.finance.model.CategoryModel;
+import com.manager.finance.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,8 @@ import java.security.Principal;
 @RequestMapping("/v1/category")
 @Slf4j
 public class Category extends CrudApiResponse<CategoryEntity, CategoryDTO, CategoryResponseDTO> {
-    public Category(CategoryModel categoryModel) {
-        super(categoryModel);
+    public Category(CategoryService categoryService) {
+        super(categoryService);
     }
 
     @GetMapping

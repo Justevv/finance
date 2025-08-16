@@ -1,4 +1,4 @@
-package com.manager.finance.model;
+package com.manager.finance.service;
 
 import com.manager.finance.dto.CategoryDTO;
 import com.manager.finance.dto.response.CategoryResponseDTO;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class CategoryModel implements CrudModel<CategoryEntity, CategoryDTO, CategoryResponseDTO> {
+public class CategoryService implements CrudService<CategoryEntity, CategoryDTO, CategoryResponseDTO> {
     @Getter
     private final String entityTypeName;
     private final CrudLogConstants crudLogConstants;
@@ -24,7 +24,7 @@ public class CategoryModel implements CrudModel<CategoryEntity, CategoryDTO, Cat
     private final ModelMapper mapper;
     private final UserHelper userHelper;
 
-    public CategoryModel(CategoryRepository categoryRepository, ModelMapper mapper, UserHelper userHelper) {
+    public CategoryService(CategoryRepository categoryRepository, ModelMapper mapper, UserHelper userHelper) {
         this.categoryRepository = categoryRepository;
         this.mapper = mapper;
         this.userHelper = userHelper;
@@ -47,18 +47,23 @@ public class CategoryModel implements CrudModel<CategoryEntity, CategoryDTO, Cat
 
     @Override
     public CategoryResponseDTO create(Principal principal, CategoryDTO categoryDTO) {
+        var category = saveAndGet(principal, categoryDTO);
+        return convertEntityToResponseDTO(category);
+    }
+
+    private CategoryEntity saveAndGet(Principal principal, CategoryDTO categoryDTO) {
         log.debug(crudLogConstants.getInputNewDTO(), categoryDTO);
         var category = mapper.map(categoryDTO, CategoryEntity.class);
-        setDefaultValue(category);
+//        setDefaultValue(category);
         category.setUser(userHelper.getUser(principal));
         categoryRepository.save(category);
         log.info(crudLogConstants.getSaveEntityToDatabase(), category);
-        return convertEntityToResponseDTO(category);
+        return category;
     }
 
     private void setDefaultValue(CategoryEntity category) {
         if (category.getParentCategory() == null) {
-            category.setParentCategory(categoryRepository.findByName("Base"));
+            category.setParentCategory(categoryRepository.findByName("Base").get());
         }
     }
 
@@ -84,6 +89,20 @@ public class CategoryModel implements CrudModel<CategoryEntity, CategoryDTO, Cat
         return responseDTO;
     }
 
+    public CategoryEntity getOrCreate(Principal principal, CategoryDTO categoryDTO) {
+        if (categoryDTO == null) {
+            return null;
+        } else if (categoryDTO.getId() != null) {
+            var category = categoryRepository.findById(categoryDTO.getId());
+            if (category.isPresent()) {
+                return category.get();
+            }
+        } else if (categoryDTO.getName() != null) {
+            var category = categoryRepository.findByName(categoryDTO.getName());
+            return category.orElseGet(() -> saveAndGet(principal, categoryDTO));
+        }
+        return null;
+    }
 }
 
 

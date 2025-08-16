@@ -3,7 +3,7 @@ package com.manager.finance.controller;
 import com.manager.finance.dto.PlaceDTO;
 import com.manager.finance.dto.response.PlaceResponseDTO;
 import com.manager.finance.entity.PlaceEntity;
-import com.manager.finance.model.PlaceModel;
+import com.manager.finance.service.PlaceService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +17,8 @@ import java.security.Principal;
 @Slf4j
 public class Place extends CrudApiResponse<PlaceEntity, PlaceDTO, PlaceResponseDTO> {
 
-    public Place(PlaceModel placeModel) {
-        super(placeModel);
+    public Place(PlaceService placeService) {
+        super(placeService);
     }
 
     @GetMapping

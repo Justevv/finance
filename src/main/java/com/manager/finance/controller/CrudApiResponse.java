@@ -4,7 +4,7 @@ import com.manager.finance.dto.BaseCrudDTO;
 import com.manager.finance.dto.response.BaseCrudResponseDTO;
 import com.manager.finance.entity.CrudEntity;
 import com.manager.finance.helper.ErrorHelper;
-import com.manager.finance.model.CrudModel;
+import com.manager.finance.service.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -12,11 +12,11 @@ import org.springframework.validation.BindingResult;
 import java.security.Principal;
 
 public class CrudApiResponse<E extends CrudEntity, D extends BaseCrudDTO, R extends BaseCrudResponseDTO> {
-    private final CrudModel<E, D, R> model;
+    private final CrudService<E, D, R> model;
     @Autowired
     private ErrorHelper errorHelper;
 
-    public CrudApiResponse(CrudModel<E, D, R> model) {
+    public CrudApiResponse(CrudService<E, D, R> model) {
         this.model = model;
     }
 

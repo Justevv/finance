@@ -1,6 +1,6 @@
 package com.manager.finance.security;
 
-import com.manager.finance.service.UserService;
+import com.manager.finance.service.SecurityUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,7 @@ public class WebSecurityConfig {
     private static final String RESET_PASSWORD_API = "/v1/user/password/reset";
     private static final String FORGET_PASSWORD_API = "/v1/user/password/forget";
     private final JwtConfigure jwtConfigure;
-    private final UserService userService;
+    private final SecurityUserService securityUserService;
     @Value("${path.mainPage}")
     private String mainPagePath;
     @Value("${path.css}")

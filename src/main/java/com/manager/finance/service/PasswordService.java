@@ -1,4 +1,4 @@
-package com.manager.finance.model;
+package com.manager.finance.service;
 
 import com.manager.finance.dto.PasswordUpdateDTO;
 import com.manager.finance.entity.PasswordResetToken;
@@ -23,7 +23,7 @@ import static com.manager.finance.constant.Constant.USER_EMAIL_DOES_NOT_EXISTS;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PasswordModel {
+public class PasswordService {
     private static final String PASSWORD_RESET_TOKEN_DOES_NOT_EXISTS_ERROR_MESSAGE = "Password reset token doesn't exists";
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;

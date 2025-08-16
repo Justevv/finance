@@ -1,4 +1,4 @@
-package com.manager.finance.model;
+package com.manager.finance.service;
 
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.entity.VerificationEntity;
@@ -7,7 +7,6 @@ import com.manager.finance.event.ConfirmationCompleteEvent;
 import com.manager.finance.exception.VerificationNotFoundException;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.repository.VerificationRepository;
-import com.manager.finance.service.ConfirmationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -23,7 +22,7 @@ import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class VerificationModel {
+public class VerificationService {
     private static final String VERIFICATION_DOES_NOT_EXISTS_ERROR_MESSAGE = "Verification doesn't exists";
     private static final int NUMBER_DIGITS_VERIFICATION_CODE = 6;
     @Value("${confirmationRegistrationCodeExpiredTime}")

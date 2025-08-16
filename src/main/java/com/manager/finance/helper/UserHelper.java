@@ -7,7 +7,7 @@ import com.manager.finance.entity.VerificationType;
 import com.manager.finance.event.OnEmailUpdateCompleteEvent;
 import com.manager.finance.event.OnPhoneUpdateCompleteEvent;
 import com.manager.finance.exception.UserAlreadyExistException;
-import com.manager.finance.model.VerificationModel;
+import com.manager.finance.service.VerificationService;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.service.ConfirmationService;
 import jakarta.validation.Valid;
@@ -29,16 +29,16 @@ public class UserHelper {
     private static final String EMAIL_EXISTS_ERROR_MESSAGE = "There is an account with that email address: ";
     private static final String PHONE_EXISTS_ERROR_MESSAGE = "There is an account with that phone: ";
     private static final String USERNAME_EXISTS_ERROR_MESSAGE = "There is an account with that username: ";
-    private final VerificationModel verificationModel;
+    private final VerificationService verificationService;
     private final ApplicationEventPublisher eventPublisher;
     private final ConfirmationService confirmationService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public void publishCreateUserEvent(UserEntity user) {
-        var verificationEmail = verificationModel.createAndSaveVerification(user, VerificationType.EMAIL);
+        var verificationEmail = verificationService.createAndSaveVerification(user, VerificationType.EMAIL);
         eventPublisher.publishEvent(new OnEmailUpdateCompleteEvent(verificationEmail));
-        var verificationPhone = verificationModel.createAndSaveVerification(user, VerificationType.PHONE);
+        var verificationPhone = verificationService.createAndSaveVerification(user, VerificationType.PHONE);
         eventPublisher.publishEvent(new OnPhoneUpdateCompleteEvent(verificationPhone));
     }
 
@@ -73,7 +73,7 @@ public class UserHelper {
             log.debug("The phone was updated");
             user.setPhone(phone);
             user.setPhoneConfirmed(false);
-            var verification = verificationModel.createAndSaveVerification(user, VerificationType.PHONE);
+            var verification = verificationService.createAndSaveVerification(user, VerificationType.PHONE);
             eventPublisher.publishEvent(new OnPhoneUpdateCompleteEvent(verification));
         }
     }
@@ -86,7 +86,7 @@ public class UserHelper {
             log.debug("The email was updated");
             user.setEmail(email);
             user.setEmailConfirmed(false);
-            var verification = verificationModel.createAndSaveVerification(user, VerificationType.EMAIL);
+            var verification = verificationService.createAndSaveVerification(user, VerificationType.EMAIL);
             eventPublisher.publishEvent(new OnEmailUpdateCompleteEvent(verification));
         }
     }

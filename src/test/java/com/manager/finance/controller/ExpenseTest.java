@@ -8,7 +8,7 @@ import com.manager.finance.helper.prepare.ExpensePrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.ExpenseRepository;
 import com.manager.finance.repository.UserRepository;
-import com.manager.finance.service.UserService;
+import com.manager.finance.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class ExpenseTest {
     @MockBean
     private ExpenseRepository expenseRepository;
     @MockBean
-    private UserService userService;
+    private SecurityUserService securityUserService;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -54,7 +54,7 @@ class ExpenseTest {
     void prepare() {
         userEntity = userPrepareHelper.createUser();
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
-        Mockito.when(userService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
+        Mockito.when(securityUserService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
         expenseEntity = expensePrepareHelper.createExpense();
         Mockito.when(expenseRepository.findById(expenseEntity.getId())).thenReturn(Optional.of(expenseEntity));
     }
@@ -137,8 +137,8 @@ class ExpenseTest {
         var newDescription = "newDescription";
         var newSum = "400500.0";
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/expense")
-                        .param("description", newDescription)
-                        .param("sum", newSum)
+                        .content("{\"description\":\"newDescription\",\"sum\":400500.0}")
+                        .contentType("application/json")
                 )
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").isNumber())

@@ -5,7 +5,7 @@ import com.manager.finance.helper.prepare.PasswordResetTokenPrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.PasswordResetTokenRepository;
 import com.manager.finance.repository.UserRepository;
-import com.manager.finance.service.UserService;
+import com.manager.finance.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class PasswordTest {
     @MockBean
     private PasswordResetTokenRepository passwordResetTokenRepository;
     @MockBean
-    private UserService userService;
+    private SecurityUserService securityUserService;
     @Autowired
     private MockMvc mockMvc;
     @Autowired

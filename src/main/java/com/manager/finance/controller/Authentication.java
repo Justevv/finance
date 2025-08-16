@@ -1,6 +1,6 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.model.AuthenticationModel;
+import com.manager.finance.service.AuthenticationService;
 import com.manager.finance.security.AuthenticationRequestDTO;
 import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,14 +24,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class Authentication {
     private static final String INVALID_USERNAME_PASSWORD = "Invalid username/password";
-    private final AuthenticationModel authenticationModel;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDTO authenticationDTO, HttpServletRequest request) {
         log.debug("User {} tries to authenticate", authenticationDTO);
         var userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
         try {
-            var authentication = authenticationModel.authenticate(userAgent, request.getRemoteAddr(), authenticationDTO);
+            var authentication = authenticationService.authenticate(userAgent, request.getRemoteAddr(), authenticationDTO);
             log.info("User {} was successfully authenticated", authenticationDTO);
             return ResponseEntity.ok(authentication);
         } catch (AuthenticationException e) {

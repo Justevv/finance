@@ -8,7 +8,7 @@ import com.manager.finance.helper.prepare.CategoryPrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.CategoryRepository;
 import com.manager.finance.repository.UserRepository;
-import com.manager.finance.service.UserService;
+import com.manager.finance.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class CategoryTest {
     @MockBean
     private CategoryRepository categoryRepository;
     @MockBean
-    private UserService userService;
+    private SecurityUserService securityUserService;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -51,7 +51,7 @@ class CategoryTest {
     void prepare() {
         userEntity = userPrepareHelper.createUser();
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
-        Mockito.when(userService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
+        Mockito.when(securityUserService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
         categoryEntity = categoryPrepareHelper.createCategory();
     }
 

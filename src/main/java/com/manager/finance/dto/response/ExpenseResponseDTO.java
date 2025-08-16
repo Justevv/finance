@@ -9,11 +9,11 @@ import java.time.LocalDateTime;
 public class ExpenseResponseDTO extends BaseCrudResponseDTO {
     private String description;
     private LocalDateTime date;
-    private CategoryEntity category;
-    private PlaceEntity place;
-    private PaymentTypeEntity paymentType;
+    private CategoryResponseDTO category;
+    private PlaceResponseDTO place;
+    private PaymentTypeResponseDTO paymentType;
     private double sum;
-    private AccountEntity account;
+    private AccountResponseDTO account;
     private TransactionType transactionType;
 
 }

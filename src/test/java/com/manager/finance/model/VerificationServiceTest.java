@@ -7,6 +7,7 @@ import com.manager.finance.entity.VerificationType;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.repository.VerificationRepository;
+import com.manager.finance.service.VerificationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,10 +22,10 @@ import java.util.Optional;
 
 @SpringBootTest(classes = Manager.class)
 @Import({UserPrepareHelper.class})
-class VerificationModelTest {
+class VerificationServiceTest {
     private static final String VERIFICATION_CODE = "100500";
     @Autowired
-    private VerificationModel verificationModel;
+    private VerificationService verificationService;
     @MockBean
     private UserRepository userRepository;
     @MockBean
@@ -49,14 +50,14 @@ class VerificationModelTest {
     void confirmPhone_shouldReturnTrue_when_verificationIsValid() {
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.PHONE)).thenReturn(Optional.of(verificationCode));
 
-        Assertions.assertTrue(verificationModel.verifyPhone(userEntity.getId(), VERIFICATION_CODE));
+        Assertions.assertTrue(verificationService.verifyPhone(userEntity.getId(), VERIFICATION_CODE));
     }
 
     @Test
     void confirmEmail_shouldReturnTrue_when_verificationIsValid() {
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.EMAIL)).thenReturn(Optional.of(verificationCode));
 
-        Assertions.assertTrue(verificationModel.verifyEmail(userEntity.getId(), VERIFICATION_CODE));
+        Assertions.assertTrue(verificationService.verifyEmail(userEntity.getId(), VERIFICATION_CODE));
     }
 
     @Test
@@ -64,7 +65,7 @@ class VerificationModelTest {
         Mockito.when(userRepository.findByPhoneAndIsPhoneConfirmed(userEntity.getPhone(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.PHONE)).thenReturn(Optional.of(verificationCode));
 
-        Assertions.assertFalse(verificationModel.verifyPhone(userEntity.getId(), VERIFICATION_CODE));
+        Assertions.assertFalse(verificationService.verifyPhone(userEntity.getId(), VERIFICATION_CODE));
     }
 
     @Test
@@ -72,7 +73,7 @@ class VerificationModelTest {
         Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(verificationRepository.findByUserAndType(userEntity, VerificationType.EMAIL)).thenReturn(Optional.of(verificationCode));
 
-        Assertions.assertFalse(verificationModel.verifyEmail(userEntity.getId(), VERIFICATION_CODE));
+        Assertions.assertFalse(verificationService.verifyEmail(userEntity.getId(), VERIFICATION_CODE));
     }
 
 }

@@ -6,6 +6,7 @@ import com.manager.finance.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.repository.VerificationRepository;
+import com.manager.finance.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @Import({UserPrepareHelper.class})
-class UserModelTest {
+class UserServiceTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean
@@ -28,7 +29,7 @@ class UserModelTest {
     @MockBean
     private Principal principal;
     @Autowired
-    private UserModel userModel;
+    private UserService userService;
     @Autowired
     private UserPrepareHelper userPrepareHelper;
     private UserEntity user;
@@ -43,7 +44,7 @@ class UserModelTest {
 
     @Test
     void getUser_shouldReturnUser_when_principalIsExists() {
-        var userResponseDTO = userModel.getUser(principal);
+        var userResponseDTO = userService.getUser(principal);
         Assertions.assertEquals(user.getEmail(), userResponseDTO.getEmail());
         Assertions.assertEquals(user.getUsername(), userResponseDTO.getUsername());
     }
@@ -55,7 +56,7 @@ class UserModelTest {
         userDTO.setUsername("newUsername");
         userDTO.setEmail("newEmail");
         userDTO.setPassword("password");
-        var user = userModel.createAndGetDTO(userDTO);
+        var user = userService.createAndGetDTO(userDTO);
         Assertions.assertEquals(userDTO.getEmail(), user.getEmail());
         Assertions.assertEquals(userDTO.getUsername(), user.getUsername());
         Assertions.assertEquals(userDTO.getPhone(), user.getPhone());
@@ -68,7 +69,7 @@ class UserModelTest {
         userDTO.setUsername("newUsername");
         userDTO.setEmail("newEmail");
         userDTO.setPassword("password");
-        var userResponseDTO = userModel.update(principal, userDTO);
+        var userResponseDTO = userService.update(principal, userDTO);
         Assertions.assertEquals(userDTO.getEmail(), userResponseDTO.getEmail());
         Assertions.assertEquals(userDTO.getUsername(), userResponseDTO.getUsername());
         Assertions.assertEquals(userDTO.getPhone(), userResponseDTO.getPhone());
@@ -76,7 +77,7 @@ class UserModelTest {
 
     @Test
     void delete_shouldReturnNull_when_userIsExists() {
-        var deleteUser = userModel.delete(principal);
+        var deleteUser = userService.delete(principal);
         Assertions.assertNull(deleteUser);
     }
 

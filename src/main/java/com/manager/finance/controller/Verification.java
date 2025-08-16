@@ -1,6 +1,6 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.model.VerificationModel;
+import com.manager.finance.service.VerificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +13,12 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 public class Verification {
-    private final VerificationModel verificationModel;
+    private final VerificationService verificationService;
 
     @PostMapping("/phone")
     public ResponseEntity<Map<String, Boolean>> confirmPhone(@PathVariable("userId") long user, @RequestParam String code) {
         log.debug("User {} tries to verify phone", user);
-        var isConfirmed = verificationModel.verifyPhone(user, code);
+        var isConfirmed = verificationService.verifyPhone(user, code);
         var response = Map.of("Phone confirmed", isConfirmed);
         log.debug("Is user {} confirm his phone: {}", user, isConfirmed);
         return ResponseEntity.ok(response);
@@ -27,7 +27,7 @@ public class Verification {
     @PostMapping("/email")
     public ResponseEntity<Map<String, Boolean>> confirmEmail(@PathVariable("userId") long user, @RequestParam String code) {
         log.debug("User {} tries to verify email", user);
-        var isConfirmed = verificationModel.verifyEmail(user, code);
+        var isConfirmed = verificationService.verifyEmail(user, code);
         var response = Map.of("Email confirmed", isConfirmed);
         log.debug("Is user {} confirm his email: {}", user, isConfirmed);
         return ResponseEntity.ok(response);

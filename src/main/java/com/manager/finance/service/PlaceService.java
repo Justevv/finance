@@ -1,4 +1,4 @@
-package com.manager.finance.model;
+package com.manager.finance.service;
 
 import com.manager.finance.dto.PlaceDTO;
 import com.manager.finance.dto.response.PlaceResponseDTO;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class PlaceModel implements CrudModel<PlaceEntity, PlaceDTO, PlaceResponseDTO> {
+public class PlaceService implements CrudService<PlaceEntity, PlaceDTO, PlaceResponseDTO> {
     @Getter
     private final String entityTypeName;
     private final PlaceRepository placeRepository;
@@ -25,7 +25,7 @@ public class PlaceModel implements CrudModel<PlaceEntity, PlaceDTO, PlaceRespons
     private final ModelMapper mapper;
     private final UserHelper userHelper;
 
-    public PlaceModel(PlaceRepository placeRepository, ModelMapper mapper, UserHelper userHelper) {
+    public PlaceService(PlaceRepository placeRepository, ModelMapper mapper, UserHelper userHelper) {
         this.placeRepository = placeRepository;
         this.mapper = mapper;
         this.userHelper = userHelper;
@@ -47,12 +47,17 @@ public class PlaceModel implements CrudModel<PlaceEntity, PlaceDTO, PlaceRespons
 
     @Override
     public PlaceResponseDTO create(Principal principal, PlaceDTO placeDTO) {
+        var place = saveAndGet(principal, placeDTO);
+        return convertEntityToResponseDTO(place);
+    }
+
+    private PlaceEntity saveAndGet(Principal principal, PlaceDTO placeDTO) {
         log.debug(crudLogConstants.getInputNewDTO(), placeDTO);
         var place = getMapper().map(placeDTO, PlaceEntity.class);
         place.setUser(userHelper.getUser(principal));
         placeRepository.save(place);
         log.info(crudLogConstants.getSaveEntityToDatabase(), place);
-        return convertEntityToResponseDTO(place);
+        return place;
     }
 
     @Override
@@ -77,6 +82,20 @@ public class PlaceModel implements CrudModel<PlaceEntity, PlaceDTO, PlaceRespons
         return responseDTO;
     }
 
+    public PlaceEntity getOrCreate(Principal principal, PlaceDTO placeDTO) {
+        if (placeDTO == null) {
+            return null;
+        } else if (placeDTO.getId() != null) {
+            var category = placeRepository.findById(placeDTO.getId());
+            if (category.isPresent()) {
+                return category.get();
+            }
+        } else if (placeDTO.getName() != null) {
+            var category = placeRepository.findByName(placeDTO.getName());
+            return category.orElseGet(() -> saveAndGet(principal, placeDTO));
+        }
+        return null;
+    }
 }
 
 

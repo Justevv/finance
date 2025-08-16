@@ -5,7 +5,7 @@ import com.manager.finance.dto.UserDTO;
 import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.dto.response.UserResponseDTO;
 import com.manager.finance.helper.ErrorHelper;
-import com.manager.finance.model.UserModel;
+import com.manager.finance.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,19 +20,19 @@ import java.security.Principal;
 @Slf4j
 @RequiredArgsConstructor
 public class User {
-    private final UserModel userModel;
+    private final UserService userService;
     private final ErrorHelper errorHelper;
 
     @GetMapping
     public UserResponseDTO getUser(Principal principal) {
-        return userModel.getUser(principal);
+        return userService.getUser(principal);
     }
 
     @PostMapping
     public ResponseEntity<Object> createUser(@Valid UserDTO userDTO, BindingResult bindingResult) {
         ResponseEntity<Object> responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
-            var responseDTO = userModel.createAndGetDTO(userDTO);
+            var responseDTO = userService.createAndGetDTO(userDTO);
             responseEntity = ResponseEntity.ok(responseDTO);
         }
         return responseEntity;
@@ -42,14 +42,14 @@ public class User {
     public ResponseEntity<Object> updateUser(Principal principal, @Valid UserUpdateDTO crudDTO, BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(userModel.update(principal, crudDTO));
+            responseEntity = ResponseEntity.ok(userService.update(principal, crudDTO));
         }
         return responseEntity;
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteUser(Principal principal) {
-        return ResponseEntity.ok(userModel.delete(principal));
+        return ResponseEntity.ok(userService.delete(principal));
     }
 
 }

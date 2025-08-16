@@ -1,4 +1,4 @@
-package com.manager.finance.model;
+package com.manager.finance.service;
 
 import com.manager.finance.event.AuthenticationEvent;
 import com.manager.finance.exception.UserIpAddressWasBlockedException;
@@ -6,7 +6,6 @@ import com.manager.finance.repository.AuthenticationLogRepository;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.security.AuthenticationRequestDTO;
 import com.manager.finance.security.JwtProvider;
-import com.manager.finance.service.LoginAttemptService;
 import eu.bitwalker.useragentutils.UserAgent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,7 @@ import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AuthenticationModel {
+public class AuthenticationService {
     @Value("${authentication.blockPeriod}")
     private int blockPeriod;
     private final AuthenticationManager authenticationManager;
