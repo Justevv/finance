@@ -40,5 +40,8 @@ logging:
           filter:
             CommonsRequestLoggingFilter: DEBUG
 
+metric:
+  executionTime: true
+
 URI:
   application: http://localhost:8080

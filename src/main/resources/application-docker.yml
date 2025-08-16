@@ -34,11 +34,15 @@ logging:
     org.springframework.web: INFO
     org.hibernate: INFO
     com.manager: INFO
+    com.manager.monitoring: DEBUG
     org:
       springframework:
         web:
           filter:
             CommonsRequestLoggingFilter: DEBUG
+
+metrics:
+  executionTime: true
 
 URI:
   application: http://localhost:8080
