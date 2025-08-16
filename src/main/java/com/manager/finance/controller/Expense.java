@@ -47,6 +47,7 @@ public class Expense extends CrudApiResponse<ExpenseEntity, ExpenseDTO, ExpenseR
     }
 
     @PostMapping
+    @TrackExecutionTime
     public ResponseEntity<Object> addExpense(Principal principal, @RequestBody @Valid ExpenseDTO expenseDTO, BindingResult bindingResult) {
         return create(principal, expenseDTO, bindingResult);
     }

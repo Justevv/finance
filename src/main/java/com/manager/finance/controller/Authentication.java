@@ -1,5 +1,6 @@
 package com.manager.finance.controller;
 
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.service.AuthenticationService;
 import com.manager.finance.security.AuthenticationRequestDTO;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -27,6 +28,7 @@ public class Authentication {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
+    @TrackExecutionTime
     public ResponseEntity<Object> authenticate(@RequestBody AuthenticationRequestDTO authenticationDTO, HttpServletRequest request) {
         log.debug("User {} tries to authenticate", authenticationDTO);
         var userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
@@ -42,6 +44,7 @@ public class Authentication {
     }
 
     @PostMapping("/logout")
+    @TrackExecutionTime
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         var securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, null);

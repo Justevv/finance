@@ -5,6 +5,7 @@ import com.manager.finance.dto.UserDTO;
 import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.dto.response.UserResponseDTO;
 import com.manager.finance.helper.ErrorHelper;
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,13 @@ public class User {
     private final ErrorHelper errorHelper;
 
     @GetMapping
+    @TrackExecutionTime
     public UserResponseDTO getUser(Principal principal) {
         return userService.getUser(principal);
     }
 
     @PostMapping
+    @TrackExecutionTime
     public ResponseEntity<Object> createUser(@Valid UserDTO userDTO, BindingResult bindingResult) {
         ResponseEntity<Object> responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
@@ -39,6 +42,7 @@ public class User {
     }
 
     @PutMapping
+    @TrackExecutionTime
     public ResponseEntity<Object> updateUser(Principal principal, @Valid UserUpdateDTO crudDTO, BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
@@ -48,6 +52,7 @@ public class User {
     }
 
     @DeleteMapping
+    @TrackExecutionTime
     public ResponseEntity<Void> deleteUser(Principal principal) {
         return ResponseEntity.ok(userService.delete(principal));
     }

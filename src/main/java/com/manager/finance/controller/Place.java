@@ -3,6 +3,7 @@ package com.manager.finance.controller;
 import com.manager.finance.dto.PlaceDTO;
 import com.manager.finance.dto.response.PlaceResponseDTO;
 import com.manager.finance.entity.PlaceEntity;
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.service.PlaceService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ public class Place extends CrudApiResponse<PlaceEntity, PlaceDTO, PlaceResponseD
     }
 
     @GetMapping
+    @TrackExecutionTime
     public ResponseEntity<Object> getPlace(Principal principal) {
         return getAll(principal);
     }
@@ -32,17 +34,20 @@ public class Place extends CrudApiResponse<PlaceEntity, PlaceDTO, PlaceResponseD
     }
 
     @PostMapping
+    @TrackExecutionTime
     public ResponseEntity<Object> createPlace(Principal principal, @Valid PlaceDTO placeDTO, BindingResult bindingResult) {
         return create(principal, placeDTO, bindingResult);
     }
 
     @PutMapping("{id}")
+    @TrackExecutionTime
     public ResponseEntity<Object> updatePlace(Principal principal, @PathVariable("id") PlaceEntity placeEntity, @Valid PlaceDTO placeDTO,
                                               BindingResult bindingResult) {
         return update(principal, placeEntity, placeDTO, bindingResult);
     }
 
     @DeleteMapping("{id}")
+    @TrackExecutionTime
     public ResponseEntity<Object> deletePlace(Principal principal, @PathVariable("id") PlaceEntity placeEntity) {
         return delete(principal, placeEntity);
     }

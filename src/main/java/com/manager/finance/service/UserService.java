@@ -7,6 +7,7 @@ import com.manager.finance.entity.UserEntity;
 import com.manager.finance.exception.UserAlreadyExistException;
 import com.manager.finance.helper.UserHelper;
 import com.manager.finance.log.CrudLogConstants;
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.repository.RoleRepository;
 import com.manager.finance.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -33,18 +34,21 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserHelper userHelper;
 
+    @TrackExecutionTime
     public UserResponseDTO getUser(Principal principal) {
         var user = userHelper.getUser(principal);
         return getMapper().map(user, UserResponseDTO.class);
     }
 
     @Transactional
+    @TrackExecutionTime
     public UserResponseDTO createAndGetDTO(UserDTO userDTO) throws UserAlreadyExistException {
         var user = create(userDTO);
         return convertUserToUserResponseDTO(user);
     }
 
     @Transactional
+    @TrackExecutionTime
     public UserEntity create(UserDTO userDTO) throws UserAlreadyExistException {
         var user = createUser(userDTO);
         userHelper.publishCreateUserEvent(user);
@@ -71,6 +75,7 @@ public class UserService {
     }
 
     @Transactional
+    @TrackExecutionTime
     public UserResponseDTO update(Principal principal, UserUpdateDTO userUpdateDTO) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), userUpdateDTO, principal);
         var user = userHelper.getUser(principal);
@@ -87,6 +92,7 @@ public class UserService {
     }
 
     @Transactional
+    @TrackExecutionTime
     public Void delete(Principal principal) {
         log.debug(crudLogConstants.getInputEntityForDelete(), principal);
         var user = userHelper.getUser(principal);

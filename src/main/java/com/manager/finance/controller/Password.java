@@ -3,6 +3,7 @@ package com.manager.finance.controller;
 import com.manager.finance.dto.PasswordUpdateDTO;
 import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.helper.ErrorHelper;
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.service.PasswordService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class Password {
     private final ErrorHelper errorHelper;
 
     @PostMapping("/forget")
+    @TrackExecutionTime
     public ResponseEntity<Object> forgetPassword(@Valid UserUpdateDTO userDTO, BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
@@ -34,6 +36,7 @@ public class Password {
     }
 
     @PostMapping("/reset")
+    @TrackExecutionTime
     public ResponseEntity<Object> resetPassword(String token, @Valid PasswordUpdateDTO passwordUpdateDTO, BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {

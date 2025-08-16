@@ -1,5 +1,6 @@
 package com.manager.finance.controller;
 
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.service.VerificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ public class Verification {
     private final VerificationService verificationService;
 
     @PostMapping("/phone")
+    @TrackExecutionTime
     public ResponseEntity<Map<String, Boolean>> confirmPhone(@PathVariable("userId") long user, @RequestParam String code) {
         log.debug("User {} tries to verify phone", user);
         var isConfirmed = verificationService.verifyPhone(user, code);
@@ -25,6 +27,7 @@ public class Verification {
     }
 
     @PostMapping("/email")
+    @TrackExecutionTime
     public ResponseEntity<Map<String, Boolean>> confirmEmail(@PathVariable("userId") long user, @RequestParam String code) {
         log.debug("User {} tries to verify email", user);
         var isConfirmed = verificationService.verifyEmail(user, code);

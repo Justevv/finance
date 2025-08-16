@@ -1,5 +1,6 @@
 package com.manager.finance.service;
 
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ public class SecurityUserService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
+    @TrackExecutionTime
     public UserDetails loadUserByUsername(String username) {
         log.debug("Input username is {}", username);
         var userEntity = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));

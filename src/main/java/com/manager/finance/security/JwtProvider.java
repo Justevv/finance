@@ -1,6 +1,7 @@
 package com.manager.finance.security;
 
 import com.manager.finance.entity.RoleEntity;
+import com.manager.finance.metric.TrackExecutionTime;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -37,6 +38,7 @@ public class JwtProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
+    @TrackExecutionTime
     public String createToken(String username, Collection<RoleEntity> role) {
         var claims = Jwts.claims().setSubject(username);
         claims.put("roles", role);
@@ -51,6 +53,7 @@ public class JwtProvider {
                 .compact();
     }
 
+    @TrackExecutionTime
     public boolean validateToken(String token){
         try {
             var claimsJws= Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
@@ -60,16 +63,19 @@ public class JwtProvider {
         }
     }
 
+    @TrackExecutionTime
     public Authentication getAuthentication (String token){
         UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 
     }
 
+    @TrackExecutionTime
     public String getUsername(String token){
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
+    @TrackExecutionTime
     public String resolveToken(HttpServletRequest request){
         return request.getHeader(authorizationHeader);
     }

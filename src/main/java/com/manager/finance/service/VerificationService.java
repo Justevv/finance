@@ -5,6 +5,7 @@ import com.manager.finance.entity.VerificationEntity;
 import com.manager.finance.entity.VerificationType;
 import com.manager.finance.event.ConfirmationCompleteEvent;
 import com.manager.finance.exception.VerificationNotFoundException;
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.repository.VerificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class VerificationService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
+    @TrackExecutionTime
     public boolean verifyPhone(long userId, String code) {
         log.debug("Trying to verify phone for userId {}", userId);
         var user = userRepository.findById(userId)
@@ -53,6 +55,7 @@ public class VerificationService {
     }
 
     @Transactional
+    @TrackExecutionTime
     public boolean verifyEmail(long userId, String code) {
         log.debug("Trying to verify email for userId {}", userId);
         var user = userRepository.findById(userId)
@@ -73,6 +76,7 @@ public class VerificationService {
     }
 
     @Transactional
+    @TrackExecutionTime
     public VerificationEntity createAndSaveVerification(UserEntity user, VerificationType verificationType) {
         log.debug("Current user is {}, Verification type is {}", user, verificationType);
         var verification = createVerificationCode(verificationType);
