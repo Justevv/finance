@@ -32,7 +32,7 @@ public class User {
 
     @PostMapping
     @TrackExecutionTime
-    public ResponseEntity<Object> createUser(@Valid UserDTO userDTO, BindingResult bindingResult) {
+    public ResponseEntity<Object> createUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
         ResponseEntity<Object> responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
             var responseDTO = userService.createAndGetDTO(userDTO);

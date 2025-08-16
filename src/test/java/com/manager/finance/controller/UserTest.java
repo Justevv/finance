@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -125,10 +126,14 @@ class UserTest {
     @SneakyThrows
     void postUser_shouldReturnException_when_userIsExists() {
         mockMvc.perform(MockMvcRequestBuilders.post(USER_API)
-                        .param(USERNAME_PARAMETER, "user")
-                        .param(PASSWORD_PARAMETER, "1")
-                        .param(PHONE_PARAMETER, NEW_PHONE)
-                        .param(EMAIL_PARAMETER, NEW_EMAIL)
+                        .content("""
+                                {
+                                    "username": "user",
+                                    "email": "st@a.ru",
+                                    "phone": "1",
+                                    "password":"1"
+                                }""")
+                        .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(409));
     }
@@ -139,17 +144,21 @@ class UserTest {
         mockMvc.perform(MockMvcRequestBuilders.post(USER_API)
                 )
                 .andExpect(status().is(400))
-                .andExpect(content().contentType("application/json"));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test
     @SneakyThrows
     void postUser_shouldReturnUsersAndOk_when_userIsNotExists() {
         mockMvc.perform(MockMvcRequestBuilders.post(USER_API)
-                        .param(USERNAME_PARAMETER, NEW_USERNAME)
-                        .param(PASSWORD_PARAMETER, "1")
-                        .param(PHONE_PARAMETER, NEW_PHONE)
-                        .param(EMAIL_PARAMETER, NEW_EMAIL)
+                        .content("""
+                                {
+                                    "username": "new",
+                                    "email": "st@a.ru",
+                                    "phone": "1",
+                                    "password":"1"
+                                }""")
+                        .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.username").value(NEW_USERNAME))
