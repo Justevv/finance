@@ -1,6 +1,7 @@
 package com.manager.finance.helper;
 
 import com.manager.finance.entity.CrudEntity;
+import com.manager.finance.metric.TrackExecutionTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ public class ErrorHelper {
         return responseEntity;
     }
 
+    @TrackExecutionTime
     public ResponseEntity<Object> checkErrors(BindingResult bindingResult) {
         ResponseEntity<Object> responseEntity = null;
         if (bindingResult.hasErrors()) {

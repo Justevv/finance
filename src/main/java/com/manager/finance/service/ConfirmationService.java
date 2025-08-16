@@ -1,6 +1,7 @@
 package com.manager.finance.service;
 
 import com.manager.finance.entity.VerificationEntity;
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -39,6 +40,7 @@ public class ConfirmationService {
 //        throw new UnsupportedOperationException("implement the logic");
     }
 
+    @TrackExecutionTime
     public boolean isPhoneAlreadyConfirmed(String phone) {
         var phones = userRepository.findByPhoneAndIsPhoneConfirmed(phone, true);
         var isPhoneAlreadyConfirmed = phones.isPresent();
@@ -46,6 +48,7 @@ public class ConfirmationService {
         return isPhoneAlreadyConfirmed;
     }
 
+    @TrackExecutionTime
     public boolean isEmailAlreadyConfirmed(String email) {
         var emailConfirmed = userRepository.findByEmailAndIsEmailConfirmed(email, true);
         var isEmailAlreadyConfirmed = emailConfirmed.isPresent();

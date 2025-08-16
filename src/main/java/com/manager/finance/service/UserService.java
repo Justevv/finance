@@ -55,6 +55,7 @@ public class UserService {
         return user;
     }
 
+    @TrackExecutionTime
     private UserEntity createUser(UserDTO userDTO) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputNewDTO(), userDTO);
         userHelper.checkUniqueUserCreateParameters(userDTO);
