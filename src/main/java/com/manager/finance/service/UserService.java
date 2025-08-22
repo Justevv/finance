@@ -47,7 +47,6 @@ public class UserService {
         return convertUserToUserResponseDTO(user);
     }
 
-    @Transactional
     @TrackExecutionTime
     public UserEntity create(UserDTO userDTO) throws UserAlreadyExistException {
         var user = createUser(userDTO);

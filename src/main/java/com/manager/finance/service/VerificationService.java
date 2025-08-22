@@ -75,7 +75,6 @@ public class VerificationService {
         return false;
     }
 
-    @Transactional
     @TrackExecutionTime
     public VerificationEntity createAndSaveVerification(UserEntity user, VerificationType verificationType) {
         log.debug("Current user is {}, Verification type is {}", user, verificationType);
