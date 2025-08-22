@@ -17,6 +17,38 @@ services:
     networks:
       - manager_network
 
+  database_slave_1:
+    image: postgres:17.5-alpine3.22
+    container_name: manager_database_slave_1
+    environment:
+      POSTGRES_DB: puplic
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: sa
+    ports:
+      - "15432:5432"
+    volumes:
+      - pg_data_slave_1:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-U", "sa" ]
+    networks:
+      - manager_network
+
+  database_slave_2:
+    image: postgres:17.5-alpine3.22
+    container_name: manager_database_slave_2
+    environment:
+      POSTGRES_DB: puplic
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: sa
+    ports:
+      - "25432:5432"
+    volumes:
+      - pg_data_slave_2:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "sa"]
+    networks:
+      - manager_network
+
   backend:
     image: manager:1
     container_name: manager_backend
@@ -33,14 +65,16 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
-          memory: 1024M
+          cpus: '3'
+          memory: 2048M
         reservations:
           cpus: '1'
           memory: 512M
 
 volumes:
   pg_data:
+  pg_data_slave_1:
+  pg_data_slave_2:
 
 networks:
   manager_network:
