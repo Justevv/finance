@@ -6,10 +6,12 @@ import com.manager.finance.entity.CrudEntity;
 import com.manager.finance.helper.ErrorHelper;
 import com.manager.finance.service.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
 import java.security.Principal;
+import java.util.UUID;
 
 public class CrudApiResponse<E extends CrudEntity, D extends BaseCrudDTO, R extends BaseCrudResponseDTO> {
     private final CrudService<E, D, R> model;
@@ -24,6 +26,22 @@ public class CrudApiResponse<E extends CrudEntity, D extends BaseCrudDTO, R exte
         var responseEntity = errorHelper.checkEntityNotBelongPrincipal(principal, entity);
         if (responseEntity == null) {
             responseEntity = ResponseEntity.ok(model.get(entity));
+        }
+        return responseEntity;
+    }
+
+    public ResponseEntity<Object> get(Principal principal, String uuid) {
+        ResponseEntity<Object> responseEntity;
+        try {
+            UUID guid = UUID.fromString(uuid);
+            R body = model.get(guid, principal);
+            if (body != null) {
+                responseEntity = ResponseEntity.ok(body);
+            } else {
+                responseEntity = new ResponseEntity<>("Entity not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (IllegalArgumentException e) {
+            responseEntity = new ResponseEntity<>("Invalid UUID", HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
     }

@@ -42,8 +42,8 @@ public class Expense extends CrudApiResponse<ExpenseEntity, ExpenseDTO, ExpenseR
 
     @GetMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<Object> getExpense(Principal principal, @PathVariable("id") ExpenseEntity expenseEntity) {
-        return get(principal, expenseEntity);
+    public ResponseEntity<Object> getExpense(Principal principal, @PathVariable("id") String guid) {
+        return get(principal, guid);
     }
 
     @PostMapping

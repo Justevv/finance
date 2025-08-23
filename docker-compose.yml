@@ -71,6 +71,33 @@ services:
           cpus: '1'
           memory: 512M
 
+  redis:
+    image: redis/redis-stack:7.2.0-v18
+    container_name: manager_redis
+    environment:
+      - REDIS_ARGS="--requirepass rassWd"
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - redisdata:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      start_period: 10s
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - manager_network
+
 volumes:
   pg_data:
   pg_data_slave_1:

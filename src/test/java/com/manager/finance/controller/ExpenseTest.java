@@ -96,7 +96,7 @@ class ExpenseTest {
     @WithMockUser
     @SneakyThrows
     void getExpense() {
-        Mockito.when(expenseRepository.findByUser(eq(userEntity), any(PageRequest.class))).thenReturn((List.of(expenseEntity)));
+        Mockito.when(expenseRepository.findByGuidAndUser(eq(expenseEntity.getGuid()), eq(userEntity))).thenReturn(Optional.ofNullable(expenseEntity));
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/expense/{id}", expenseEntity.getGuid())
                         .param("startWith", "0")
                         .param("count", "10")

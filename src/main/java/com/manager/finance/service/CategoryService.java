@@ -39,6 +39,12 @@ public class CategoryService implements CrudService<CategoryEntity, CategoryDTO,
     }
 
     @Override
+    public CategoryResponseDTO get(UUID entity, Principal principal) {
+//        return convertEntityToResponseDTO(entity);
+        return null;
+    }
+
+    @Override
     public List<CategoryResponseDTO> getAll(Principal principal) {
         var user = userHelper.getUser(principal);
         var categoryEntity = categoryRepository.findByUser(user);

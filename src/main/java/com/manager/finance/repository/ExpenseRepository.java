@@ -9,12 +9,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ExpenseRepository extends JpaRepository<ExpenseEntity, UUID> {
 
     @TrackExecutionTime
     List<ExpenseEntity> findByUser(UserEntity userEntity);
+
+    @TrackExecutionTime
+    Optional<ExpenseEntity> findByGuidAndUser(UUID guid, UserEntity userEntity);
 
     @TrackExecutionTime
     List<ExpenseEntity> findByUser(UserEntity userEntity, Pageable topTen);

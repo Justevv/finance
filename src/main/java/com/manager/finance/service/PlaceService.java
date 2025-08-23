@@ -39,6 +39,12 @@ public class PlaceService implements CrudService<PlaceEntity, PlaceDTO, PlaceRes
         return convertEntityToResponseDTO(entity);
     }
 
+    @Override
+    public PlaceResponseDTO get(UUID entity, Principal principal) {
+//        return convertEntityToResponseDTO(entity);
+        return null;
+    }
+
     public List<PlaceResponseDTO> getAll(Principal principal) {
         var user = userHelper.getUser(principal);
         var categoryEntity = placeRepository.findByUser(user);
