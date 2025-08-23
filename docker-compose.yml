@@ -102,6 +102,7 @@ volumes:
   pg_data:
   pg_data_slave_1:
   pg_data_slave_2:
+  redisdata:
 
 networks:
   manager_network:
