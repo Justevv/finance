@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "authentication_log")
@@ -17,9 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AuthenticationLog {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "authentication_log_generator")
-    @SequenceGenerator(name = "authentication_log_generator", sequenceName = "authentication_log_seq", allocationSize = 1)
-    private Long id;
+    private UUID guid;
     private String username;
     private String ipAddress;
     private LocalDateTime dateTime;

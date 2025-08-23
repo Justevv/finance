@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -60,6 +61,7 @@ public class UserService {
         userHelper.checkUniqueUserCreateParameters(userDTO);
 
         var user = getMapper().map(userDTO, UserEntity.class);
+        user.setGuid(UUID.randomUUID());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRoles(Set.of(roleRepository.findByName("ROLE_USER").orElseThrow()));
 

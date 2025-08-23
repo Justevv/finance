@@ -9,8 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface VerificationRepository extends JpaRepository<VerificationEntity, Long> {
+public interface VerificationRepository extends JpaRepository<VerificationEntity, UUID> {
     Optional<VerificationEntity> findByUserAndType(UserEntity user, VerificationType type);
 
     @Modifying

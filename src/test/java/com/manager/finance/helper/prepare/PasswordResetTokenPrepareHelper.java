@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @TestConfiguration
 public class PasswordResetTokenPrepareHelper {
@@ -13,7 +14,7 @@ public class PasswordResetTokenPrepareHelper {
 
     public PasswordResetToken createPasswordResetToken() {
         var passwordResetToken = new PasswordResetToken();
-        passwordResetToken.setId(1L);
+        passwordResetToken.setGuid(UUID.randomUUID());
         passwordResetToken.setToken("token");
         passwordResetToken.setUser(userPrepareHelper.createUser());
         passwordResetToken.setExpireTime(LocalDateTime.MAX);

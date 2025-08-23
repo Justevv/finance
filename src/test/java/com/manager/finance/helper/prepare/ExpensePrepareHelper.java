@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @TestConfiguration
 @Import({UserPrepareHelper.class, CategoryPrepareHelper.class, PlacePrepareHelper.class})
@@ -19,7 +20,7 @@ public class ExpensePrepareHelper {
 
     public ExpenseEntity createExpense() {
         var expenseEntity = new ExpenseEntity();
-        expenseEntity.setId(1);
+        expenseEntity.setGuid(UUID.randomUUID());
         expenseEntity.setCategory(categoryPrepareHelper.createCategory());
         expenseEntity.setPlace(placePrepareHelper.createPlace());
         expenseEntity.setDate(LocalDateTime.now());

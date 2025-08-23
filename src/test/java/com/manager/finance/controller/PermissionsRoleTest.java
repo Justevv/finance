@@ -42,14 +42,14 @@ class PermissionsRoleTest {
     @BeforeEach
     private void prepare() {
         role = rolePrepareHelper.createRole();
-        Mockito.when(roleRepository.findById(role.getId())).thenReturn(Optional.ofNullable(role));
+        Mockito.when(roleRepository.findById(role.getGuid())).thenReturn(Optional.ofNullable(role));
     }
 
     @Test
     @WithMockUser(authorities = {"role:crud"})
     @SneakyThrows
     void addPermissions_shouldReturnPermissionEntityAndOk_when_permissionIsExists() {
-        mockMvc.perform(MockMvcRequestBuilders.post(PERMISSION_API, role.getId())
+        mockMvc.perform(MockMvcRequestBuilders.post(PERMISSION_API, role.getGuid())
                         .param("permissionIds", PermissionEntity.ALL_READ.toString()))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.name").value(role.getName()))
@@ -60,7 +60,7 @@ class PermissionsRoleTest {
     @WithMockUser(authorities = {"role:crud"})
     @SneakyThrows
     void deletePermissions_shouldReturnPermissionEntityAndOk_when_permissionIsExists() {
-        mockMvc.perform(MockMvcRequestBuilders.delete(PERMISSION_API, role.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete(PERMISSION_API, role.getGuid())
                         .param("permissionIds", PermissionEntity.ALL_READ.toString()))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.name").value(role.getName()))

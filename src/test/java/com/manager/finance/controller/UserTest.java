@@ -73,7 +73,7 @@ class UserTest {
     @WithMockUser
     @SneakyThrows
     void putUser_shouldReturnUserAndOk_when_userIsExists() {
-        Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
+        Mockito.when(userRepository.findById(userEntity.getGuid())).thenReturn(Optional.of(userEntity));
         mockMvc.perform(MockMvcRequestBuilders.put(USER_HIMSELF_API)
                         .param(USERNAME_PARAMETER, NEW_USERNAME)
                         .param(PASSWORD_PARAMETER, "1")
@@ -90,7 +90,7 @@ class UserTest {
     @WithMockUser
     @SneakyThrows
     void deleteUser_shouldReturnNullAndOk_when_userIsExists() {
-        Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
+        Mockito.when(userRepository.findById(userEntity.getGuid())).thenReturn(Optional.of(userEntity));
         mockMvc.perform(MockMvcRequestBuilders.delete(USER_HIMSELF_API))
                 .andExpect(status().is(200));
     }
@@ -114,7 +114,7 @@ class UserTest {
     void putUser_shouldReturnException_when_userIsExistsAndEmailIsWrong() {
         var newEmail = "wrongEmail";
 
-        Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
+        Mockito.when(userRepository.findById(userEntity.getGuid())).thenReturn(Optional.of(userEntity));
         mockMvc.perform(MockMvcRequestBuilders.put(USER_HIMSELF_API)
                         .param(EMAIL_PARAMETER, newEmail)
                 )

@@ -7,15 +7,16 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
+import java.util.UUID;
+
 @Data
 @MappedSuperclass
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class CrudEntity {
+public abstract class CrudEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "crud_generator")
-    @SequenceGenerator(name = "crud_generator", sequenceName = "crud_seq", allocationSize = 1, initialValue = 100)
-    private long id;
+    private UUID guid;
     @NotNull
     @ManyToOne
     private UserEntity user;

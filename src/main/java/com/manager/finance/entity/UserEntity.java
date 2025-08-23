@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity
@@ -23,9 +24,7 @@ import java.util.stream.Collectors;
 @Data
 public class UserEntity implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_generator")
-    @SequenceGenerator(name = "users_generator", sequenceName = "users_seq", allocationSize = 1, initialValue = 100)
-    private long id;
+    private UUID guid;
     @NotNull
     @NotBlank
     @Column(unique = true)
@@ -40,16 +39,14 @@ public class UserEntity implements UserDetails {
     @NotNull
     @NotBlank
     private String email;
-    @ColumnDefault("0")
-    private BigDecimal balance = BigDecimal.ZERO;
     private boolean isPhoneConfirmed;
     private boolean isEmailConfirmed;
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonIgnoreProperties("roles")
     @JoinTable(
             name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name = "user_guid"),
+            inverseJoinColumns = @JoinColumn(name = "role_guid"))
     private Set<RoleEntity> roles;
 
     @Override

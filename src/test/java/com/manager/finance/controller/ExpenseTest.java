@@ -56,7 +56,7 @@ class ExpenseTest {
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         Mockito.when(securityUserService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
         expenseEntity = expensePrepareHelper.createExpense();
-        Mockito.when(expenseRepository.findById(expenseEntity.getId())).thenReturn(Optional.of(expenseEntity));
+        Mockito.when(expenseRepository.findById(expenseEntity.getGuid())).thenReturn(Optional.of(expenseEntity));
     }
 
     @Test
@@ -67,7 +67,7 @@ class ExpenseTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/expense")
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("[0].id").value(expenseEntity.getId()))
+                .andExpect(jsonPath("[0].guid").value(expenseEntity.getGuid().toString()))
                 .andExpect(jsonPath("[0].description").value(expenseEntity.getDescription()))
                 .andExpect(jsonPath("[0].date").isString())
                 .andExpect(jsonPath("[0].category.name").value(expenseEntity.getCategory().getName()))
@@ -80,11 +80,11 @@ class ExpenseTest {
     @SneakyThrows
     void getExpensesPage() {
         Mockito.when(expenseRepository.findByUser(eq(userEntity), any(PageRequest.class))).thenReturn((List.of(expenseEntity)));
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/expense/page/1")
-                        .param("count", "10")
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/expense/page/0")
+                        .param("countPerPage", "10")
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("[0].id").value(expenseEntity.getId()))
+                .andExpect(jsonPath("[0].guid").value(expenseEntity.getGuid().toString()))
                 .andExpect(jsonPath("[0].description").value(expenseEntity.getDescription()))
                 .andExpect(jsonPath("[0].date").isString())
                 .andExpect(jsonPath("[0].category.name").value(expenseEntity.getCategory().getName()))
@@ -97,12 +97,12 @@ class ExpenseTest {
     @SneakyThrows
     void getExpense() {
         Mockito.when(expenseRepository.findByUser(eq(userEntity), any(PageRequest.class))).thenReturn((List.of(expenseEntity)));
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/expense/{id}", expenseEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/expense/{id}", expenseEntity.getGuid())
                         .param("startWith", "0")
                         .param("count", "10")
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").value(expenseEntity.getId()))
+                .andExpect(jsonPath("$.guid").value(expenseEntity.getGuid().toString()))
                 .andExpect(jsonPath("$.description").value(expenseEntity.getDescription()))
                 .andExpect(jsonPath("$.date").isString())
                 .andExpect(jsonPath("$.category.name").value(expenseEntity.getCategory().getName()))
@@ -117,12 +117,12 @@ class ExpenseTest {
         var newDescription = "newDescription";
         var newSum = "400500.0";
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/v1/expense/{id}", expenseEntity.getId())
+        mockMvc.perform(MockMvcRequestBuilders.put("/v1/expense/{id}", expenseEntity.getGuid())
                         .param("description", newDescription)
                         .param("sum", newSum)
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").value(expenseEntity.getId()))
+                .andExpect(jsonPath("$.guid").value(expenseEntity.getGuid().toString()))
                 .andExpect(jsonPath("$.description").value(newDescription))
                 .andExpect(jsonPath("$.date").isString())
                 .andExpect(jsonPath("$.category.name").value(expenseEntity.getCategory().getName()))
@@ -141,7 +141,7 @@ class ExpenseTest {
                         .contentType("application/json")
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.guid").exists())
                 .andExpect(jsonPath("$.description").value(newDescription))
                 .andExpect(jsonPath("$.date").isString())
                 .andExpect(jsonPath("$.sum").value(newSum));
@@ -151,7 +151,7 @@ class ExpenseTest {
     @WithMockUser
     @SneakyThrows
     void deleteExpense() {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/expense/{id}", expenseEntity.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/expense/{id}", expenseEntity.getGuid()))
                 .andExpect(status().is(200));
     }
 

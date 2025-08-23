@@ -1,7 +1,0 @@
-CREATE SEQUENCE IF NOT EXISTS counter_seq;
-CREATE SEQUENCE IF NOT EXISTS users_seq start 100 increment 1;
-CREATE SEQUENCE IF NOT EXISTS verification_seq;
-CREATE SEQUENCE IF NOT EXISTS authentication_log_seq;
-CREATE SEQUENCE IF NOT EXISTS crud_seq;
-CREATE SEQUENCE IF NOT EXISTS role_seq;
-CREATE SEQUENCE IF NOT EXISTS password_reset_token_seq;

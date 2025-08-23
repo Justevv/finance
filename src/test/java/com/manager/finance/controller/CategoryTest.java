@@ -62,7 +62,7 @@ class CategoryTest {
         Mockito.when(categoryRepository.findByUser(userEntity)).thenReturn((List.of(categoryEntity)));
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/category"))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("[0].id").value(categoryEntity.getId()))
+                .andExpect(jsonPath("[0].guid").value(categoryEntity.getGuid().toString()))
                 .andExpect(jsonPath("[0].name").value(categoryEntity.getName()));
     }
 
@@ -70,10 +70,10 @@ class CategoryTest {
     @WithMockUser
     @SneakyThrows
     void getCategory() {
-        Mockito.when(categoryRepository.findById(categoryEntity.getId())).thenReturn(Optional.of(categoryEntity));
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/category/{id}", categoryEntity.getId()))
+        Mockito.when(categoryRepository.findById(categoryEntity.getGuid())).thenReturn(Optional.of(categoryEntity));
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/category/{id}", categoryEntity.getGuid()))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").value(categoryEntity.getId()))
+                .andExpect(jsonPath("$.guid").value(categoryEntity.getGuid().toString()))
                 .andExpect(jsonPath("$.name").value(categoryEntity.getName()));
     }
 
@@ -84,12 +84,12 @@ class CategoryTest {
     void putCategory() {
         var newName = "newName";
 
-        Mockito.when(categoryRepository.findById(categoryEntity.getId())).thenReturn(Optional.of(categoryEntity));
-        mockMvc.perform(MockMvcRequestBuilders.put("/v1/category/{id}", categoryEntity.getId())
+        Mockito.when(categoryRepository.findById(categoryEntity.getGuid())).thenReturn(Optional.of(categoryEntity));
+        mockMvc.perform(MockMvcRequestBuilders.put("/v1/category/{id}", categoryEntity.getGuid())
                         .param("name", newName)
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").value(categoryEntity.getId()))
+                .andExpect(jsonPath("$.guid").value(categoryEntity.getGuid().toString()))
                 .andExpect(jsonPath("$.name").value(newName));
     }
 
@@ -102,7 +102,7 @@ class CategoryTest {
                         .param("name", newName)
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.guid").exists())
                 .andExpect(jsonPath("$.name").value(newName));
     }
 
@@ -110,8 +110,8 @@ class CategoryTest {
     @WithMockUser
     @SneakyThrows
     void deleteCategory() {
-        Mockito.when(categoryRepository.findById(categoryEntity.getId())).thenReturn(Optional.of(categoryEntity));
-        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/category/{id}", categoryEntity.getId()))
+        Mockito.when(categoryRepository.findById(categoryEntity.getGuid())).thenReturn(Optional.of(categoryEntity));
+        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/category/{id}", categoryEntity.getGuid()))
                 .andExpect(status().is(200));
     }
 

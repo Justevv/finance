@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -54,6 +55,7 @@ public class CategoryService implements CrudService<CategoryEntity, CategoryDTO,
     private CategoryEntity saveAndGet(Principal principal, CategoryDTO categoryDTO) {
         log.debug(crudLogConstants.getInputNewDTO(), categoryDTO);
         var category = mapper.map(categoryDTO, CategoryEntity.class);
+        category.setGuid(UUID.randomUUID());
 //        setDefaultValue(category);
         category.setUser(userHelper.getUser(principal));
         categoryRepository.save(category);
@@ -92,8 +94,8 @@ public class CategoryService implements CrudService<CategoryEntity, CategoryDTO,
     public CategoryEntity getOrCreate(Principal principal, CategoryDTO categoryDTO) {
         if (categoryDTO == null) {
             return null;
-        } else if (categoryDTO.getId() != null) {
-            var category = categoryRepository.findById(categoryDTO.getId());
+        } else if (categoryDTO.getGuid() != null) {
+            var category = categoryRepository.findById(categoryDTO.getGuid());
             if (category.isPresent()) {
                 return category.get();
             }

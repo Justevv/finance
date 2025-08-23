@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -81,6 +82,7 @@ public class ExpenseService implements CrudService<ExpenseEntity, ExpenseDTO, Ex
     public ExpenseResponseDTO create(Principal principal, ExpenseDTO expenseDTO) {
         log.debug(crudLogConstants.getInputNewDTO(), expenseDTO);
         var expense = getMapper().map(expenseDTO, ExpenseEntity.class);
+        expense.setGuid(UUID.randomUUID());
         expense.setUser(userHelper.getUser(principal));
         expense.setDate(LocalDateTime.now());
         expense.setCategory(categoryService.getOrCreate(principal, expenseDTO.getCategory()));

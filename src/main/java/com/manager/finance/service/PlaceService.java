@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -54,6 +55,7 @@ public class PlaceService implements CrudService<PlaceEntity, PlaceDTO, PlaceRes
     private PlaceEntity saveAndGet(Principal principal, PlaceDTO placeDTO) {
         log.debug(crudLogConstants.getInputNewDTO(), placeDTO);
         var place = getMapper().map(placeDTO, PlaceEntity.class);
+        place.setGuid(UUID.randomUUID());
         place.setUser(userHelper.getUser(principal));
         placeRepository.save(place);
         log.info(crudLogConstants.getSaveEntityToDatabase(), place);
@@ -85,8 +87,8 @@ public class PlaceService implements CrudService<PlaceEntity, PlaceDTO, PlaceRes
     public PlaceEntity getOrCreate(Principal principal, PlaceDTO placeDTO) {
         if (placeDTO == null) {
             return null;
-        } else if (placeDTO.getId() != null) {
-            var category = placeRepository.findById(placeDTO.getId());
+        } else if (placeDTO.getGuid() != null) {
+            var category = placeRepository.findById(placeDTO.getGuid());
             if (category.isPresent()) {
                 return category.get();
             }

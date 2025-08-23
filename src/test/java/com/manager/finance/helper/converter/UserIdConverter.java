@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.core.convert.converter.Converter;
 
+import java.util.UUID;
+
 @TestConfiguration
 public class UserIdConverter implements Converter<String, UserEntity> {
     @Autowired
@@ -13,6 +15,6 @@ public class UserIdConverter implements Converter<String, UserEntity> {
 
     @Override
     public UserEntity convert(String source) {
-        return userRepository.findById(Long.parseLong(source)).orElseThrow();
+        return userRepository.findById(UUID.fromString(source)).orElseThrow();
     }
 }

@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "verification")
@@ -16,9 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class VerificationEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verification_generator")
-    @SequenceGenerator(name = "verification_generator", sequenceName = "verification_seq", allocationSize = 1)
-    private long id;
+    private UUID guid;
     @ToString.Exclude
     private String code;
     private LocalDateTime expireTime;
@@ -28,6 +27,7 @@ public class VerificationEntity implements Serializable {
     private UserEntity user;
 
     public VerificationEntity(String code, int expireInSeconds, VerificationType type) {
+        this.guid = UUID.randomUUID();
         this.code = code;
         this.expireTime = LocalDateTime.now().plusSeconds(expireInSeconds);
         this.type = type;

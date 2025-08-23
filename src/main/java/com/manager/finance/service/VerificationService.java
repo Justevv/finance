@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 
 
@@ -35,7 +37,7 @@ public class VerificationService {
 
     @Transactional
     @TrackExecutionTime
-    public boolean verifyPhone(long userId, String code) {
+    public boolean verifyPhone(UUID userId, String code) {
         log.debug("Trying to verify phone for userId {}", userId);
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
@@ -56,7 +58,7 @@ public class VerificationService {
 
     @Transactional
     @TrackExecutionTime
-    public boolean verifyEmail(long userId, String code) {
+    public boolean verifyEmail(UUID userId, String code) {
         log.debug("Trying to verify email for userId {}", userId);
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));

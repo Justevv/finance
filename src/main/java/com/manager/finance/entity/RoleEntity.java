@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "role")
@@ -15,9 +16,7 @@ public class RoleEntity implements Serializable {
     private static final long serialVersionUID = 9178661439456356177L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_generator")
-    @SequenceGenerator(name = "role_generator", sequenceName = "role_seq", allocationSize = 1)
-    private Long id;
+    private UUID guid;
 
     @Column(unique = true)
     private String name;
@@ -25,6 +24,6 @@ public class RoleEntity implements Serializable {
     @ElementCollection(targetClass = PermissionEntity.class, fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_permissions",
-            joinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name = "role_guid"))
     private Set<PermissionEntity> permissions;
 }

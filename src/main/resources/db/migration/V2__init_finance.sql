@@ -1,60 +1,60 @@
 create table account
 (
-    id      int8 not null,
+    guid    uuid not null,
     name    varchar(255),
-    user_id int8,
-    primary key (id)
+    user_guid uuid,
+    primary key (guid)
 );
 
 create table category
 (
-    id                 int8 not null,
+    guid               uuid not null,
     name               varchar(255),
-    parent_category_id int8,
-    user_id            int8,
-    primary key (id)
+    parent_category_guid uuid,
+    user_guid            uuid,
+    primary key (guid)
 );
 
 create table expense
 (
-    id               int8   not null,
-    date             timestamp,
-    description      varchar(255),
-    sum              float8 not null,
+    guid uuid not null,
+    date timestamp,
+    description varchar(255),
+    sum float8 not null,
     transaction_type int4,
-    account_id       int8,
-    category_id      int8,
-    payment_type_id  int8,
-    place_id         int8,
-    user_id          int8,
-    primary key (id)
+    account_guid uuid,
+    category_guid uuid,
+    payment_type_guid uuid,
+    place_guid uuid,
+    user_guid uuid,
+    primary key (guid)
 );
 
 create table payment_type
 (
-    id      int8 not null,
+    guid    uuid not null,
     name    varchar(255),
-    user_id int8,
-    primary key (id)
+    user_guid uuid,
+    primary key (guid)
 );
 
 create table place
 (
-    id      int8 not null,
+    guid    uuid not null,
     address varchar(255),
     name    varchar(255),
-    user_id int8,
-    primary key (id)
+    user_guid uuid,
+    primary key (guid)
 );
 
 
-alter table if exists category add constraint FK_category_category foreign key (parent_category_id) references category;
-alter table if exists category add constraint FK_category_users foreign key (user_id) references users;
-alter table if exists expense add constraint FK_expense_account foreign key (account_id) references account;
-alter table if exists expense add constraint FK_expense_category foreign key (category_id) references category;
-alter table if exists expense add constraint FK_expense_payment_type foreign key (payment_type_id) references payment_type;
-alter table if exists expense add constraint FK_expense_users foreign key (user_id) references users;
-alter table if exists expense add constraint FK_expense_place foreign key (place_id) references place;
-alter table if exists account add constraint FK_account_users foreign key (user_id) references users;
-alter table if exists payment_type add constraint FK_payment_type_users foreign key (user_id) references users;
-alter table if exists place add constraint FK_place_users foreign key (user_id) references users;
+alter table if exists category add constraint FK_category_category foreign key (parent_category_guid) references category;
+alter table if exists category add constraint FK_category_users foreign key (user_guid) references users;
+alter table if exists expense add constraint FK_expense_account foreign key (account_guid) references account;
+alter table if exists expense add constraint FK_expense_category foreign key (category_guid) references category;
+alter table if exists expense add constraint FK_expense_payment_type foreign key (payment_type_guid) references payment_type;
+alter table if exists expense add constraint FK_expense_users foreign key (user_guid) references users;
+alter table if exists expense add constraint FK_expense_place foreign key (place_guid) references place;
+alter table if exists account add constraint FK_account_users foreign key (user_guid) references users;
+alter table if exists payment_type add constraint FK_payment_type_users foreign key (user_guid) references users;
+alter table if exists place add constraint FK_place_users foreign key (user_guid) references users;

@@ -42,7 +42,7 @@ class RoleTest {
     @BeforeEach
     private void prepare() {
         role = rolePrepareHelper.createRole();
-        Mockito.when(roleRepository.findById(role.getId())).thenReturn(Optional.ofNullable(role));
+        Mockito.when(roleRepository.findById(role.getGuid())).thenReturn(Optional.ofNullable(role));
     }
 
     @Test
@@ -59,7 +59,7 @@ class RoleTest {
     @WithMockUser(authorities = {"role:crud"})
     @SneakyThrows
     void getRole_shouldReturnRoleEntityAndOk_when_roleIsExists() {
-        mockMvc.perform(MockMvcRequestBuilders.get(ROLE_API + "/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get(ROLE_API + "/" + role.getGuid()))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.name").value(role.getName()));
     }
@@ -92,7 +92,7 @@ class RoleTest {
     @WithMockUser(authorities = {"role:crud"})
     @SneakyThrows
     void updateRole_shouldReturnRoleEntityAndOk_when_roleIsExists() {
-        mockMvc.perform(MockMvcRequestBuilders.put(ROLE_API + "/1")
+        mockMvc.perform(MockMvcRequestBuilders.put(ROLE_API + "/" + role.getGuid())
                         .param("name", role.getName()))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.name").value(role.getName()));
@@ -102,7 +102,7 @@ class RoleTest {
     @WithMockUser(authorities = {"role:crud"})
     @SneakyThrows
     void updateRole_shouldReturnExceptionAndBadResponse_when_roleIsInvalid() {
-        mockMvc.perform(MockMvcRequestBuilders.put(ROLE_API + "/1")
+        mockMvc.perform(MockMvcRequestBuilders.put(ROLE_API + "/" + role.getGuid())
                         .param("name", role.getName())
                         .param("permissions", "10"))
                 .andExpect(status().is(400))
@@ -113,7 +113,7 @@ class RoleTest {
     @WithMockUser(authorities = {"role:crud"})
     @SneakyThrows
     void deleteRole_shouldReturnNullAndOk_when_roleIsExists() {
-        mockMvc.perform(MockMvcRequestBuilders.delete(ROLE_API + "/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete(ROLE_API + "/" + role.getGuid()))
                 .andExpect(status().is(200));
     }
 }

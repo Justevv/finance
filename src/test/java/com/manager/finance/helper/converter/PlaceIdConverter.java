@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.core.convert.converter.Converter;
 
+import java.util.UUID;
+
 @TestConfiguration
 public class PlaceIdConverter implements Converter<String, PlaceEntity> {
     @Autowired
@@ -13,6 +15,6 @@ public class PlaceIdConverter implements Converter<String, PlaceEntity> {
 
     @Override
     public PlaceEntity convert(String source) {
-        return placeRepository.findById(Long.parseLong(source)).orElseThrow();
+        return placeRepository.findById(UUID.fromString(source)).orElseThrow();
     }
 }

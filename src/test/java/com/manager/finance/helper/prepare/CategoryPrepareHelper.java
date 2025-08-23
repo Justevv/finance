@@ -4,6 +4,8 @@ import com.manager.finance.entity.CategoryEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 
+import java.util.UUID;
+
 @TestConfiguration
 public class CategoryPrepareHelper {
     @Autowired
@@ -11,7 +13,7 @@ public class CategoryPrepareHelper {
 
     public CategoryEntity createCategory() {
         var categoryEntity = new CategoryEntity();
-        categoryEntity.setId(1);
+        categoryEntity.setGuid(UUID.randomUUID());
         categoryEntity.setName("categoryName");
         categoryEntity.setUser(userPrepareHelper.createUser());
         return categoryEntity;

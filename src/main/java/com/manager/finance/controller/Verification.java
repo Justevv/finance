@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/verification/{userId}")
@@ -18,7 +19,7 @@ public class Verification {
 
     @PostMapping("/phone")
     @TrackExecutionTime
-    public ResponseEntity<Map<String, Boolean>> confirmPhone(@PathVariable("userId") long user, @RequestParam String code) {
+    public ResponseEntity<Map<String, Boolean>> confirmPhone(@PathVariable("userId") UUID user, @RequestParam String code) {
         log.debug("User {} tries to verify phone", user);
         var isConfirmed = verificationService.verifyPhone(user, code);
         var response = Map.of("Phone confirmed", isConfirmed);
@@ -28,7 +29,7 @@ public class Verification {
 
     @PostMapping("/email")
     @TrackExecutionTime
-    public ResponseEntity<Map<String, Boolean>> confirmEmail(@PathVariable("userId") long user, @RequestParam String code) {
+    public ResponseEntity<Map<String, Boolean>> confirmEmail(@PathVariable("userId") UUID user, @RequestParam String code) {
         log.debug("User {} tries to verify email", user);
         var isConfirmed = verificationService.verifyEmail(user, code);
         var response = Map.of("Email confirmed", isConfirmed);

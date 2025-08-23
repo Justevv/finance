@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.core.convert.converter.Converter;
 
+import java.util.UUID;
+
 @TestConfiguration
 public class CategoryIdConverter implements Converter<String, CategoryEntity> {
     @Autowired
@@ -13,6 +15,6 @@ public class CategoryIdConverter implements Converter<String, CategoryEntity> {
 
     @Override
     public CategoryEntity convert(String source) {
-        return categoryRepository.findById(Long.parseLong(source)).orElseThrow();
+        return categoryRepository.findById(UUID.fromString(source)).orElseThrow();
     }
 }

@@ -5,6 +5,7 @@ import lombok.ToString;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "password_reset_token")
@@ -12,9 +13,7 @@ import java.time.LocalDateTime;
 public class PasswordResetToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "password_reset_token_generator")
-    @SequenceGenerator(name = "password_reset_token_generator", sequenceName = "password_reset_token_seq", allocationSize = 1)
-    private Long id;
+    private UUID guid;
     @ToString.Exclude
     private String token;
     @OneToOne(fetch = FetchType.EAGER)
