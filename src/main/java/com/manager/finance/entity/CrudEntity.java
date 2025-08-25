@@ -17,7 +17,4 @@ import java.util.UUID;
 public abstract class CrudEntity implements Serializable {
     @Id
     private UUID guid;
-    @NotNull
-    @ManyToOne
-    private UserEntity user;
 }

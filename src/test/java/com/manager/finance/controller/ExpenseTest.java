@@ -56,7 +56,7 @@ class ExpenseTest {
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         Mockito.when(securityUserService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
         expenseEntity = expensePrepareHelper.createExpense();
-        Mockito.when(expenseRepository.findById(expenseEntity.getGuid())).thenReturn(Optional.of(expenseEntity));
+        Mockito.when(expenseRepository.findByGuidAndUser(expenseEntity.getGuid(), userEntity)).thenReturn(Optional.of(expenseEntity));
     }
 
     @Test
@@ -118,8 +118,8 @@ class ExpenseTest {
         var newSum = "400500.0";
 
         mockMvc.perform(MockMvcRequestBuilders.put("/v1/expense/{id}", expenseEntity.getGuid())
-                        .param("description", newDescription)
-                        .param("sum", newSum)
+                        .content("{\"description\":\"newDescription\",\"sum\":400500.0}")
+                        .contentType("application/json")
                 )
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.guid").value(expenseEntity.getGuid().toString()))
@@ -151,6 +151,7 @@ class ExpenseTest {
     @WithMockUser
     @SneakyThrows
     void deleteExpense() {
+        Mockito.when(expenseRepository.existsByGuidAndUser(expenseEntity.getGuid(), userEntity)).thenReturn(true);
         mockMvc.perform(MockMvcRequestBuilders.delete("/v1/expense/{id}", expenseEntity.getGuid()))
                 .andExpect(status().is(200));
     }

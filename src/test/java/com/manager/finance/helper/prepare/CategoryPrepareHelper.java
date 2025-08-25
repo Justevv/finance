@@ -15,7 +15,6 @@ public class CategoryPrepareHelper {
         var categoryEntity = new CategoryEntity();
         categoryEntity.setGuid(UUID.randomUUID());
         categoryEntity.setName("categoryName");
-        categoryEntity.setUser(userPrepareHelper.createUser());
         return categoryEntity;
     }
 }

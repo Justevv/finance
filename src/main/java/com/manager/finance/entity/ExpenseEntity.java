@@ -1,6 +1,7 @@
 package com.manager.finance.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -24,5 +25,8 @@ public class ExpenseEntity extends CrudEntity {
     private AccountEntity account;
     @Enumerated(EnumType.ORDINAL)
     private TransactionType transactionType;
+    @NotNull
+    @ManyToOne
+    private UserEntity user;
 
 }

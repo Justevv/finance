@@ -16,7 +16,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/v1/place")
 @Slf4j
-public class Place extends CrudApiResponse<PlaceEntity, PlaceDTO, PlaceResponseDTO> {
+public class Place extends CreateReadApiResponse<PlaceDTO, PlaceResponseDTO> {
 
     public Place(PlaceService placeService) {
         super(placeService);
@@ -29,27 +29,14 @@ public class Place extends CrudApiResponse<PlaceEntity, PlaceDTO, PlaceResponseD
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Object> getPlaces(Principal principal, @PathVariable("id") PlaceEntity place) {
-        return get(principal, place);
+    public ResponseEntity<Object> getPlaces(Principal principal, @PathVariable("id") String guid) {
+        return get(guid, principal);
     }
 
     @PostMapping
     @TrackExecutionTime
-    public ResponseEntity<Object> createPlace(Principal principal, @Valid PlaceDTO placeDTO, BindingResult bindingResult) {
+    public ResponseEntity<Object> createPlace(Principal principal, @RequestBody @Valid PlaceDTO placeDTO, BindingResult bindingResult) {
         return create(principal, placeDTO, bindingResult);
-    }
-
-    @PutMapping("{id}")
-    @TrackExecutionTime
-    public ResponseEntity<Object> updatePlace(Principal principal, @PathVariable("id") PlaceEntity placeEntity, @Valid PlaceDTO placeDTO,
-                                              BindingResult bindingResult) {
-        return update(principal, placeEntity, placeDTO, bindingResult);
-    }
-
-    @DeleteMapping("{id}")
-    @TrackExecutionTime
-    public ResponseEntity<Object> deletePlace(Principal principal, @PathVariable("id") PlaceEntity placeEntity) {
-        return delete(principal, placeEntity);
     }
 
 }

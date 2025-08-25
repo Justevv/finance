@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/expense")
 @Slf4j
-public class Expense extends CrudApiResponse<ExpenseEntity, ExpenseDTO, ExpenseResponseDTO> {
+public class Expense extends CrudApiResponse<ExpenseDTO, ExpenseResponseDTO> {
     private final ExpenseService expenseService;
 
     public Expense(ExpenseService expenseService) {
@@ -43,7 +43,7 @@ public class Expense extends CrudApiResponse<ExpenseEntity, ExpenseDTO, ExpenseR
     @GetMapping("{id}")
     @TrackExecutionTime
     public ResponseEntity<Object> getExpense(Principal principal, @PathVariable("id") String guid) {
-        return get(principal, guid);
+        return get(guid, principal);
     }
 
     @PostMapping
@@ -54,34 +54,34 @@ public class Expense extends CrudApiResponse<ExpenseEntity, ExpenseDTO, ExpenseR
 
     @PatchMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<Object> changeExpenseProperty(Principal principal, @PathVariable("id") ExpenseEntity expense,
-                                                        @Valid ExpenseDTO expenseDTO, BindingResult bindingResult) {
-        return update(principal, expense, expenseDTO, bindingResult);
+    public ResponseEntity<Object> changeExpenseProperty(Principal principal, @PathVariable("id") String guid,
+                                                        @RequestBody @Valid ExpenseDTO expenseDTO, BindingResult bindingResult) {
+        return update(guid, principal, expenseDTO, bindingResult);
     }
 
     @PutMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<Object> changeExpense(Principal principal, @PathVariable("id") ExpenseEntity expense, @Valid ExpenseDTO expenseDTO,
+    public ResponseEntity<Object> changeExpense(Principal principal, @PathVariable("id") String guid, @RequestBody @Valid ExpenseDTO expenseDTO,
                                                 BindingResult bindingResult) {
-        return update(principal, expense, expenseDTO, bindingResult);
+        return update(guid, principal, expenseDTO, bindingResult);
     }
 
     @DeleteMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<Object> deleteExpense(Principal principal, @PathVariable("id") ExpenseEntity expense) {
-        return delete(principal, expense);
+    public ResponseEntity<Object> deleteExpense(Principal principal, @PathVariable("id") String guid) {
+        return delete(guid, principal);
     }
 
     @GetMapping("sum")
     @TrackExecutionTime
-    public double getCategoryRepo() {
-        return expenseService.getSum();
+    public double getCategoryRepo(Principal principal) {
+        return expenseService.getSum(principal);
     }
 
     @GetMapping("sum/{groupId}")
     @TrackExecutionTime
-    public double getCategoryRepo(@PathVariable("groupId") CategoryEntity categoryEntity) {
-        return expenseService.getSum(categoryEntity);
+    public double getCategoryRepo(Principal principal, @PathVariable("groupId") CategoryEntity categoryEntity) {
+        return expenseService.getSum(principal, categoryEntity);
     }
 }
 

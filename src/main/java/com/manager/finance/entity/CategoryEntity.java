@@ -1,10 +1,9 @@
 package com.manager.finance.entity;
 
-import lombok.Data;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "Category")

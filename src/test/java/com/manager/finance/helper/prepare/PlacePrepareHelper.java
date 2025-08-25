@@ -16,7 +16,6 @@ public class PlacePrepareHelper {
         placeEntity.setGuid(UUID.randomUUID());
         placeEntity.setName("placeName");
         placeEntity.setAddress("placeAddress");
-        placeEntity.setUser(userPrepareHelper.createUser());
         return placeEntity;
     }
 }

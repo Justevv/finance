@@ -7,7 +7,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
-public interface CrudService<D extends CrudDTO, R extends CrudResponseDTO> {
+public interface CreateReadService<D extends CrudDTO, R extends CrudResponseDTO> {
 
     R get(UUID guid, Principal principal);
 
@@ -15,7 +15,4 @@ public interface CrudService<D extends CrudDTO, R extends CrudResponseDTO> {
 
     R create(Principal principal, D dto);
 
-    R update(UUID guid, Principal principal, D dto);
-
-    void delete(UUID guid, Principal principal);
 }
