@@ -5,15 +5,15 @@ import com.manager.finance.dto.response.CategoryResponseDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.exception.EntityNotFoundException;
 import com.manager.finance.helper.UserHelper;
-import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.log.LogConstants;
 import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.finance.redis.CategoryRedisRepository;
 import com.manager.finance.repository.CategoryRepository;
-import com.manager.finance.repository.FavoriteCategoryRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +46,14 @@ public class CategoryService implements CreateReadService<CategoryDTO, CategoryR
     @Override
     public List<CategoryResponseDTO> getAll(Principal principal) {
         var categoryEntity = categoryRepository.findAll();
+        log.debug(LogConstants.LIST_FILTERED_RESPONSE_DTO, categoryEntity);
+        return categoryEntity.stream().map(this::convertEntityToResponseDTO).toList();
+    }
+
+    @TrackExecutionTime
+    public List<CategoryResponseDTO> getPage(int page, int countPerPage) {
+        Pageable pageable = PageRequest.of(page, countPerPage);
+        var categoryEntity = categoryRepository.findAll(pageable);
         log.debug(LogConstants.LIST_FILTERED_RESPONSE_DTO, categoryEntity);
         return categoryEntity.stream().map(this::convertEntityToResponseDTO).toList();
     }

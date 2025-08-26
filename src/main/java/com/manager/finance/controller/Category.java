@@ -11,19 +11,30 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/category")
 @Slf4j
 public class Category extends CreateReadApiResponse<CategoryDTO, CategoryResponseDTO> {
+    private final CategoryService categoryService;
+
     public Category(CategoryService categoryService) {
         super(categoryService);
+        this.categoryService = categoryService;
     }
 
     @GetMapping
     @TrackExecutionTime
     public ResponseEntity<Object> getCategory(Principal principal) {
         return getAll(principal);
+    }
+
+    @GetMapping("/page/{page}")
+    @TrackExecutionTime
+    public List<CategoryResponseDTO> getCategoryPage(Principal principal, @PathVariable("page") int page,
+                                                     @RequestParam(defaultValue = "200") int countPerPage) {
+        return categoryService.getPage(page, countPerPage);
     }
 
     @GetMapping("{id}")

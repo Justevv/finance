@@ -26,7 +26,7 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, UUID> {
     boolean existsByGuidAndUser(UUID guid, UserEntity userEntity);
 
     @TrackExecutionTime
-    List<ExpenseEntity> findByUser(UserEntity userEntity, Pageable topTen);
+    List<ExpenseEntity> findByUser(UserEntity userEntity, Pageable pageable);
 
     @Modifying
     @Query("DELETE FROM ExpenseEntity ee WHERE ee.guid = ?1 AND ee.user = ?2")
