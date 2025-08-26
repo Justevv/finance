@@ -84,11 +84,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 512M
+          cpus: '2'
+          memory: 2048M
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: '0.5'
+          memory: 1024M
     healthcheck:
       test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
       start_period: 10s
