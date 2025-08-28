@@ -1,23 +1,16 @@
 package com.manager.finance.service.verification;
 
 import com.manager.finance.dto.response.PhoneVerificationResponseDto;
-import com.manager.finance.entity.PhoneVerificationEntity;
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.repository.PhoneVerificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.internal.Pair;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Limit;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
@@ -31,34 +24,33 @@ public class PhoneVerificationKafkaService {
 
     @SneakyThrows
     @Transactional
+    @TrackExecutionTime
     public boolean sendConfirmPhone() {
-        var phoneVerificationEntities = phoneVerificationRepository.findByIsSent(false, Limit.of(batchSize));
+        var phoneVerificationEntities = phoneVerificationRepository.findByIsSent(batchSize);
         if (phoneVerificationEntities.isEmpty()) {
             return false;
         }
 
         log.debug("Trying to send a phone verification messages {}", phoneVerificationEntities);
-        List<Pair<CompletableFuture<SendResult<String, PhoneVerificationResponseDto>>, PhoneVerificationEntity>> s = new ArrayList<>();
         phoneVerificationEntities.forEach(phoneVerificationEntity -> {
-            PhoneVerificationResponseDto build = PhoneVerificationResponseDto.builder()
+            PhoneVerificationResponseDto responseDto = PhoneVerificationResponseDto.builder()
                     .code(phoneVerificationEntity.getCode())
                     .phone(phoneVerificationEntity.getUser().getPhone())
                     .build();
-            CompletableFuture<SendResult<String, PhoneVerificationResponseDto>> sendResultCompletableFuture = kafkaTemplate.sendDefault(build.phone(), build);
-            var z = Pair.of(sendResultCompletableFuture, phoneVerificationEntity);
-            s.add(z);
+            var future = kafkaTemplate.sendDefault(responseDto.phone(), responseDto);
+            phoneVerificationEntity.setSent(true);
+            future.whenComplete((result, ex) -> {
+                if (ex == null) {
+                    log.debug("Verification successfully sent: {}", phoneVerificationEntity);
+                } else {
+                    phoneVerificationEntity.setSent(false);
+                    phoneVerificationRepository.save(phoneVerificationEntity);
+                    log.error("Failed to send verification {} : {}", phoneVerificationEntity, ex.getMessage());
+                }
+            });
         });
-
-        //                    x.getLeft().get();
-        for (Pair<CompletableFuture<SendResult<String, PhoneVerificationResponseDto>>, PhoneVerificationEntity> x : s) {
-            x.getLeft().get();
-            if (x.getLeft().isDone()) {
-                x.getRight().setSent(true);
-            }
-        }
-//        phoneVerificationEntities.forEach(x -> x.setSent(true));
         phoneVerificationRepository.saveAll(phoneVerificationEntities);
-        return !phoneVerificationEntities.isEmpty();
+        return true;
     }
 
 }

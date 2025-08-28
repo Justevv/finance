@@ -1,12 +1,12 @@
 package com.manager.finance.service.verification;
 
 import com.manager.finance.dto.response.EmailVerificationResponseDto;
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.repository.EmailVerificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Limit;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,23 +21,34 @@ public class EmailVerificationKafkaService {
     @Value("${manager.schedule.send-email.batch-size}")
     private int batchSize;
 
+    @TrackExecutionTime
     @Transactional
     public boolean sendConfirmEmail() {
-        var emailVerificationEntities = emailVerificationRepository.findByIsSent(false, Limit.of(batchSize));
+        var emailVerificationEntities = emailVerificationRepository.findByIsSent((batchSize));
         if (emailVerificationEntities.isEmpty()) {
             return false;
         }
         log.debug("Trying to send an email verification messages {}", emailVerificationEntities);
-        emailVerificationEntities.stream()
-                .map(x -> EmailVerificationResponseDto.builder()
-                        .code(x.getCode())
-                        .email(x.getUser().getEmail())
-                        .build())
-                .forEach(x -> kafkaTemplate.sendDefault(x.email(), x));
 
-        emailVerificationEntities.forEach(x -> x.setSent(true));
+        emailVerificationEntities.forEach(emailVerificationEntity -> {
+            EmailVerificationResponseDto responseDto = EmailVerificationResponseDto.builder()
+                    .code(emailVerificationEntity.getCode())
+                    .email(emailVerificationEntity.getUser().getEmail())
+                    .build();
+            var future = kafkaTemplate.sendDefault(responseDto.email(), responseDto);
+            emailVerificationEntity.setSent(true);
+            future.whenComplete((result, ex) -> {
+                if (ex == null) {
+                    log.debug("Verification successfully sent: {}", emailVerificationEntity);
+                } else {
+                    emailVerificationEntity.setSent(false);
+                    emailVerificationRepository.save(emailVerificationEntity);
+                    log.error("Failed to send verification {} : {}", emailVerificationEntity, ex.getMessage());
+                }
+            });
+        });
         emailVerificationRepository.saveAll(emailVerificationEntities);
-        return !emailVerificationEntities.isEmpty();
+        return true;
     }
 
 }

@@ -28,6 +28,8 @@ spring:
       bootstrap-servers: ${KAFKA_PRODUCER_BOOTSTRAP_SERVERS:manager_kafka:9092}
       batch-size: 16384
       linger-ms: 1000
+      delivery-timeout: 5000
+      request-timeout: 2000
       ssl:
         key-password:
         key-store-location:
@@ -38,7 +40,10 @@ spring:
           protocol: SSL
     streams:
       auto-startup: true
-
+  task:
+    scheduling:
+      pool:
+        size: 4
 
   mail:
     host: smtp.yandex.ru

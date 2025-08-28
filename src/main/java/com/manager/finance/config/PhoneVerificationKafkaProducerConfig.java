@@ -1,7 +1,6 @@
 package com.manager.finance.config;
 
 
-import com.manager.finance.dto.response.EmailVerificationResponseDto;
 import com.manager.finance.dto.response.PhoneVerificationResponseDto;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -19,7 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.kafka.clients.producer.ProducerConfig.BATCH_SIZE_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.LINGER_MS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG;
 
 @Configuration
 public class PhoneVerificationKafkaProducerConfig {
@@ -30,6 +31,10 @@ public class PhoneVerificationKafkaProducerConfig {
     private int batchSize;
     @Value("${spring.kafka.producer.linger-ms}")
     private String lingerMs;
+    @Value("${spring.kafka.producer.request-timeout}")
+    private String requestTimeout;
+    @Value("${spring.kafka.producer.delivery-timeout}")
+    private String deliveryTimeout;
     @Value("${spring.kafka.ssl.enabled}")
     private boolean sslEnabled;
     @Value("${spring.kafka.producer.ssl.security.protocol}")
@@ -55,6 +60,8 @@ public class PhoneVerificationKafkaProducerConfig {
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         props.put(BATCH_SIZE_CONFIG, batchSize);
         props.put(LINGER_MS_CONFIG, lingerMs);
+        props.put(REQUEST_TIMEOUT_MS_CONFIG, requestTimeout);
+        props.put(DELIVERY_TIMEOUT_MS_CONFIG, deliveryTimeout);
 
         if (sslEnabled) {
             props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, securityProtocol);
