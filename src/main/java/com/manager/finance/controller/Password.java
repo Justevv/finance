@@ -4,7 +4,7 @@ import com.manager.finance.dto.PasswordUpdateDTO;
 import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.helper.ErrorHelper;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.finance.service.PasswordService;
+import com.manager.finance.service.verification.PasswordService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

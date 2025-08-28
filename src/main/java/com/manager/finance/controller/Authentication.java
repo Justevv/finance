@@ -1,7 +1,7 @@
 package com.manager.finance.controller;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.finance.service.AuthenticationService;
+import com.manager.finance.service.verification.AuthenticationService;
 import com.manager.finance.security.AuthenticationRequestDTO;
 import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.servlet.http.HttpServletRequest;

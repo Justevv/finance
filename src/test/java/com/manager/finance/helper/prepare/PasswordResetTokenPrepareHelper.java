@@ -14,7 +14,7 @@ public class PasswordResetTokenPrepareHelper {
 
     public PasswordResetToken createPasswordResetToken() {
         var passwordResetToken = new PasswordResetToken();
-        passwordResetToken.setGuid(UUID.randomUUID());
+        passwordResetToken.setId(UUID.randomUUID());
         passwordResetToken.setToken("token");
         passwordResetToken.setUser(userPrepareHelper.createUser());
         passwordResetToken.setExpireTime(LocalDateTime.MAX);

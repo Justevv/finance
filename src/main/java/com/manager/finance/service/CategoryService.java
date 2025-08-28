@@ -27,18 +27,19 @@ import java.util.UUID;
 public class CategoryService implements CreateReadService<CategoryDTO, CategoryResponseDTO> {
     private static final String ENTITY_TYPE_NAME = "category";
     private final CategoryRepository categoryRepository;
+    private final CategoryRedisRepository categoryRedisRepository;
     private final FavoriteCategoryService favoriteCategoryService;
     private final ModelMapper mapper;
     private final UserHelper userHelper;
 
     @TrackExecutionTime
     @Override
-    public CategoryResponseDTO get(UUID guid, Principal principal) {
-        var category = categoryRepository.findById(guid);
+    public CategoryResponseDTO get(UUID id, Principal principal) {
+        var category = categoryRepository.findById(id);
         if (category.isPresent()) {
             return convertEntityToResponseDTO(category.get());
         } else {
-            throw new EntityNotFoundException(ENTITY_TYPE_NAME, guid);
+            throw new EntityNotFoundException(ENTITY_TYPE_NAME, id);
         }
     }
 
@@ -71,8 +72,8 @@ public class CategoryService implements CreateReadService<CategoryDTO, CategoryR
     public CategoryEntity getOrCreate(Principal principal, CategoryDTO categoryDTO) {
         if (categoryDTO == null) {
             return null;
-        } else if (categoryDTO.getGuid() != null) {
-            var category = categoryRepository.findById(categoryDTO.getGuid());
+        } else if (categoryDTO.getId() != null) {
+            var category = categoryRepository.findById(categoryDTO.getId());
             if (category.isPresent()) {
                 return category.get();
             }
@@ -86,7 +87,7 @@ public class CategoryService implements CreateReadService<CategoryDTO, CategoryR
     private CategoryEntity saveAndGet(Principal principal, CategoryDTO categoryDTO) {
         log.debug(LogConstants.INPUT_NEW_DTO, categoryDTO);
         var category = mapper.map(categoryDTO, CategoryEntity.class);
-        category.setGuid(UUID.randomUUID());
+        category.setId(UUID.randomUUID());
         categoryRepository.save(category);
         favoriteCategoryService.save(category, userHelper.getUser(principal));
         log.info(LogConstants.SAVE_ENTITY_TO_DATABASE, category);

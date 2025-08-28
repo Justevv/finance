@@ -1,7 +1,8 @@
 package com.manager.finance.controller;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.finance.service.VerificationService;
+import com.manager.finance.service.verification.EmailVerificationService;
+import com.manager.finance.service.verification.PhoneVerificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +16,14 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class Verification {
-    private final VerificationService verificationService;
+    private final EmailVerificationService emailVerificationService;
+    private final PhoneVerificationService phoneVerificationService;
 
     @PostMapping("/phone")
     @TrackExecutionTime
     public ResponseEntity<Map<String, Boolean>> confirmPhone(@PathVariable("userId") UUID user, @RequestParam String code) {
         log.debug("User {} tries to verify phone", user);
-        var isConfirmed = verificationService.verifyPhone(user, code);
+        var isConfirmed = phoneVerificationService.verifyPhone(user, code);
         var response = Map.of("Phone confirmed", isConfirmed);
         log.debug("Is user {} confirm his phone: {}", user, isConfirmed);
         return ResponseEntity.ok(response);
@@ -31,7 +33,7 @@ public class Verification {
     @TrackExecutionTime
     public ResponseEntity<Map<String, Boolean>> confirmEmail(@PathVariable("userId") UUID user, @RequestParam String code) {
         log.debug("User {} tries to verify email", user);
-        var isConfirmed = verificationService.verifyEmail(user, code);
+        var isConfirmed = emailVerificationService.verifyEmail(user, code);
         var response = Map.of("Email confirmed", isConfirmed);
         log.debug("Is user {} confirm his email: {}", user, isConfirmed);
         return ResponseEntity.ok(response);

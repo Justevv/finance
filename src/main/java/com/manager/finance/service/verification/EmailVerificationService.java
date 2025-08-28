@@ -1,13 +1,12 @@
-package com.manager.finance.service;
+package com.manager.finance.service.verification;
 
+import com.manager.finance.entity.EmailVerificationEntity;
 import com.manager.finance.entity.UserEntity;
-import com.manager.finance.entity.VerificationEntity;
-import com.manager.finance.entity.VerificationType;
 import com.manager.finance.event.ConfirmationCompleteEvent;
 import com.manager.finance.exception.VerificationNotFoundException;
 import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.finance.repository.EmailVerificationRepository;
 import com.manager.finance.repository.UserRepository;
-import com.manager.finance.repository.VerificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -25,36 +24,15 @@ import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class VerificationService {
+public class EmailVerificationService {
     private static final String VERIFICATION_DOES_NOT_EXISTS_ERROR_MESSAGE = "Verification doesn't exists";
     private static final int NUMBER_DIGITS_VERIFICATION_CODE = 6;
     @Value("${confirmationRegistrationCodeExpiredTime}")
     private int confirmationRegistrationCodeExpiredTime;
-    private final VerificationRepository verificationRepository;
+    private final EmailVerificationRepository emailVerificationRepository;
     private final UserRepository userRepository;
-    private final ConfirmationService confirmationService;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Transactional
-    @TrackExecutionTime
-    public boolean verifyPhone(UUID userId, String code) {
-        log.debug("Trying to verify phone for userId {}", userId);
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
-
-        var phoneVerificationCode = verificationRepository.findByUserAndType(user, VerificationType.PHONE)
-                .orElseThrow(() -> new VerificationNotFoundException(VERIFICATION_DOES_NOT_EXISTS_ERROR_MESSAGE));
-        if (phoneVerificationCode != null && phoneVerificationCode.getCode().equals(code)
-                && !phoneVerificationCode.isExpire() && !confirmationService.isPhoneAlreadyConfirmed(user.getPhone())) {
-            user.setPhoneConfirmed(true);
-            verificationRepository.delete(phoneVerificationCode);
-            eventPublisher.publishEvent(new ConfirmationCompleteEvent(user));
-            log.info("Phone for user {} was confirmed successfully", user);
-            return true;
-        }
-        log.debug("Phone confirmation for user {} was rejected", user);
-        return false;
-    }
 
     @Transactional
     @TrackExecutionTime
@@ -63,12 +41,12 @@ public class VerificationService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
 
-        var emailVerificationCode = verificationRepository.findByUserAndType(user, VerificationType.EMAIL)
+        var emailVerificationCode = emailVerificationRepository.findByUser(user)
                 .orElseThrow(() -> new VerificationNotFoundException(VERIFICATION_DOES_NOT_EXISTS_ERROR_MESSAGE));
         if (emailVerificationCode != null && emailVerificationCode.getCode().equals(code)
-                && !emailVerificationCode.isExpire() && !confirmationService.isEmailAlreadyConfirmed(user.getEmail())) {
+                && !emailVerificationCode.isExpire() && !isEmailAlreadyConfirmed(user.getEmail())) {
             user.setEmailConfirmed(true);
-            verificationRepository.delete(emailVerificationCode);
+            emailVerificationRepository.delete(emailVerificationCode);
             eventPublisher.publishEvent(new ConfirmationCompleteEvent(user));
             log.info("Email for user {} was confirmed successfully", user);
             return true;
@@ -78,18 +56,24 @@ public class VerificationService {
     }
 
     @TrackExecutionTime
-    public VerificationEntity createAndSaveVerification(UserEntity user, VerificationType verificationType) {
-        log.debug("Current user is {}, Verification type is {}", user, verificationType);
-        var verification = createVerificationCode(verificationType);
+    public void createAndSaveVerification(UserEntity user) {
+        log.debug("Current user is {}", user);
+        var verification = createVerificationCode();
         verification.setUser(user);
-        verificationRepository.save(verification);
+        emailVerificationRepository.save(verification);
         log.info("Saved verificationCode is {}", verification);
-        return verification;
     }
 
-    private VerificationEntity createVerificationCode(VerificationType type) {
+    private EmailVerificationEntity createVerificationCode() {
         String code = RandomStringUtils.randomNumeric(NUMBER_DIGITS_VERIFICATION_CODE);
-        return new VerificationEntity(code, confirmationRegistrationCodeExpiredTime, type);
+        return new EmailVerificationEntity(code, confirmationRegistrationCodeExpiredTime);
+    }
+
+    public boolean isEmailAlreadyConfirmed(String email) {
+        var emailConfirmed = userRepository.findByEmailAndIsEmailConfirmed(email, true);
+        var isEmailAlreadyConfirmed = emailConfirmed.isPresent();
+        log.debug("Is email {} already confirmed: {}", email, isEmailAlreadyConfirmed);
+        return isEmailAlreadyConfirmed;
     }
 
 }

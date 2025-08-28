@@ -42,8 +42,8 @@ public class Expense extends CrudApiResponse<ExpenseDTO, ExpenseResponseDTO> {
 
     @GetMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<Object> getExpense(Principal principal, @PathVariable("id") String guid) {
-        return get(guid, principal);
+    public ResponseEntity<Object> getExpense(Principal principal, @PathVariable("id") String id) {
+        return get(id, principal);
     }
 
     @PostMapping
@@ -54,22 +54,22 @@ public class Expense extends CrudApiResponse<ExpenseDTO, ExpenseResponseDTO> {
 
     @PatchMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<Object> changeExpenseProperty(Principal principal, @PathVariable("id") String guid,
+    public ResponseEntity<Object> changeExpenseProperty(Principal principal, @PathVariable("id") String id,
                                                         @RequestBody @Valid ExpenseDTO expenseDTO, BindingResult bindingResult) {
-        return update(guid, principal, expenseDTO, bindingResult);
+        return update(id, principal, expenseDTO, bindingResult);
     }
 
     @PutMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<Object> changeExpense(Principal principal, @PathVariable("id") String guid, @RequestBody @Valid ExpenseDTO expenseDTO,
+    public ResponseEntity<Object> changeExpense(Principal principal, @PathVariable("id") String id, @RequestBody @Valid ExpenseDTO expenseDTO,
                                                 BindingResult bindingResult) {
-        return update(guid, principal, expenseDTO, bindingResult);
+        return update(id, principal, expenseDTO, bindingResult);
     }
 
     @DeleteMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<Object> deleteExpense(Principal principal, @PathVariable("id") String guid) {
-        return delete(guid, principal);
+    public ResponseEntity<Object> deleteExpense(Principal principal, @PathVariable("id") String id) {
+        return delete(id, principal);
     }
 
     @GetMapping("sum")

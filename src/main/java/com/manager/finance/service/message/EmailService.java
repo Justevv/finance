@@ -1,4 +1,4 @@
-package com.manager.finance.service;
+package com.manager.finance.service.message;
 
 import jakarta.mail.MessagingException;
 

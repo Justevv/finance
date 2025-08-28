@@ -20,7 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class FavoriteCategoryEntity implements Serializable {
     @Id
-    private UUID guid;
+    private UUID id;
     @ManyToOne
     private CategoryEntity category;
     @ManyToOne

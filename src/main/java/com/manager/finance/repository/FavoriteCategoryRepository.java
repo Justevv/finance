@@ -13,6 +13,6 @@ public interface FavoriteCategoryRepository extends JpaRepository<FavoriteCatego
     List<FavoriteCategoryEntity> findByUser(UserEntity userEntity);
 
     @Modifying
-    @Query("DELETE FROM FavoriteCategoryEntity fce WHERE fce.guid = ?1")
-    void deleteByGuid(UUID guid);
+    @Query("DELETE FROM FavoriteCategoryEntity fce WHERE fce.id = ?1")
+    void deleteById(UUID id);
 }

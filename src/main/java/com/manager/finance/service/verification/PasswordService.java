@@ -1,4 +1,4 @@
-package com.manager.finance.service;
+package com.manager.finance.service.verification;
 
 import com.manager.finance.dto.PasswordUpdateDTO;
 import com.manager.finance.entity.PasswordResetToken;

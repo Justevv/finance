@@ -4,8 +4,9 @@ import com.manager.finance.dto.UserDTO;
 import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
+import com.manager.finance.repository.PhoneVerificationRepository;
 import com.manager.finance.repository.UserRepository;
-import com.manager.finance.repository.VerificationRepository;
+import com.manager.finance.repository.EmailVerificationRepository;
 import com.manager.finance.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,9 @@ class UserServiceTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean
-    private VerificationRepository verificationRepository;
+    private EmailVerificationRepository emailVerificationRepository;
+    @MockBean
+    private PhoneVerificationRepository phoneVerificationRepository;
     @MockBean
     private Principal principal;
     @Autowired

@@ -11,5 +11,5 @@ import java.util.UUID;
 public class BaseCrudResponseDTO implements CrudResponseDTO, Serializable {
     @Id
     @Indexed
-    private UUID guid;
+    private UUID id;
 }

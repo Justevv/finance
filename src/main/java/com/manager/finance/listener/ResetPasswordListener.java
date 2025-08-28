@@ -2,7 +2,7 @@ package com.manager.finance.listener;
 
 
 import com.manager.finance.event.ResetPasswordEvent;
-import com.manager.finance.service.EmailService;
+import com.manager.finance.service.message.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

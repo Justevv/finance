@@ -16,7 +16,7 @@ public class RoleEntity implements Serializable {
     private static final long serialVersionUID = 9178661439456356177L;
 
     @Id
-    private UUID guid;
+    private UUID id;
 
     @Column(unique = true)
     private String name;
@@ -24,6 +24,6 @@ public class RoleEntity implements Serializable {
     @ElementCollection(targetClass = PermissionEntity.class, fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_permissions",
-            joinColumns = @JoinColumn(name = "role_guid"))
+            joinColumns = @JoinColumn(name = "role_id"))
     private Set<PermissionEntity> permissions;
 }

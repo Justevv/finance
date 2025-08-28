@@ -26,11 +26,11 @@ public class CrudApiResponse<D extends BaseCrudDTO, R extends BaseCrudResponseDT
     }
 
     @TrackExecutionTime
-    public ResponseEntity<Object> get(String uuid, Principal principal) {
+    public ResponseEntity<Object> get(String id, Principal principal) {
         ResponseEntity<Object> responseEntity;
         try {
-            UUID guid = UUID.fromString(uuid);
-            R body = model.get(guid, principal);
+            UUID uuid = UUID.fromString(id);
+            R body = model.get(uuid, principal);
             if (body != null) {
                 responseEntity = ResponseEntity.ok(body);
             } else {
@@ -57,12 +57,12 @@ public class CrudApiResponse<D extends BaseCrudDTO, R extends BaseCrudResponseDT
     }
 
     @TrackExecutionTime
-    public ResponseEntity<Object> update(String uuid, Principal principal, D dto, BindingResult bindingResult) {
+    public ResponseEntity<Object> update(String id, Principal principal, D dto, BindingResult bindingResult) {
         ResponseEntity<Object> responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
             try {
-                UUID guid = UUID.fromString(uuid);
-                responseEntity = ResponseEntity.ok(model.update(guid, principal, dto));
+                UUID uuid = UUID.fromString(id);
+                responseEntity = ResponseEntity.ok(model.update(uuid, principal, dto));
             } catch (IllegalArgumentException e) {
                 responseEntity = new ResponseEntity<>("Invalid UUID", HttpStatus.BAD_REQUEST);
             } catch (EntityNotFoundException e) {
@@ -75,11 +75,11 @@ public class CrudApiResponse<D extends BaseCrudDTO, R extends BaseCrudResponseDT
     }
 
     @TrackExecutionTime
-    public ResponseEntity<Object> delete(String uuid, Principal principal) {
+    public ResponseEntity<Object> delete(String id, Principal principal) {
         ResponseEntity<Object> responseEntity;
         try {
-            UUID guid = UUID.fromString(uuid);
-            model.delete(guid, principal);
+            UUID uuid = UUID.fromString(id);
+            model.delete(uuid, principal);
             responseEntity = ResponseEntity.ok(null);
         } catch (IllegalArgumentException e) {
             responseEntity = new ResponseEntity<>("Invalid UUID", HttpStatus.BAD_REQUEST);

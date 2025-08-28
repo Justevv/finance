@@ -7,9 +7,10 @@ import com.manager.finance.entity.UserEntity;
 import com.manager.finance.helper.converter.RoleIdConverter;
 import com.manager.finance.helper.converter.UserIdConverter;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
+import com.manager.finance.repository.PhoneVerificationRepository;
 import com.manager.finance.repository.RoleRepository;
 import com.manager.finance.repository.UserRepository;
-import com.manager.finance.repository.VerificationRepository;
+import com.manager.finance.repository.EmailVerificationRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,9 @@ class UserAdminTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean
-    private VerificationRepository verificationRepository;
+    private EmailVerificationRepository emailVerificationRepository;
+    @MockBean
+    private PhoneVerificationRepository phoneVerificationRepository;
     @MockBean
     private RoleRepository roleRepository;
     @Autowired
@@ -85,8 +88,8 @@ class UserAdminTest {
     @WithMockUser(authorities = {"user:read"})
     @SneakyThrows
     void getUser_shouldReturnUserEntityAndOk_when_userIsExists() {
-        Mockito.when(userRepository.findById(user.getGuid())).thenReturn((Optional.of(user)));
-        mockMvc.perform(MockMvcRequestBuilders.get(USER_WITH_ID_API, user.getGuid()))
+        Mockito.when(userRepository.findById(user.getId())).thenReturn((Optional.of(user)));
+        mockMvc.perform(MockMvcRequestBuilders.get(USER_WITH_ID_API, user.getId()))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.username").value(user.getUsername()))
                 .andExpect(jsonPath("$.email").value(user.getEmail()))
@@ -101,17 +104,17 @@ class UserAdminTest {
     @WithMockUser(authorities = {"user:write"})
     @SneakyThrows
     void updateUser_shouldReturnUserAndOk_when_userIsExists() {
-        Mockito.when(userRepository.findById(user.getGuid())).thenReturn(Optional.of(user));
-        Mockito.when(roleRepository.findById(role.getGuid())).thenReturn(Optional.ofNullable(role));
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        Mockito.when(roleRepository.findById(role.getId())).thenReturn(Optional.ofNullable(role));
         role.setName(NEW_ROLE);
-        mockMvc.perform(MockMvcRequestBuilders.put(USER_WITH_ID_API, user.getGuid())
+        mockMvc.perform(MockMvcRequestBuilders.put(USER_WITH_ID_API, user.getId())
                         .param(USERNAME_PARAMETER, NEW_USERNAME)
                         .param(PASSWORD_PARAMETER, "1")
                         .param(PHONE_PARAMETER, NEW_PHONE)
                         .param(EMAIL_PARAMETER, NEW_EMAIL)
                         .param("emailConfirmed", String.valueOf(true))
                         .param("phoneConfirmed", String.valueOf(true))
-                        .param(ROLES_PARAMETER, String.valueOf(role.getGuid()))
+                        .param(ROLES_PARAMETER, String.valueOf(role.getId()))
                 )
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.username").value(NEW_USERNAME))
@@ -128,8 +131,8 @@ class UserAdminTest {
     void updateUser_shouldReturnException_when_userHasAuthoritiesAndEmailIsWrong() {
         var newEmail = "wrongEmail";
 
-        Mockito.when(userRepository.findById(user.getGuid())).thenReturn(Optional.of(user));
-        mockMvc.perform(MockMvcRequestBuilders.put(USER_WITH_ID_API, user.getGuid())
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        mockMvc.perform(MockMvcRequestBuilders.put(USER_WITH_ID_API, user.getId())
                         .param(EMAIL_PARAMETER, newEmail)
                 )
                 .andExpect(status().is(400))
@@ -163,13 +166,13 @@ class UserAdminTest {
     @WithMockUser(authorities = {"user:write"})
     @SneakyThrows
     void createUser_shouldReturnUsersAndOk_when_userIsNotExists() {
-        Mockito.when(roleRepository.findById(role.getGuid())).thenReturn(Optional.ofNullable(role));
+        Mockito.when(roleRepository.findById(role.getId())).thenReturn(Optional.ofNullable(role));
         mockMvc.perform(MockMvcRequestBuilders.post(USER_API)
                         .param(USERNAME_PARAMETER, NEW_USERNAME)
                         .param(PASSWORD_PARAMETER, "1")
                         .param(PHONE_PARAMETER, NEW_PHONE)
                         .param(EMAIL_PARAMETER, NEW_EMAIL)
-                        .param(ROLES_PARAMETER, String.valueOf(role.getGuid()))
+                        .param(ROLES_PARAMETER, String.valueOf(role.getId()))
                 )
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.username").value(NEW_USERNAME))
@@ -183,8 +186,8 @@ class UserAdminTest {
     @WithMockUser(authorities = {"user:delete"})
     @SneakyThrows
     void deleteUser_shouldReturnNullAndOk_when_userIsExists() {
-        Mockito.when(userRepository.findById(user.getGuid())).thenReturn(Optional.of(user));
-        mockMvc.perform(MockMvcRequestBuilders.delete(USER_WITH_ID_API, user.getGuid()))
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        mockMvc.perform(MockMvcRequestBuilders.delete(USER_WITH_ID_API, user.getId()))
                 .andExpect(status().is(200));
     }
 

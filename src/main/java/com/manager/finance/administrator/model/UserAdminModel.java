@@ -8,7 +8,8 @@ import com.manager.finance.exception.UserAlreadyExistException;
 import com.manager.finance.helper.UserHelper;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.repository.UserRepository;
-import com.manager.finance.service.ConfirmationService;
+import com.manager.finance.service.verification.EmailVerificationService;
+import com.manager.finance.service.verification.PhoneVerificationService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -31,7 +33,8 @@ public class UserAdminModel {
     private final ModelMapper mapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ConfirmationService confirmationService;
+    private final PhoneVerificationService phoneVerificationService;
+    private final EmailVerificationService emailVerificationService;
     private final UserHelper userHelper;
 
     public List<UserAdminResponseDTO> getAll() {
@@ -46,7 +49,7 @@ public class UserAdminModel {
     @Transactional
     public UserAdminResponseDTO createAndGetDTO(UserAdminDTO userAdminDTO) {
         var user = createUser(userAdminDTO);
-        userHelper.publishCreateUserEvent(user);
+        userHelper.createVerification(user);
         return convertUserToUserResponseDTO(user);
     }
 
@@ -70,7 +73,7 @@ public class UserAdminModel {
         if (isPhoneConfirmed != user.isPhoneConfirmed()) {
             log.debug("The PhoneConfirmed was updated");
             if (isPhoneConfirmed) {
-                if (confirmationService.isPhoneAlreadyConfirmed(user.getPhone())) {
+                if (phoneVerificationService.isPhoneAlreadyConfirmed(user.getPhone())) {
                     throw new UserAlreadyExistException(PHONE_EXISTS_ERROR_MESSAGE + user.getPhone());
                 }
                 user.setPhoneConfirmed(true);
@@ -83,7 +86,7 @@ public class UserAdminModel {
         if (isEmailConfirmed != user.isEmailConfirmed()) {
             log.debug("The EmailConfirmed was updated");
             if (isEmailConfirmed) {
-                if (confirmationService.isEmailAlreadyConfirmed(user.getEmail())) {
+                if (emailVerificationService.isEmailAlreadyConfirmed(user.getEmail())) {
                     throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + user.getEmail());
                 }
                 user.setEmailConfirmed(true);
@@ -106,6 +109,7 @@ public class UserAdminModel {
         userHelper.checkUniqueUserCreateParameters(userAdminDTO);
 
         var user = getMapper().map(userAdminDTO, UserEntity.class);
+        user.setId(UUID.randomUUID());
         user.setPassword(passwordEncoder.encode(userAdminDTO.getPassword()));
 
         userRepository.save(user);

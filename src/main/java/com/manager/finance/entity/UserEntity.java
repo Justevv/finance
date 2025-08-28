@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Data
 public class UserEntity implements UserDetails {
     @Id
-    private UUID guid;
+    private UUID id;
     @NotNull
     @NotBlank
     @Column(unique = true)
@@ -43,8 +43,8 @@ public class UserEntity implements UserDetails {
     @JsonIgnoreProperties("roles")
     @JoinTable(
             name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_guid"),
-            inverseJoinColumns = @JoinColumn(name = "role_guid"))
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles;
 
     @Override

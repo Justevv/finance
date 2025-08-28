@@ -20,17 +20,17 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, UUID> {
     List<ExpenseEntity> findByUser(UserEntity userEntity);
 
     @TrackExecutionTime
-    Optional<ExpenseEntity> findByGuidAndUser(UUID guid, UserEntity userEntity);
+    Optional<ExpenseEntity> findByIdAndUser(UUID id, UserEntity userEntity);
 
     @TrackExecutionTime
-    boolean existsByGuidAndUser(UUID guid, UserEntity userEntity);
+    boolean existsByIdAndUser(UUID id, UserEntity userEntity);
 
     @TrackExecutionTime
     List<ExpenseEntity> findByUser(UserEntity userEntity, Pageable pageable);
 
     @Modifying
-    @Query("DELETE FROM ExpenseEntity ee WHERE ee.guid = ?1 AND ee.user = ?2")
-    void deleteByGuid(UUID guid, UserEntity user);
+    @Query("DELETE FROM ExpenseEntity ee WHERE ee.id = ?1 AND ee.user = ?2")
+    void deleteById(UUID id, UserEntity user);
 
     @TrackExecutionTime
     @Query("SELECT SUM(ee.sum) FROM ExpenseEntity ee where ee.user = ?1")

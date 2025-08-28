@@ -13,7 +13,7 @@ public class PlacePrepareHelper {
 
     public PlaceEntity createPlace() {
         var placeEntity = new PlaceEntity();
-        placeEntity.setGuid(UUID.randomUUID());
+        placeEntity.setId(UUID.randomUUID());
         placeEntity.setName("placeName");
         placeEntity.setAddress("placeAddress");
         return placeEntity;

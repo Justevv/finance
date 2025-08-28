@@ -18,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AuthenticationLog {
     @Id
-    private UUID guid;
+    private UUID id;
     private String username;
     private String ipAddress;
     private LocalDateTime dateTime;

@@ -23,11 +23,11 @@ public class CreateReadApiResponse<D extends BaseCrudDTO, R extends BaseCrudResp
     }
 
     @TrackExecutionTime
-    public ResponseEntity<Object> get(String uuid, Principal principal) {
+    public ResponseEntity<Object> get(String id, Principal principal) {
         ResponseEntity<Object> responseEntity;
         try {
-            UUID guid = UUID.fromString(uuid);
-            R body = model.get(guid, principal);
+            UUID uuid = UUID.fromString(id);
+            R body = model.get(uuid, principal);
             if (body != null) {
                 responseEntity = ResponseEntity.ok(body);
             } else {

@@ -1,3 +1,12 @@
+manager:
+  schedule:
+    send-sms:
+      crone: 10000
+      batch-size: 100
+    send-email:
+      crone: 10000
+      batch-size: 100
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost/postgres
@@ -11,6 +20,26 @@ spring:
       host: localhost
       port: 6379
       password: passWd
+  kafka:
+    ssl:
+      enabled: false
+    producer:
+      topics:
+        email-verification: ${KAFKA_PRODUCER_TOPIC_EMAIL_VERIFICATION:manager-email-verification}
+        phone-verification: ${KAFKA_PRODUCER_TOPIC_PHONE_VERIFICATION:manager-phone-verification}
+      bootstrap-servers: ${KAFKA_PRODUCER_BOOTSTRAP_SERVERS:localhost:9092}
+      batch-size: 16384
+      linger-ms: 1000
+      ssl:
+        key-password:
+        key-store-location:
+        key-store-password:
+        trust-store-location:
+        trust-store-password:
+        security:
+          protocol: SSL
+    streams:
+      auto-startup: true
 
   mail:
     host: smtp.yandex.ru

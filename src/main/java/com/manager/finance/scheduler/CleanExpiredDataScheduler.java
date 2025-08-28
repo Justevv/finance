@@ -1,7 +1,7 @@
 package com.manager.finance.scheduler;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.finance.service.CleanExpiredDataService;
+import com.manager.finance.service.verification.CleanExpiredDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

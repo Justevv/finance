@@ -13,7 +13,7 @@ import java.util.UUID;
 public class PasswordResetToken {
 
     @Id
-    private UUID guid;
+    private UUID id;
     @ToString.Exclude
     private String token;
     @OneToOne(fetch = FetchType.EAGER)

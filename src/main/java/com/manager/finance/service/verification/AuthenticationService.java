@@ -1,4 +1,4 @@
-package com.manager.finance.service;
+package com.manager.finance.service.verification;
 
 import com.manager.finance.event.AuthenticationEvent;
 import com.manager.finance.exception.UserIpAddressWasBlockedException;
@@ -6,6 +6,7 @@ import com.manager.finance.repository.AuthenticationLogRepository;
 import com.manager.finance.repository.UserRepository;
 import com.manager.finance.security.AuthenticationRequestDTO;
 import com.manager.finance.security.JwtProvider;
+import com.manager.finance.service.LoginAttemptService;
 import eu.bitwalker.useragentutils.UserAgent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

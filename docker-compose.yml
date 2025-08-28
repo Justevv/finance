@@ -11,11 +11,11 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-U", "sa"]
+      - manager_pg_data:/var/lib/postgresql/data
     networks:
       - manager_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "sa"]
 
   database_slave_1:
     image: postgres:17.5-alpine3.22
@@ -27,11 +27,12 @@ services:
     ports:
       - "15432:5432"
     volumes:
-      - pg_data_slave_1:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready", "-U", "sa" ]
+      - manager_pg_data_slave_1:/var/lib/postgresql/data
     networks:
       - manager_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-U", "sa" ]
+
 
   database_slave_2:
     image: postgres:17.5-alpine3.22
@@ -43,11 +44,12 @@ services:
     ports:
       - "25432:5432"
     volumes:
-      - pg_data_slave_2:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-U", "sa"]
+      - manager_pg_data_slave_2:/var/lib/postgresql/data
     networks:
       - manager_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "sa"]
+
 
   backend:
     image: manager:1
@@ -60,6 +62,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - manager_network
     deploy:
@@ -80,7 +84,9 @@ services:
       - "6379:6379"
       - "8001:8001"
     volumes:
-      - redisdata:/data
+      - manager_redis_data:/data
+    networks:
+      - manager_network
     deploy:
       resources:
         limits:
@@ -95,14 +101,49 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+
+  kafka:
+    image: apache/kafka:4.0.0
+    container_name: manager_kafka
+    restart: "no"
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+    volumes:
+      - manager_kafka_data:/var/lib/kafka/data
+    networks:
+      - manager_network
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT://manager_kafka:9092,CONTROLLER://manager_kafka:9093,INTERNAL://manager_kafka:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://manager_kafka:9092,CONTROLLER://manager_kafka:9093,INTERNAL://manager_kafka:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_CLUSTER_ID: "123e4567-e89b-12d3-a456-426614174000"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@manager_kafka:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:4.2.0
+    container_name: kafdrop
+    restart: "no"
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "manager_kafka:29092"
+    depends_on:
+      - "kafka"
     networks:
       - manager_network
 
 volumes:
-  pg_data:
-  pg_data_slave_1:
-  pg_data_slave_2:
-  redisdata:
+  manager_pg_data:
+  manager_pg_data_slave_1:
+  manager_pg_data_slave_2:
+  manager_redis_data:
+  manager_kafka_data:
 
 networks:
   manager_network:

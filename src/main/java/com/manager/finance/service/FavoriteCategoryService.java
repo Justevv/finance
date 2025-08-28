@@ -20,7 +20,7 @@ public class FavoriteCategoryService {
 
     public void save(CategoryEntity category, UserEntity user) {
         FavoriteCategoryEntity favoriteCategory = FavoriteCategoryEntity.builder()
-                .guid(UUID.randomUUID())
+                .id(UUID.randomUUID())
                 .category(category)
                 .user(user)
                 .build();

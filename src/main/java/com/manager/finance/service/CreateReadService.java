@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface CreateReadService<D extends CrudDTO, R extends CrudResponseDTO> {
 
-    R get(UUID guid, Principal principal);
+    R get(UUID id, Principal principal);
 
     List<R> getAll(Principal principal);
 

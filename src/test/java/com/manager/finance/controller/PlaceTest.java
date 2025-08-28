@@ -54,7 +54,7 @@ class PlaceTest {
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         Mockito.when(securityUserService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
         placeEntity = placePrepareHelper.createPlace();
-        Mockito.when(placeRepository.findById(placeEntity.getGuid())).thenReturn(Optional.of(placeEntity));
+        Mockito.when(placeRepository.findById(placeEntity.getId())).thenReturn(Optional.of(placeEntity));
     }
 
     @Test
@@ -64,7 +64,7 @@ class PlaceTest {
         Mockito.when(placeRepository.findAll()).thenReturn((List.of(placeEntity)));
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/place"))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("[0].guid").value(placeEntity.getGuid().toString()))
+                .andExpect(jsonPath("[0].id").value(placeEntity.getId().toString()))
                 .andExpect(jsonPath("[0].name").value(placeEntity.getName()))
                 .andExpect(jsonPath("[0].address").value(placeEntity.getAddress()));
     }
@@ -73,10 +73,10 @@ class PlaceTest {
     @WithMockUser
     @SneakyThrows
     void getPlace() {
-        Mockito.when(placeRepository.findById(placeEntity.getGuid())).thenReturn(Optional.ofNullable((placeEntity)));
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/place/{id}", placeEntity.getGuid()))
+        Mockito.when(placeRepository.findById(placeEntity.getId())).thenReturn(Optional.ofNullable((placeEntity)));
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/place/{id}", placeEntity.getId()))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.guid").value(placeEntity.getGuid().toString()))
+                .andExpect(jsonPath("$.id").value(placeEntity.getId().toString()))
                 .andExpect(jsonPath("$.name").value(placeEntity.getName()))
                 .andExpect(jsonPath("$.address").value(placeEntity.getAddress()));
     }
@@ -89,13 +89,13 @@ class PlaceTest {
         var newName = "newName";
         var newAddress = "newAddress";
 
-        Mockito.when(placeRepository.findById(placeEntity.getGuid())).thenReturn(Optional.of(placeEntity));
-        mockMvc.perform(MockMvcRequestBuilders.put("/v1/place/{id}", placeEntity.getGuid())
+        Mockito.when(placeRepository.findById(placeEntity.getId())).thenReturn(Optional.of(placeEntity));
+        mockMvc.perform(MockMvcRequestBuilders.put("/v1/place/{id}", placeEntity.getId())
                         .param("name", newName)
                         .param("address", newAddress)
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.guid").value(placeEntity.getGuid().toString()))
+                .andExpect(jsonPath("$.id").value(placeEntity.getId().toString()))
                 .andExpect(jsonPath("$.name").value(newName))
                 .andExpect(jsonPath("$.address").value(newAddress));
     }
@@ -111,7 +111,7 @@ class PlaceTest {
                         .contentType("application/json")
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.guid").exists())
+                .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.name").value(newName))
                 .andExpect(jsonPath("$.address").value(newAddress));
     }
@@ -121,8 +121,8 @@ class PlaceTest {
     @SneakyThrows
     @Disabled
     void deletePlace() {
-        Mockito.when(placeRepository.findById(placeEntity.getGuid())).thenReturn(Optional.of(placeEntity));
-        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/place/{id}", placeEntity.getGuid()))
+        Mockito.when(placeRepository.findById(placeEntity.getId())).thenReturn(Optional.of(placeEntity));
+        mockMvc.perform(MockMvcRequestBuilders.delete("/v1/place/{id}", placeEntity.getId()))
                 .andExpect(status().is(200));
     }
 

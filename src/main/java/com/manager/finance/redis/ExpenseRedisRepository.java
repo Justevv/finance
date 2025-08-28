@@ -12,6 +12,6 @@ import java.util.UUID;
 public interface ExpenseRedisRepository extends CrudRepository<ExpenseResponseDTO, UUID> {
 
     @TrackExecutionTime
-    Optional<ExpenseResponseDTO> findByGuidAndUserGuid(UUID guid, UUID userGuid);
+    Optional<ExpenseResponseDTO> findByIdAndUserId(UUID id, UUID userId);
 
 }

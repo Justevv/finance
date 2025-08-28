@@ -6,8 +6,9 @@ import com.manager.finance.administrator.dto.user.UserAdminUpdateDTO;
 import com.manager.finance.administrator.model.UserAdminModel;
 import com.manager.finance.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
+import com.manager.finance.repository.PhoneVerificationRepository;
 import com.manager.finance.repository.UserRepository;
-import com.manager.finance.repository.VerificationRepository;
+import com.manager.finance.repository.EmailVerificationRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,9 @@ class UserAdminModelTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean
-    private VerificationRepository verificationRepository;
+    private EmailVerificationRepository emailVerificationRepository;
+    @MockBean
+    private PhoneVerificationRepository phoneVerificationRepository;
     @MockBean
     private Principal principal;
     @Autowired

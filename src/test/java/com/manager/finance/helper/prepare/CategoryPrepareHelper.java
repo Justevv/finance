@@ -13,7 +13,7 @@ public class CategoryPrepareHelper {
 
     public CategoryEntity createCategory() {
         var categoryEntity = new CategoryEntity();
-        categoryEntity.setGuid(UUID.randomUUID());
+        categoryEntity.setId(UUID.randomUUID());
         categoryEntity.setName("categoryName");
         return categoryEntity;
     }

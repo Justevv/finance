@@ -34,12 +34,12 @@ public class PlaceService implements CreateReadService<PlaceDTO, PlaceResponseDT
     }
 
     @Override
-    public PlaceResponseDTO get(UUID guid, Principal principal) {
-        var category = placeRepository.findById(guid);
+    public PlaceResponseDTO get(UUID id, Principal principal) {
+        var category = placeRepository.findById(id);
         if (category.isPresent()) {
             return convertEntityToResponseDTO(category.get());
         } else {
-            throw new EntityNotFoundException(ENTITY_TYPE_NAME, guid);
+            throw new EntityNotFoundException(ENTITY_TYPE_NAME, id);
         }
     }
 
@@ -58,8 +58,8 @@ public class PlaceService implements CreateReadService<PlaceDTO, PlaceResponseDT
     public PlaceEntity getOrCreate(PlaceDTO placeDTO) {
         if (placeDTO == null) {
             return null;
-        } else if (placeDTO.getGuid() != null) {
-            var category = placeRepository.findById(placeDTO.getGuid());
+        } else if (placeDTO.getId() != null) {
+            var category = placeRepository.findById(placeDTO.getId());
             if (category.isPresent()) {
                 return category.get();
             }
@@ -73,7 +73,7 @@ public class PlaceService implements CreateReadService<PlaceDTO, PlaceResponseDT
     private PlaceEntity saveAndGet(PlaceDTO placeDTO) {
         log.debug(crudLogConstants.getInputNewDTO(), placeDTO);
         var place = getMapper().map(placeDTO, PlaceEntity.class);
-        place.setGuid(UUID.randomUUID());
+        place.setId(UUID.randomUUID());
         placeRepository.save(place);
         log.info(crudLogConstants.getSaveEntityToDatabase(), place);
         return place;

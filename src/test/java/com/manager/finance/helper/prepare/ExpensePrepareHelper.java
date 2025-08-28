@@ -20,7 +20,7 @@ public class ExpensePrepareHelper {
 
     public ExpenseEntity createExpense() {
         var expenseEntity = new ExpenseEntity();
-        expenseEntity.setGuid(UUID.randomUUID());
+        expenseEntity.setId(UUID.randomUUID());
         expenseEntity.setCategory(categoryPrepareHelper.createCategory());
         expenseEntity.setPlace(placePrepareHelper.createPlace());
         expenseEntity.setDate(LocalDateTime.now());

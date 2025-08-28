@@ -9,13 +9,13 @@ import java.util.UUID;
 
 public interface CrudService<D extends CrudDTO, R extends CrudResponseDTO> {
 
-    R get(UUID guid, Principal principal);
+    R get(UUID id, Principal principal);
 
     List<R> getAll(Principal principal);
 
     R create(Principal principal, D dto);
 
-    R update(UUID guid, Principal principal, D dto);
+    R update(UUID id, Principal principal, D dto);
 
-    void delete(UUID guid, Principal principal);
+    void delete(UUID id, Principal principal);
 }

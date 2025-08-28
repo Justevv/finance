@@ -14,7 +14,7 @@ public class RolePrepareHelper {
     public RoleEntity createRole() {
         var role = new RoleEntity();
         Set<PermissionEntity> permissions = new HashSet<>(List.of(PermissionEntity.ALL_READ));
-        role.setGuid(UUID.randomUUID());
+        role.setId(UUID.randomUUID());
         role.setName("ROLE_USER");
         role.setPermissions(permissions);
         return role;

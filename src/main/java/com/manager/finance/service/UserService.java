@@ -51,7 +51,7 @@ public class UserService {
     @TrackExecutionTime
     public UserEntity create(UserDTO userDTO) throws UserAlreadyExistException {
         var user = createUser(userDTO);
-        userHelper.publishCreateUserEvent(user);
+        userHelper.createVerification(user);
         return user;
     }
 
@@ -61,7 +61,7 @@ public class UserService {
         userHelper.checkUniqueUserCreateParameters(userDTO);
 
         var user = getMapper().map(userDTO, UserEntity.class);
-        user.setGuid(UUID.randomUUID());
+        user.setId(UUID.randomUUID());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRoles(Set.of(roleRepository.findByName("ROLE_USER").orElseThrow()));
 

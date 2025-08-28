@@ -29,8 +29,8 @@ public class Place extends CreateReadApiResponse<PlaceDTO, PlaceResponseDTO> {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Object> getPlaces(Principal principal, @PathVariable("id") String guid) {
-        return get(guid, principal);
+    public ResponseEntity<Object> getPlaces(Principal principal, @PathVariable("id") String id) {
+        return get(id, principal);
     }
 
     @PostMapping

@@ -7,6 +7,6 @@ import java.util.UUID;
 @Data
 public class BaseCrudDTO implements CrudDTO {
     private String user;
-    private UUID guid;
+    private UUID id;
 
 }

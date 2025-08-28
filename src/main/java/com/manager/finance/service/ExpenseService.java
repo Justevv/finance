@@ -45,15 +45,15 @@ public class ExpenseService implements CrudService<ExpenseDTO, ExpenseResponseDT
 
     @TrackExecutionTime
     @Override
-    public ExpenseResponseDTO get(UUID guid, Principal principal) {
+    public ExpenseResponseDTO get(UUID id, Principal principal) {
         var user = userHelper.getUser(principal);
-        var expense = expenseRedisRepository.findByGuidAndUserGuid(guid, user.getGuid());
+        var expense = expenseRedisRepository.findByIdAndUserId(id, user.getId());
         ExpenseResponseDTO expenseResponseDTO = null;
         if (expense.isPresent()) {
             expenseResponseDTO = expense.get();
             log.debug(crudLogConstants.getGetDTOFromCache(), expenseResponseDTO);
         } else {
-            var expenseEntity = expenseRepository.findByGuidAndUser(guid, user);
+            var expenseEntity = expenseRepository.findByIdAndUser(id, user);
             if (expenseEntity.isPresent()) {
                 expenseResponseDTO = convertEntityToResponseDTO(expenseEntity.get());
                 expenseRedisRepository.save(expenseResponseDTO);
@@ -89,7 +89,7 @@ public class ExpenseService implements CrudService<ExpenseDTO, ExpenseResponseDT
     public ExpenseResponseDTO create(Principal principal, ExpenseDTO expenseDTO) {
         log.debug(crudLogConstants.getInputNewDTO(), expenseDTO);
         var expense = mapper.map(expenseDTO, ExpenseEntity.class);
-        expense.setGuid(UUID.randomUUID());
+        expense.setId(UUID.randomUUID());
         expense.setUser(userHelper.getUser(principal));
         expense.setDate(LocalDateTime.now());
         expense.setCategory(categoryService.getOrCreate(principal, expenseDTO.getCategory()));
@@ -104,11 +104,11 @@ public class ExpenseService implements CrudService<ExpenseDTO, ExpenseResponseDT
     @TrackExecutionTime
     @Transactional
     @Override
-    public ExpenseResponseDTO update(UUID guid, Principal principal, ExpenseDTO expenseDTO) {
+    public ExpenseResponseDTO update(UUID id, Principal principal, ExpenseDTO expenseDTO) {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), expenseDTO, null);
-        var expense = expenseRepository.findByGuidAndUser(guid, userHelper.getUser(principal));
+        var expense = expenseRepository.findByIdAndUser(id, userHelper.getUser(principal));
         if (expense.isEmpty()) {
-            throw new EntityNotFoundException(ENTITY_TYPE_NAME, guid);
+            throw new EntityNotFoundException(ENTITY_TYPE_NAME, id);
         }
         var updatedExpense = expense.get();
         mapper.map(expenseDTO, updatedExpense);
@@ -120,10 +120,10 @@ public class ExpenseService implements CrudService<ExpenseDTO, ExpenseResponseDT
     @TrackExecutionTime
     @Transactional
     @Override
-    public void delete(UUID guid, Principal principal) {
-        checkExpenseExists(guid, principal);
-        log.debug(LogConstants.DELETE_ENTITY_FROM_DATABASE_BY_GUID, ENTITY_TYPE_NAME, guid);
-        expenseRepository.deleteByGuid(guid, userHelper.getUser(principal));
+    public void delete(UUID id, Principal principal) {
+        checkExpenseExists(id, principal);
+        log.debug(LogConstants.DELETE_ENTITY_FROM_DATABASE_BY_ID, ENTITY_TYPE_NAME, id);
+        expenseRepository.deleteById(id, userHelper.getUser(principal));
     }
 
     @TrackExecutionTime
@@ -136,10 +136,10 @@ public class ExpenseService implements CrudService<ExpenseDTO, ExpenseResponseDT
         return expenseRepository.selectSum(principal, categoryEntity);
     }
 
-    private void checkExpenseExists(UUID guid, Principal principal) {
-        var exist = expenseRepository.existsByGuidAndUser(guid, userHelper.getUser(principal));
+    private void checkExpenseExists(UUID id, Principal principal) {
+        var exist = expenseRepository.existsByIdAndUser(id, userHelper.getUser(principal));
         if (!exist) {
-            throw new EntityNotFoundException(ENTITY_TYPE_NAME, guid);
+            throw new EntityNotFoundException(ENTITY_TYPE_NAME, id);
         }
     }
 

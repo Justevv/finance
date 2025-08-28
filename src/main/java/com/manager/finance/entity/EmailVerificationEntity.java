@@ -1,36 +1,38 @@
 package com.manager.finance.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "verification")
+@Table(name = "email_verification")
 @Data
 @NoArgsConstructor
-public class VerificationEntity implements Serializable {
+public class EmailVerificationEntity implements Serializable {
     @Id
-    private UUID guid;
+    private UUID id;
     @ToString.Exclude
     private String code;
     private LocalDateTime expireTime;
-    private VerificationType type;
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private UserEntity user;
+    private boolean isSent;
 
-    public VerificationEntity(String code, int expireInSeconds, VerificationType type) {
-        this.guid = UUID.randomUUID();
+    public EmailVerificationEntity(String code, int expireInSeconds) {
+        this.id = UUID.randomUUID();
         this.code = code;
         this.expireTime = LocalDateTime.now().plusSeconds(expireInSeconds);
-        this.type = type;
     }
 
     public boolean isExpire() {

@@ -39,8 +39,8 @@ public class Category extends CreateReadApiResponse<CategoryDTO, CategoryRespons
 
     @GetMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<Object> getCategory(Principal principal, @PathVariable("id") String guid) {
-        return get(guid, principal);
+    public ResponseEntity<Object> getCategory(Principal principal, @PathVariable("id") String id) {
+        return get(id, principal);
     }
 
     @PostMapping
