@@ -28,8 +28,6 @@ import java.util.UUID;
 public class UserService {
     private static final String USER_LOG_NAME = "user";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(USER_LOG_NAME);
-    @Getter
-    private final ModelMapper mapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -38,14 +36,14 @@ public class UserService {
     @TrackExecutionTime
     public UserResponseDTO getUser(Principal principal) {
         var user = userHelper.getUser(principal);
-        return getMapper().map(user, UserResponseDTO.class);
+        return UserResponseDTO.fromUser(user);
     }
 
     @Transactional
     @TrackExecutionTime
     public UserResponseDTO createAndGetDTO(UserDTO userDTO) throws UserAlreadyExistException {
         var user = create(userDTO);
-        return convertUserToUserResponseDTO(user);
+        return UserResponseDTO.fromUser(user);
     }
 
     @TrackExecutionTime
@@ -60,10 +58,14 @@ public class UserService {
         log.debug(crudLogConstants.getInputNewDTO(), userDTO);
         userHelper.checkUniqueUserCreateParameters(userDTO);
 
-        var user = getMapper().map(userDTO, UserEntity.class);
-        user.setId(UUID.randomUUID());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRoles(Set.of(roleRepository.findByName("ROLE_USER").orElseThrow()));
+        var user = UserEntity.builder()
+                .id(UUID.randomUUID())
+                .username(userDTO.getUsername())
+                .email(userDTO.getEmail())
+                .phone(userDTO.getPhone())
+                .roles(Set.of(roleRepository.findByName("ROLE_USER").orElseThrow()))
+                .password(passwordEncoder.encode(userDTO.getPassword()))
+                .build();
 
         userRepository.save(user);
         log.info(crudLogConstants.getSaveEntityToDatabase(), user);
@@ -71,7 +73,7 @@ public class UserService {
     }
 
     private UserResponseDTO convertUserToUserResponseDTO(UserEntity user) {
-        var userResponseDTO = getMapper().map(user, UserResponseDTO.class);
+        var userResponseDTO = UserResponseDTO.fromUser(user);
         log.debug(crudLogConstants.getOutputDTOAfterMapping(), userResponseDTO);
         return userResponseDTO;
     }

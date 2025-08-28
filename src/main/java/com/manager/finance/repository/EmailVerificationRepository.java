@@ -5,6 +5,7 @@ import com.manager.finance.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +27,7 @@ public interface EmailVerificationRepository extends JpaRepository<EmailVerifica
                 is_sent
             FROM email_verification
             WHERE NOT is_sent
-            LIMIT ?1
-            FOR UPDATE SKIP LOCKED""", nativeQuery = true)
-    List<EmailVerificationEntity> findByIsSent(int limit);
+            FOR UPDATE SKIP LOCKED
+            LIMIT :limit""", nativeQuery = true)
+    List<EmailVerificationEntity> findByIsSent(@Param("limit") int limit);
 }
