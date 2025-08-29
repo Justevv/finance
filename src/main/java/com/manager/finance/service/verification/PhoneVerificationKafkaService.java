@@ -34,6 +34,7 @@ public class PhoneVerificationKafkaService {
         log.debug("Trying to send a phone verification messages {}", phoneVerificationEntities);
         phoneVerificationEntities.forEach(phoneVerificationEntity -> {
             PhoneVerificationResponseDto responseDto = PhoneVerificationResponseDto.builder()
+                    .id(phoneVerificationEntity.getId())
                     .code(phoneVerificationEntity.getCode())
                     .phone(phoneVerificationEntity.getUser().getPhone())
                     .build();

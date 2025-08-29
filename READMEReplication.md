@@ -2,7 +2,7 @@ For enable replication use:
 CREATE ROLE replica WITH LOGIN REPLICATION PASSWORD 'sa'; on master
 
 update pg_hba.conf in docker 
-execute docker network inspect, and get subnet, then put this subnet to
+execute "docker network inspect", and get "subnet", then put this subnet to
 host    replication     all             172.21.0.0/1            trust
 
 update postgresql.conf in docker

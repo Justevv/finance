@@ -32,6 +32,7 @@ public class EmailVerificationKafkaService {
 
         emailVerificationEntities.forEach(emailVerificationEntity -> {
             EmailVerificationResponseDto responseDto = EmailVerificationResponseDto.builder()
+                    .id(emailVerificationEntity.getId())
                     .code(emailVerificationEntity.getCode())
                     .email(emailVerificationEntity.getUser().getEmail())
                     .build();
