@@ -1,0 +1,2 @@
+CREATE INDEX CONCURRENTLY IF NOT EXISTS email_verification_is_sent_idx ON email_verification (is_sent) where is_sent = false;
+CREATE INDEX CONCURRENTLY IF NOT EXISTS phone_verification_is_sent_idx ON phone_verification (is_sent) where is_sent = false;

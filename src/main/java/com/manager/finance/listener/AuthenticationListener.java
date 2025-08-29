@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @EnableAsync
 @Component
@@ -24,6 +25,7 @@ public class AuthenticationListener {
     public void onApplicationEvent(AuthenticationEvent event) {
         log.debug("Event start {}", event);
         var authenticationLog = AuthenticationLog.builder()
+                .id(UUID.randomUUID())
                 .dateTime(LocalDateTime.now())
                 .ipAddress(event.getRemoteAddr())
                 .userAgent(event.getUserAgent())
