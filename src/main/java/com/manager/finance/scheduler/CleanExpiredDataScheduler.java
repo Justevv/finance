@@ -16,8 +16,14 @@ public class CleanExpiredDataScheduler {
 
     @Scheduled(fixedDelay = 10000)
     @TrackExecutionTime
-    public void cleanExpiredVerification() {
-         cleanExpiredDataService.cleanExpiredVerification();
+    public void cleanExpiredEmailVerification() {
+        cleanExpiredDataService.cleanExpiredEmailVerification();
+    }
+
+    @Scheduled(fixedDelay = 10000)
+    @TrackExecutionTime
+    public void cleanExpiredPhoneVerification() {
+        cleanExpiredDataService.cleanExpiredPhoneVerification();
     }
 
     @Scheduled(fixedDelay = 10000)
