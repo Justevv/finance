@@ -73,8 +73,7 @@ public class PlaceService implements CreateReadService<PlaceDTO, PlaceResponseDT
     private PlaceEntity saveAndGet(PlaceDTO placeDTO) {
         log.debug(crudLogConstants.getInputNewDTO(), placeDTO);
         var place = getMapper().map(placeDTO, PlaceEntity.class);
-        place.setId(UUID.randomUUID());
-        placeRepository.save(place);
+       placeRepository.save(place);
         log.info(crudLogConstants.getSaveEntityToDatabase(), place);
         return place;
     }

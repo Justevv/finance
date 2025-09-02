@@ -1,15 +1,21 @@
 package com.manager.finance.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "expense")
-@Data
+@Getter
+@Setter
 public class ExpenseEntity extends CrudEntity {
     private String description;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

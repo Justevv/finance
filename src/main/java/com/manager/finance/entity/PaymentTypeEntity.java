@@ -1,13 +1,12 @@
 package com.manager.finance.entity;
 
-import lombok.Data;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Getter;
 
 @Entity
 @Table(name = "PaymentType")
-@Data
+@Getter
 public class PaymentTypeEntity extends CrudEntity {
     private String name;
 }

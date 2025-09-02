@@ -1,20 +1,25 @@
 package com.manager.finance.entity;
 
-import lombok.Data;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "phone_verification")
-@Data
 @NoArgsConstructor
+@Getter
+@Setter
 public class PhoneVerificationEntity implements Serializable {
     @Id
     private UUID id;

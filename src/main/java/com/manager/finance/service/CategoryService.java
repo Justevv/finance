@@ -87,7 +87,6 @@ public class CategoryService implements CreateReadService<CategoryDTO, CategoryR
     private CategoryEntity saveAndGet(Principal principal, CategoryDTO categoryDTO) {
         log.debug(LogConstants.INPUT_NEW_DTO, categoryDTO);
         var category = mapper.map(categoryDTO, CategoryEntity.class);
-        category.setId(UUID.randomUUID());
         categoryRepository.save(category);
         favoriteCategoryService.save(category, userHelper.getUser(principal));
         log.info(LogConstants.SAVE_ENTITY_TO_DATABASE, category);

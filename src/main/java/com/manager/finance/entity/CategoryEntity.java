@@ -3,11 +3,11 @@ package com.manager.finance.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
 
 @Entity
 @Table(name = "Category")
-@Data
+@Getter
 public class CategoryEntity extends CrudEntity {
     private String name;
     @ManyToOne

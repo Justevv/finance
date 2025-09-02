@@ -4,8 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -16,8 +17,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "email_verification")
-@Data
 @NoArgsConstructor
+@Getter
+@Setter
 public class EmailVerificationEntity implements Serializable {
     @Id
     private UUID id;

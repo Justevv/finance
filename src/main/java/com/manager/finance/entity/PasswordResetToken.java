@@ -1,15 +1,21 @@
 package com.manager.finance.entity;
 
-import lombok.Data;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "password_reset_token")
-@Data
+@Getter
+@Setter
 public class PasswordResetToken {
 
     @Id

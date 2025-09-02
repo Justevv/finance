@@ -89,7 +89,6 @@ public class ExpenseService implements CrudService<ExpenseDTO, ExpenseResponseDT
     public ExpenseResponseDTO create(Principal principal, ExpenseDTO expenseDTO) {
         log.debug(crudLogConstants.getInputNewDTO(), expenseDTO);
         var expense = mapper.map(expenseDTO, ExpenseEntity.class);
-        expense.setId(UUID.randomUUID());
         expense.setUser(userHelper.getUser(principal));
         expense.setDate(LocalDateTime.now());
         expense.setCategory(categoryService.getOrCreate(principal, expenseDTO.getCategory()));
