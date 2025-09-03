@@ -1,7 +1,7 @@
 package com.manager.finance.helper.converter;
 
-import com.manager.finance.entity.CategoryEntity;
-import com.manager.finance.repository.CategoryRepository;
+import com.manager.finance.infrastructure.persistace.entity.CategoryEntity;
+import com.manager.finance.infrastructure.persistace.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.core.convert.converter.Converter;

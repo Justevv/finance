@@ -2,7 +2,7 @@ package com.manager.user.controller;
 
 import com.manager.user.dto.PasswordUpdateDTO;
 import com.manager.user.dto.UserUpdateDTO;
-import com.manager.finance.helper.ErrorHelper;
+import com.manager.finance.infrastructure.controller.error.ErrorHelper;
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.service.verification.PasswordService;
 import jakarta.validation.Valid;

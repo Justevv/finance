@@ -6,7 +6,7 @@ import com.manager.user.administrator.dto.user.UserAdminResponseDTO;
 import com.manager.user.administrator.dto.user.UserAdminUpdateDTO;
 import com.manager.user.administrator.model.UserAdminModel;
 import com.manager.user.entity.UserEntity;
-import com.manager.finance.helper.ErrorHelper;
+import com.manager.finance.infrastructure.controller.error.ErrorHelper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

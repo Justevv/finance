@@ -1,21 +1,21 @@
 package com.manager.finance.controller;
 
-import com.manager.finance.dto.BaseCrudDTO;
-import com.manager.finance.dto.response.BaseCrudResponseDTO;
-import com.manager.finance.entity.CrudEntity;
-import com.manager.finance.exception.EntityNotFoundException;
-import com.manager.finance.helper.ErrorHelper;
+import com.manager.finance.infrastructure.controller.dto.request.BaseCrudDTO;
+import com.manager.finance.infrastructure.controller.dto.response.BaseCrudResponseDTO;
+import com.manager.finance.domain.exception.EntityNotFoundException;
+import com.manager.finance.infrastructure.controller.error.ErrorHelper;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.finance.service.CrudService;
+import com.manager.finance.application.serivice.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.security.Principal;
 import java.util.UUID;
-
+@Service
 public class CrudApiResponse<D extends BaseCrudDTO, R extends BaseCrudResponseDTO> {
     private final CrudService<D, R> model;
     @Autowired

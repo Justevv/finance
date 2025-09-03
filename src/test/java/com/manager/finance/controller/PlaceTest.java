@@ -1,12 +1,12 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
-import com.manager.finance.entity.PlaceEntity;
+import com.manager.finance.infrastructure.persistace.entity.PlaceEntity;
 import com.manager.user.entity.UserEntity;
 import com.manager.finance.helper.converter.PlaceIdConverter;
 import com.manager.finance.helper.prepare.PlacePrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.finance.repository.PlaceRepository;
+import com.manager.finance.infrastructure.persistace.repository.PlaceRepository;
 import com.manager.user.repository.UserRepository;
 import com.manager.user.service.SecurityUserService;
 import lombok.SneakyThrows;

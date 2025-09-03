@@ -1,6 +1,6 @@
 package com.manager.finance.helper.prepare;
 
-import com.manager.finance.entity.PlaceEntity;
+import com.manager.finance.infrastructure.persistace.entity.PlaceEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 

@@ -1,7 +1,7 @@
 package com.manager.finance.helper.converter;
 
-import com.manager.finance.entity.PlaceEntity;
-import com.manager.finance.repository.PlaceRepository;
+import com.manager.finance.infrastructure.persistace.entity.PlaceEntity;
+import com.manager.finance.infrastructure.persistace.repository.PlaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.core.convert.converter.Converter;
