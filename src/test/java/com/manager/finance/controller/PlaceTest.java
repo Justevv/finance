@@ -8,7 +8,7 @@ import com.manager.finance.helper.prepare.PlacePrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.PlaceRepository;
 import com.manager.finance.repository.UserRepository;
-import com.manager.finance.service.SecurityUserService;
+import com.manager.user.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

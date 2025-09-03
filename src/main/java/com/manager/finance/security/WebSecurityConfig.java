@@ -1,6 +1,6 @@
 package com.manager.finance.security;
 
-import com.manager.finance.service.SecurityUserService;
+import com.manager.user.service.SecurityUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

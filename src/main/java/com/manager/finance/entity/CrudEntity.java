@@ -5,6 +5,7 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public abstract class CrudEntity implements Serializable {
     @Id
     @Getter
+    @Setter
     private UUID id = UUID.randomUUID();
 
     @Override

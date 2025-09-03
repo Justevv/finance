@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "role")
 @Getter
+@Setter
 public class RoleEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = 9178661439456356177L;

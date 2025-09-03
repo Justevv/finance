@@ -6,7 +6,7 @@ import com.manager.finance.dto.UserUpdateDTO;
 import com.manager.finance.dto.response.UserResponseDTO;
 import com.manager.finance.helper.ErrorHelper;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.finance.service.UserService;
+import com.manager.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
