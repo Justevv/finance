@@ -2,7 +2,7 @@ package com.manager.finance.repository;
 
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.entity.ExpenseEntity;
-import com.manager.finance.entity.UserEntity;
+import com.manager.user.entity.UserEntity;
 import com.manager.finance.metric.TrackExecutionTime;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

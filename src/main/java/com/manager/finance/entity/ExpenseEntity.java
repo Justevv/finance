@@ -1,6 +1,7 @@
 package com.manager.finance.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.manager.user.entity.UserEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

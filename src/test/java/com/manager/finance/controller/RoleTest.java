@@ -1,11 +1,11 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
-import com.manager.finance.entity.PermissionEntity;
-import com.manager.finance.entity.RoleEntity;
+import com.manager.user.entity.PermissionEntity;
+import com.manager.user.entity.RoleEntity;
 import com.manager.finance.helper.converter.RoleIdConverter;
 import com.manager.finance.helper.prepare.RolePrepareHelper;
-import com.manager.finance.repository.RoleRepository;
+import com.manager.user.repository.RoleRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

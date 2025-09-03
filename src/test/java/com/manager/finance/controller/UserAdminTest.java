@@ -1,16 +1,16 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
-import com.manager.finance.entity.PermissionEntity;
-import com.manager.finance.entity.RoleEntity;
-import com.manager.finance.entity.UserEntity;
+import com.manager.user.entity.PermissionEntity;
+import com.manager.user.entity.RoleEntity;
+import com.manager.user.entity.UserEntity;
 import com.manager.finance.helper.converter.RoleIdConverter;
 import com.manager.finance.helper.converter.UserIdConverter;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.finance.repository.PhoneVerificationRepository;
-import com.manager.finance.repository.RoleRepository;
-import com.manager.finance.repository.UserRepository;
-import com.manager.finance.repository.EmailVerificationRepository;
+import com.manager.user.repository.PhoneVerificationRepository;
+import com.manager.user.repository.RoleRepository;
+import com.manager.user.repository.UserRepository;
+import com.manager.user.repository.EmailVerificationRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

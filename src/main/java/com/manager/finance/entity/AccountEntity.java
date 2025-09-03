@@ -1,5 +1,6 @@
 package com.manager.finance.entity;
 
+import com.manager.user.entity.UserEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;

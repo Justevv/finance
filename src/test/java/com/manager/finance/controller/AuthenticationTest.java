@@ -2,10 +2,10 @@ package com.manager.finance.controller;
 
 
 import com.manager.Manager;
-import com.manager.finance.entity.UserEntity;
+import com.manager.user.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.finance.repository.AuthenticationLogRepository;
-import com.manager.finance.repository.UserRepository;
+import com.manager.user.repository.AuthenticationLogRepository;
+import com.manager.user.repository.UserRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

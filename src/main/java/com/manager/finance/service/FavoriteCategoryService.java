@@ -2,7 +2,7 @@ package com.manager.finance.service;
 
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.entity.FavoriteCategoryEntity;
-import com.manager.finance.entity.UserEntity;
+import com.manager.user.entity.UserEntity;
 import com.manager.finance.log.LogConstants;
 import com.manager.finance.repository.FavoriteCategoryRepository;
 import lombok.RequiredArgsConstructor;

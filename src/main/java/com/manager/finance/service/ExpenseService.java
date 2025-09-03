@@ -5,7 +5,7 @@ import com.manager.finance.dto.response.ExpenseResponseDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.entity.ExpenseEntity;
 import com.manager.finance.exception.EntityNotFoundException;
-import com.manager.finance.helper.UserHelper;
+import com.manager.user.helper.UserHelper;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.log.LogConstants;
 import com.manager.finance.metric.TrackExecutionTime;

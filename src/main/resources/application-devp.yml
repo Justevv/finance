@@ -17,7 +17,7 @@ spring:
     password: sa
     driverClassName: org.postgresql.Driver
     hikari:
-      schema: test
+      schema: public
   data:
     redis:
       host: localhost
@@ -49,6 +49,8 @@ spring:
     scheduling:
       pool:
         size: 4
+  main:
+    allow-bean-definition-overriding: true
 
   mail:
     host: smtp.yandex.ru
@@ -67,7 +69,7 @@ spring:
     hibernate.ddl-auto: validate
     properties:
       hibernate:
-        default_schema: test
+        default_schema: public
 
   flyway:
     schemas: test

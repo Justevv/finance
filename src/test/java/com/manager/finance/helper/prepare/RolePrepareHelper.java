@@ -1,7 +1,7 @@
 package com.manager.finance.helper.prepare;
 
-import com.manager.finance.entity.PermissionEntity;
-import com.manager.finance.entity.RoleEntity;
+import com.manager.user.entity.PermissionEntity;
+import com.manager.user.entity.RoleEntity;
 import org.springframework.boot.test.context.TestConfiguration;
 
 import java.util.HashSet;

@@ -4,7 +4,7 @@ import com.manager.finance.dto.CategoryDTO;
 import com.manager.finance.dto.response.CategoryResponseDTO;
 import com.manager.finance.entity.CategoryEntity;
 import com.manager.finance.exception.EntityNotFoundException;
-import com.manager.finance.helper.UserHelper;
+import com.manager.user.helper.UserHelper;
 import com.manager.finance.log.LogConstants;
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.finance.redis.CategoryRedisRepository;

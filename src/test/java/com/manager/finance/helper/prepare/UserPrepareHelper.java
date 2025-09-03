@@ -1,6 +1,6 @@
 package com.manager.finance.helper.prepare;
 
-import com.manager.finance.entity.UserEntity;
+import com.manager.user.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Import;

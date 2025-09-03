@@ -1,9 +1,7 @@
 package com.manager.finance.log;
 
-import com.manager.finance.entity.UserEntity;
+import com.manager.user.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 

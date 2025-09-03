@@ -4,7 +4,7 @@ import com.manager.finance.dto.PlaceDTO;
 import com.manager.finance.dto.response.PlaceResponseDTO;
 import com.manager.finance.entity.PlaceEntity;
 import com.manager.finance.exception.EntityNotFoundException;
-import com.manager.finance.helper.UserHelper;
+import com.manager.user.helper.UserHelper;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.repository.PlaceRepository;
 import lombok.Getter;

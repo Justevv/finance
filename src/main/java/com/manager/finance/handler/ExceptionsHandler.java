@@ -1,8 +1,8 @@
 package com.manager.finance.handler;
 
-import com.manager.finance.exception.UserAlreadyExistException;
-import com.manager.finance.exception.UserIpAddressWasBlockedException;
-import com.manager.finance.exception.VerificationNotFoundException;
+import com.manager.user.exception.UserAlreadyExistException;
+import com.manager.user.exception.UserIpAddressWasBlockedException;
+import com.manager.user.exception.VerificationNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

@@ -1,12 +1,12 @@
 package com.manager.finance.model;
 
-import com.manager.finance.dto.UserDTO;
-import com.manager.finance.dto.UserUpdateDTO;
-import com.manager.finance.entity.UserEntity;
+import com.manager.user.dto.UserDTO;
+import com.manager.user.dto.UserUpdateDTO;
+import com.manager.user.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.finance.repository.PhoneVerificationRepository;
-import com.manager.finance.repository.UserRepository;
-import com.manager.finance.repository.EmailVerificationRepository;
+import com.manager.user.repository.PhoneVerificationRepository;
+import com.manager.user.repository.UserRepository;
+import com.manager.user.repository.EmailVerificationRepository;
 import com.manager.user.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

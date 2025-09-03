@@ -1,7 +1,7 @@
 package com.manager.finance.helper.converter;
 
-import com.manager.finance.entity.UserEntity;
-import com.manager.finance.repository.UserRepository;
+import com.manager.user.entity.UserEntity;
+import com.manager.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.core.convert.converter.Converter;

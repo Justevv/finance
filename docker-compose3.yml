@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres:17.5-alpine3.22
+    container_name: master
+    environment:
+      POSTGRES_DB: puplic
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: sa
+    ports:
+      - "5432:5432"
+    volumes:
+      - master:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "sa"]
+    networks:
+      - test_network
+
+  database_slave_1:
+    image: postgres:17.5-alpine3.22
+    container_name: slave_1
+    environment:
+      POSTGRES_DB: puplic
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: sa
+    ports:
+      - "15432:5432"
+    volumes:
+      - slave_1:/var/lib/postgresql/data
+    networks:
+      - test_network
+
+  database_slave_2:
+    image: postgres:17.5-alpine3.22
+    container_name: slave_2
+    environment:
+      POSTGRES_DB: puplic
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: sa
+    ports:
+      - "25432:5432"
+    volumes:
+      - slave_2:/var/lib/postgresql/data
+    networks:
+      - test_network
+
+  backend:
+    image: manager:1
+    container_name: backend
+    environment:
+      host: database
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - test_network
+    deploy:
+      resources:
+        limits:
+          cpus: '3'
+          memory: 2048M
+        reservations:
+          cpus: '1'
+          memory: 512M
+
+
+volumes:
+  master:
+  slave_1:
+  slave_2:
+
+networks:
+  test_network:
+    driver: bridge

@@ -2,12 +2,12 @@ package com.manager.finance.controller;
 
 import com.manager.Manager;
 import com.manager.finance.entity.ExpenseEntity;
-import com.manager.finance.entity.UserEntity;
+import com.manager.user.entity.UserEntity;
 import com.manager.finance.helper.converter.ExpenseIdConverter;
 import com.manager.finance.helper.prepare.ExpensePrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.repository.ExpenseRepository;
-import com.manager.finance.repository.UserRepository;
+import com.manager.user.repository.UserRepository;
 import com.manager.user.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
