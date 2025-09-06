@@ -51,7 +51,7 @@ public class ExpenseEntityMapper implements EntityMapper<ExpenseEntity, ExpenseM
                 .amount(dto.amount())
 //                .account(dto.getAccount())
                 .transactionType(dto.transactionType())
-                .user(userHelper.getUser2(dto.user()))
+                .user(userHelper.toEntity(dto.user()))
                 .build();
     }
 }

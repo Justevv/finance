@@ -111,7 +111,7 @@ public class UserHelper {
     }
 
     @TrackExecutionTime
-    public UserModel getUser2(Principal principal) {
+    public UserModel toEntity(Principal principal) {
         log.debug("input principal is {}", principal);
         var userEntity = userRepository.findByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
@@ -123,11 +123,20 @@ public class UserHelper {
     }
 
     @TrackExecutionTime
-    public UserEntity getUser2(UserModel principal) {
+    public UserEntity toEntity(UserModel principal) {
         log.debug("input principal is {}", principal);
         return UserEntity.builder()
                 .id(principal.id())
                 .username(principal.username())
+                .build();
+    }
+
+    @TrackExecutionTime
+    public UserModel toModel(UserEntity principal) {
+        log.debug("input principal is {}", principal);
+        return UserModel.builder()
+                .id(principal.getId())
+                .username(principal.getUsername())
                 .build();
     }
 
