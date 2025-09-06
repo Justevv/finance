@@ -73,7 +73,7 @@ public class Category {
     public ResponseEntity<Object> addCategory(Principal principal, @RequestBody @Valid CategoryRequestDTO categoryDTO, BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(categoryUseCase.create(userHelper.toEntity(principal), dtoMapper.toModel(categoryDTO)));
+            responseEntity = ResponseEntity.ok(categoryUseCase.create(userHelper.toModel(principal), dtoMapper.toModel(categoryDTO)));
         }
         return responseEntity;
     }

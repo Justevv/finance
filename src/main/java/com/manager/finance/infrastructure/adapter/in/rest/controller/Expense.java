@@ -88,7 +88,7 @@ public class Expense {
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
             status = HttpStatus.OK;
-            expenseResponseDTO = expenseMapper.toResponseDto(expenseUseCase.create(userHelper.toEntity(principal), expenseMapper.toModel(expenseRequestDTO)));
+            expenseResponseDTO = expenseMapper.toResponseDto(expenseUseCase.create(userHelper.toModel(principal), expenseMapper.toModel(expenseRequestDTO)));
         } else {
             status = HttpStatus.BAD_REQUEST;
             error = new Error(null, responseEntity);

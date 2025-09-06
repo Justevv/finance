@@ -2,23 +2,21 @@ package com.manager.user.helper;
 
 
 import com.manager.finance.domain.model.UserModel;
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.dto.UserDTO;
 import com.manager.user.entity.UserEntity;
 import com.manager.user.exception.UserAlreadyExistException;
-import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.repository.UserRepository;
 import com.manager.user.service.verification.EmailVerificationService;
 import com.manager.user.service.verification.PhoneVerificationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-
-import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 
 @Service
 @Slf4j
@@ -104,18 +102,19 @@ public class UserHelper {
     @TrackExecutionTime
     public UserEntity getUser(Principal principal) {
         log.debug("input principal is {}", principal);
-        var userEntity = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
-        log.debug("Current user is {}", userEntity);
-        return userEntity;
+        if (principal instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+            var user = usernamePasswordAuthenticationToken.getPrincipal();
+            if (user instanceof UserEntity userEntity) {
+                log.debug("Current user is {}", userEntity);
+                return userEntity;
+            }
+        }
+        return null;
     }
 
     @TrackExecutionTime
-    public UserModel toEntity(Principal principal) {
-        log.debug("input principal is {}", principal);
-        var userEntity = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
-        log.debug("Current user is {}", userEntity);
+    public UserModel toModel(Principal principal) {
+        var userEntity = getUser(principal);
         return UserModel.builder()
                 .id(userEntity.getId())
                 .username(userEntity.getUsername())
@@ -123,20 +122,20 @@ public class UserHelper {
     }
 
     @TrackExecutionTime
-    public UserEntity toEntity(UserModel principal) {
-        log.debug("input principal is {}", principal);
+    public UserEntity toEntity(UserModel userModel) {
+        log.debug("input userModel is {}", userModel);
         return UserEntity.builder()
-                .id(principal.id())
-                .username(principal.username())
+                .id(userModel.id())
+                .username(userModel.username())
                 .build();
     }
 
     @TrackExecutionTime
-    public UserModel toModel(UserEntity principal) {
-        log.debug("input principal is {}", principal);
+    public UserModel toModel(UserEntity userEntity) {
+        log.debug("input userEntity is {}", userEntity);
         return UserModel.builder()
-                .id(principal.getId())
-                .username(principal.getUsername())
+                .id(userEntity.getId())
+                .username(userEntity.getUsername())
                 .build();
     }
 
