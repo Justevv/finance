@@ -1,0 +1,172 @@
+package com.manager.finance.domain.service;
+
+import com.manager.finance.application.port.in.ExpenseUseCase;
+import com.manager.finance.application.port.out.cache.ExpenseCache;
+import com.manager.finance.application.port.out.repository.ExpenseRepository;
+import com.manager.finance.domain.exception.EntityNotFoundException;
+import com.manager.finance.domain.model.ExpenseModel;
+import com.manager.finance.domain.model.UserModel;
+import com.manager.finance.infrastructure.adapter.out.persistence.entity.CategoryEntity;
+import com.manager.finance.log.CrudLogConstants;
+import com.manager.finance.log.LogConstants;
+import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.user.helper.UserHelper;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class ExpenseService implements ExpenseUseCase {
+    private static final String ENTITY_TYPE_NAME = "expense";
+    private final ExpenseRepository expenseRepository;
+    private final CategoryService categoryService;
+    private final PlaceService placeService;
+    private final ModelMapper mapper;
+    private final UserHelper userHelper;
+    private final ExpenseCache expenseCache;
+    private CrudLogConstants crudLogConstants;
+
+    @PostConstruct
+    private void init() {
+        crudLogConstants = new CrudLogConstants(ENTITY_TYPE_NAME);
+    }
+
+    @TrackExecutionTime
+    @Override
+    public ExpenseModel get(UUID id, Principal principal) {
+        var user = userHelper.getUser(principal);
+        var expense = expenseCache.findByIdAndUserId(id, user.getId());
+        ExpenseModel expenseModel = null;
+        if (expense.isPresent()) {
+            expenseModel = expense.get();
+            log.debug(crudLogConstants.getGetDTOFromCache(), expenseModel);
+        } else {
+            expenseModel = expenseRepository.getByIdAndUser(id, user);
+            expenseCache.save(expenseModel);
+            log.debug(crudLogConstants.getLoadEntityFromDatabase(), expenseModel);
+            log.debug(crudLogConstants.getSaveDTOToCache(), expenseModel);
+
+        }
+        return expenseModel;
+    }
+
+    @TrackExecutionTime
+    public List<ExpenseModel> getAll(int page, int countPerPage, Principal principal) {
+        var user = userHelper.getUser(principal);
+        log.debug("Input start page is {}, count on page is {}", page, countPerPage);
+        Pageable pageable = PageRequest.of(page, countPerPage);
+        var expenseEntities = expenseRepository.findByUser(user, pageable);
+        log.debug(crudLogConstants.getListFiltered(), expenseEntities);
+        return expenseEntities;
+    }
+
+
+    @TrackExecutionTime
+    public List<ExpenseModel> getAll(Principal principal) {
+        var user = userHelper.getUser(principal);
+        var expenseEntities = expenseRepository.findByUser(user);
+        log.debug(crudLogConstants.getListFiltered(), expenseEntities);
+        return expenseEntities;
+    }
+
+    @TrackExecutionTime
+    @Transactional
+    @Override
+    public ExpenseModel create(UserModel principal, ExpenseModel expenseModel) {
+        log.debug(crudLogConstants.getInputNewDTO(), expenseModel);
+        var s = categoryService.getOrCreate(principal, expenseModel.category());
+        var d = placeService.getOrCreate(expenseModel.place());
+        ExpenseModel expenseModel1 = ExpenseModel.builder()
+                .id(UUID.randomUUID())
+                .description(expenseModel.description())
+                .date(LocalDateTime.now())
+                .category(s)
+                .place(d)
+                .paymentType(expenseModel.paymentType())
+                .amount(expenseModel.amount())
+                .account(expenseModel.account())
+                .transactionType(expenseModel.transactionType())
+                .user(principal)
+                .build();
+        var m = expenseRepository.save(expenseModel1);
+        log.info(crudLogConstants.getSaveEntityToDatabase(), m);
+        expenseCache.save(m);
+        return m;
+    }
+
+    @TrackExecutionTime
+    @Transactional
+    @Override
+    public ExpenseModel update(UUID id, Principal principal, ExpenseModel expenseModel) {
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), expenseModel, null);
+        var expense = expenseRepository.getByIdAndUser(id, userHelper.getUser(principal));
+        ExpenseModel save = ExpenseModel.builder()
+                .id(expense.id())
+                .description(expenseModel.description() != null ? expenseModel.description() : expense.description())
+                .date(expenseModel.date() != null ? expenseModel.date() : expense.date())
+                .category(expenseModel.category() != null ? expenseModel.category() : expense.category())
+                .place(expenseModel.place() != null ? expenseModel.place() : expense.place())
+                .paymentType(expenseModel.paymentType() != null ? expenseModel.paymentType() : expense.paymentType())
+                .amount(expenseModel.amount() != null ? expenseModel.amount() : expense.amount())
+                .account(expenseModel.account() != null ? expenseModel.account() : expense.account())
+                .transactionType(expenseModel.transactionType() != null ? expenseModel.transactionType() : expense.transactionType())
+                .user(expenseModel.user() != null ? expenseModel.user() : expense.user())
+                .build();
+        var s = expenseRepository.save(save);
+        log.info(crudLogConstants.getSaveEntityToDatabase(), s);
+        return s;
+    }
+
+    @TrackExecutionTime
+    @Transactional
+    @Override
+    public void delete(UUID id, Principal principal) {
+        getOrThrow(id, principal);
+        log.debug(LogConstants.DELETE_ENTITY_FROM_DATABASE_BY_ID, ENTITY_TYPE_NAME, id);
+        expenseRepository.deleteById(id);
+    }
+
+    @TrackExecutionTime
+    @Override
+    public double getSum(Principal principal) {
+        return expenseRepository.selectSum(principal);
+    }
+
+    @TrackExecutionTime
+    @Override
+    public double getSum(Principal principal, CategoryEntity categoryEntity) {
+        return expenseRepository.selectSum(principal, categoryEntity);
+    }
+
+    @TrackExecutionTime
+    @Override
+    public void checkExpense(UUID id, Principal principal) {
+        var exist = expenseRepository.existsByIdAndUser(id, userHelper.getUser(principal));
+        if (!exist) {
+            throw new EntityNotFoundException(ENTITY_TYPE_NAME, id);
+        }
+    }
+
+    private void getOrThrow(UUID id, Principal principal) {
+        var user = userHelper.getUser(principal);
+        var exist = expenseRepository.existsByIdAndUser(id, user);
+        if (!exist) {
+            throw new EntityNotFoundException(ENTITY_TYPE_NAME, id);
+        }
+    }
+
+}
+
+

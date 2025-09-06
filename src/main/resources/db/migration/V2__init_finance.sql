@@ -27,7 +27,7 @@ create table expense
     id uuid not null,
     date timestamp,
     description varchar(255),
-    sum float8 not null,
+    amount decimal not null,
     transaction_type int4,
     account_id uuid,
     category_id uuid,

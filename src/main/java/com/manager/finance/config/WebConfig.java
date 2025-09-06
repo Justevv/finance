@@ -1,6 +1,6 @@
 package com.manager.finance.config;
 
-import com.manager.finance.interceptor.LogInterceptor;
+import com.manager.finance.infrastructure.adapter.in.rest.log.LogInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

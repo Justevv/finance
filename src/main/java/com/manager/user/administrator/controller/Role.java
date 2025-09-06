@@ -4,7 +4,7 @@ package com.manager.user.administrator.controller;
 import com.manager.user.administrator.dto.RoleDTO;
 import com.manager.user.administrator.model.RoleModel;
 import com.manager.user.entity.RoleEntity;
-import com.manager.finance.infrastructure.controller.error.ErrorHelper;
+import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

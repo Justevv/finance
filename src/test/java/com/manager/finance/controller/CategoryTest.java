@@ -1,13 +1,14 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
-import com.manager.finance.infrastructure.persistace.entity.CategoryEntity;
+import com.manager.finance.infrastructure.adapter.out.persistence.entity.CategoryEntity;
+import com.manager.finance.infrastructure.adapter.out.persistence.entity.FavoriteCategoryEntity;
 import com.manager.user.entity.UserEntity;
 import com.manager.finance.helper.converter.CategoryIdConverter;
 import com.manager.finance.helper.prepare.CategoryPrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.finance.infrastructure.persistace.repository.CategoryRepository;
-import com.manager.finance.infrastructure.persistace.repository.FavoriteCategoryRepository;
+import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.CategorySpringDataRepository;
+import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.FavoriteCategorySpringDataRepository;
 import com.manager.user.repository.UserRepository;
 import com.manager.user.service.SecurityUserService;
 import lombok.SneakyThrows;
@@ -37,9 +38,9 @@ class CategoryTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean
-    private CategoryRepository categoryRepository;
+    private CategorySpringDataRepository categoryRepository;
     @MockBean
-    private FavoriteCategoryRepository favoriteCategoryRepository;
+    private FavoriteCategorySpringDataRepository favoriteCategorySpringDataRepository;
     @MockBean
     private SecurityUserService securityUserService;
     @Autowired
@@ -102,6 +103,8 @@ class CategoryTest {
     @WithMockUser
     @SneakyThrows
     void postCategory() {
+        Mockito.when(categoryRepository.save(Mockito.any(CategoryEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.when(favoriteCategorySpringDataRepository.save(Mockito.any(FavoriteCategoryEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
         var newName = "newName";
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/category")
                         .content("{\"name\":\"newName\"}")

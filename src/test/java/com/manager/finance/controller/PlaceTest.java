@@ -1,12 +1,12 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
-import com.manager.finance.infrastructure.persistace.entity.PlaceEntity;
+import com.manager.finance.infrastructure.adapter.out.persistence.entity.PlaceEntity;
 import com.manager.user.entity.UserEntity;
 import com.manager.finance.helper.converter.PlaceIdConverter;
 import com.manager.finance.helper.prepare.PlacePrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.finance.infrastructure.persistace.repository.PlaceRepository;
+import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.PlaceSpringDataRepository;
 import com.manager.user.repository.UserRepository;
 import com.manager.user.service.SecurityUserService;
 import lombok.SneakyThrows;
@@ -36,7 +36,7 @@ class PlaceTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean
-    private PlaceRepository placeRepository;
+    private PlaceSpringDataRepository placeRepository;
     @MockBean
     private SecurityUserService securityUserService;
     @Autowired
@@ -104,6 +104,7 @@ class PlaceTest {
     @WithMockUser
     @SneakyThrows
     void postPlace() {
+        Mockito.when(placeRepository.save(Mockito.any(PlaceEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
         var newName = "newName";
         var newAddress = "newAddress";
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/place")

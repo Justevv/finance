@@ -1,10 +1,11 @@
 package com.manager.finance.helper.prepare;
 
-import com.manager.finance.infrastructure.persistace.entity.ExpenseEntity;
+import com.manager.finance.infrastructure.adapter.out.persistence.entity.ExpenseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class ExpensePrepareHelper {
         expenseEntity.setPlace(placePrepareHelper.createPlace());
         expenseEntity.setDate(LocalDateTime.now());
         expenseEntity.setDescription("expenseDescription");
-        expenseEntity.setSum(700);
+        expenseEntity.setAmount(BigDecimal.valueOf(700));
         expenseEntity.setUser(userPrepareHelper.createUser());
         return expenseEntity;
     }

@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class UserEntity implements UserDetails {
     @Id
     private UUID id;

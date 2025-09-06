@@ -1,6 +1,7 @@
 package com.manager.user.helper;
 
 
+import com.manager.finance.domain.model.UserModel;
 import com.manager.user.dto.UserDTO;
 import com.manager.user.entity.UserEntity;
 import com.manager.user.exception.UserAlreadyExistException;
@@ -107,6 +108,27 @@ public class UserHelper {
                 .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
         log.debug("Current user is {}", userEntity);
         return userEntity;
+    }
+
+    @TrackExecutionTime
+    public UserModel getUser2(Principal principal) {
+        log.debug("input principal is {}", principal);
+        var userEntity = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+        log.debug("Current user is {}", userEntity);
+        return UserModel.builder()
+                .id(userEntity.getId())
+                .username(userEntity.getUsername())
+                .build();
+    }
+
+    @TrackExecutionTime
+    public UserEntity getUser2(UserModel principal) {
+        log.debug("input principal is {}", principal);
+        return UserEntity.builder()
+                .id(principal.id())
+                .username(principal.username())
+                .build();
     }
 
 }

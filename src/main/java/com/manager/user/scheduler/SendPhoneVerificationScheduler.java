@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class SendPhoneVerificationScheduler {
     private final PhoneVerificationKafkaService phoneVerificationKafkaService;
 
-    @Scheduled(fixedDelayString = "${manager.schedule.send-sms.crone}")
+//    @Scheduled(fixedDelayString = "${manager.schedule.send-sms.crone}")
     @TrackExecutionTime
     public void sendConfirmPhone() {
         boolean hasRecords = true;
