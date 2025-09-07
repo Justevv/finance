@@ -49,9 +49,11 @@ public class Category {
 
     @GetMapping("/page/{page}")
     @TrackExecutionTime
-    public List<CategoryResponseDTO> getCategoryPage(Principal principal, @PathVariable("page") int page,
+    public ResponseEntity<RestResponse<List<CategoryResponseDTO>>> getCategoryPage(Principal principal, @PathVariable("page") int page,
                                                      @RequestParam(defaultValue = "200") int countPerPage) {
-        return categoryUseCase.getPage(page, countPerPage).stream().map(dtoMapper::toResponseDto).toList();
+        List<CategoryResponseDTO> categoryResponseDTOS = categoryUseCase.getPage(page, countPerPage).stream().map(dtoMapper::toResponseDto).toList();
+        RestResponse<List<CategoryResponseDTO>> e = new RestResponse<>(null, categoryResponseDTOS);
+        return new ResponseEntity<>(e, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
