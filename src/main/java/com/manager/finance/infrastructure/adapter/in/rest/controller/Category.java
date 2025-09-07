@@ -1,9 +1,12 @@
 package com.manager.finance.infrastructure.adapter.in.rest.controller;
 
 import com.manager.finance.application.port.in.CategoryUseCase;
+import com.manager.finance.domain.exception.EntityNotFoundException;
 import com.manager.finance.domain.model.CategoryModel;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.request.CategoryRequestDTO;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.CategoryResponseDTO;
+import com.manager.finance.infrastructure.adapter.in.rest.dto.response.Error;
+import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.infrastructure.adapter.in.rest.mapper.DtoMapper;
 import com.manager.finance.metric.TrackExecutionTime;
@@ -51,21 +54,28 @@ public class Category {
 
     @GetMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<Object> getCategory(Principal principal, @PathVariable("id") String id) {
-        ResponseEntity<Object> responseEntity;
+    public ResponseEntity<RestResponse<CategoryResponseDTO>> getCategory(Principal principal, @PathVariable("id") String id) {
+        HttpStatus status;
+        Error error = null;
+        CategoryResponseDTO categoryResponseDTO = null;
         try {
             UUID uuid = UUID.fromString(id);
             var model = categoryUseCase.get(uuid, principal);
-            if (model != null) {
-                var response = dtoMapper.toResponseDto(model);
-                responseEntity = ResponseEntity.ok(response);
-            } else {
-                responseEntity = new ResponseEntity<>("Entity not found", HttpStatus.NOT_FOUND);
-            }
+            status = HttpStatus.OK;
+            categoryResponseDTO = dtoMapper.toResponseDto(model);
         } catch (IllegalArgumentException e) {
-            responseEntity = new ResponseEntity<>("Invalid UUID", HttpStatus.BAD_REQUEST);
+            status = HttpStatus.BAD_REQUEST;
+            error = Error.builder()
+                    .text("Invalid UUID")
+                    .build();
+        } catch (EntityNotFoundException e) {
+            status = HttpStatus.NOT_FOUND;
+            error = Error.builder()
+                    .text("Entity not found")
+                    .build();
         }
-        return responseEntity;
+        RestResponse<CategoryResponseDTO> e = new RestResponse<>(error, categoryResponseDTO);
+        return new ResponseEntity<>(e, status);
     }
 
     @PostMapping

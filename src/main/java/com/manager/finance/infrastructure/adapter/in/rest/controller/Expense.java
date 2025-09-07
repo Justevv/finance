@@ -4,7 +4,7 @@ import com.manager.finance.application.port.in.ExpenseUseCase;
 import com.manager.finance.domain.exception.EntityNotFoundException;
 import com.manager.finance.domain.model.ExpenseModel;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.Error;
-import com.manager.finance.infrastructure.adapter.in.rest.dto.response.ExpenseResponse;
+import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.infrastructure.adapter.in.rest.mapper.DtoMapper;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.request.ExpenseRequestDTO;
@@ -38,26 +38,26 @@ public class Expense {
 
     @GetMapping("/page/{page}")
     @TrackExecutionTime
-    public ResponseEntity<ExpenseResponse<List<ExpenseResponseDTO>>> getExpensesPage(Principal principal, @PathVariable("page") int page,
-                                                                                     @RequestParam(defaultValue = "100") int countPerPage) {
+    public ResponseEntity<RestResponse<List<ExpenseResponseDTO>>> getExpensesPage(Principal principal, @PathVariable("page") int page,
+                                                                                  @RequestParam(defaultValue = "100") int countPerPage) {
         log.debug("Input filter {}, search {}", page, countPerPage);
         var s = expenseUseCase.getAll(page, countPerPage, principal).stream().map(expenseMapper::toResponseDto).toList();
-        ExpenseResponse<List<ExpenseResponseDTO>> e = new ExpenseResponse<>(null, s);
+        RestResponse<List<ExpenseResponseDTO>> e = new RestResponse<>(null, s);
         return new ResponseEntity<>(e, HttpStatus.OK);
     }
 
     @GetMapping
     @TrackExecutionTime
-    public ResponseEntity<ExpenseResponse<List<ExpenseResponseDTO>>> getExpenses(Principal principal) {
+    public ResponseEntity<RestResponse<List<ExpenseResponseDTO>>> getExpenses(Principal principal) {
         var all = expenseUseCase.getAll(principal).stream().map(expenseMapper::toResponseDto).toList();
-        ExpenseResponse<List<ExpenseResponseDTO>> e = new ExpenseResponse<>(null, all);
+        RestResponse<List<ExpenseResponseDTO>> e = new RestResponse<>(null, all);
         return new ResponseEntity<>(e, HttpStatus.OK);
 //        return ResponseEntity.ok(expenseUseCase.getAll(principal));
     }
 
     @GetMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<ExpenseResponse> getExpense(Principal principal, @PathVariable("id") String id) {
+    public ResponseEntity<RestResponse> getExpense(Principal principal, @PathVariable("id") String id) {
         HttpStatus status = null;
         Error error = null;
         ExpenseResponseDTO expenseResponseDTO = null;
@@ -75,13 +75,13 @@ public class Expense {
             status = HttpStatus.BAD_REQUEST;
             error = new Error("Invalid UUID", null);
         }
-        ExpenseResponse<ExpenseResponseDTO> e = new ExpenseResponse<>(error, expenseResponseDTO);
+        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(error, expenseResponseDTO);
         return new ResponseEntity<>(e, status);
     }
 
     @PostMapping
     @TrackExecutionTime
-    public ResponseEntity<ExpenseResponse<ExpenseResponseDTO>> addExpense(Principal principal, @RequestBody @Valid ExpenseRequestDTO expenseRequestDTO, BindingResult bindingResult) {
+    public ResponseEntity<RestResponse<ExpenseResponseDTO>> addExpense(Principal principal, @RequestBody @Valid ExpenseRequestDTO expenseRequestDTO, BindingResult bindingResult) {
         HttpStatus status = null;
         Error error = null;
         ExpenseResponseDTO expenseResponseDTO = null;
@@ -94,14 +94,14 @@ public class Expense {
             error = new Error(null, responseEntity);
         }
 
-        ExpenseResponse<ExpenseResponseDTO> e = new ExpenseResponse<>(error, expenseResponseDTO);
+        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(error, expenseResponseDTO);
         return new ResponseEntity<>(e, status);
     }
 
     @PatchMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<ExpenseResponse<ExpenseResponseDTO>> changeExpenseProperty(Principal principal, @PathVariable("id") String id,
-                                                        @RequestBody @Valid ExpenseRequestDTO expenseRequestDTO, BindingResult bindingResult) {
+    public ResponseEntity<RestResponse<ExpenseResponseDTO>> changeExpenseProperty(Principal principal, @PathVariable("id") String id,
+                                                                                  @RequestBody @Valid ExpenseRequestDTO expenseRequestDTO, BindingResult bindingResult) {
         HttpStatus status = null;
         Error error = null;
         ExpenseResponseDTO expenseResponseDTO = null;
@@ -126,14 +126,14 @@ public class Expense {
             error = new Error(null, responseEntity);
         }
 
-        ExpenseResponse<ExpenseResponseDTO> e = new ExpenseResponse<>(error, expenseResponseDTO);
+        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(error, expenseResponseDTO);
         return new ResponseEntity<>(e, status);
     }
 
     @PutMapping("{id}")
     @TrackExecutionTime
-    public ResponseEntity<ExpenseResponse<ExpenseResponseDTO>> changeExpense(Principal principal, @PathVariable("id") String id, @RequestBody @Valid ExpenseRequestDTO expenseRequestDTO,
-                                                BindingResult bindingResult) {
+    public ResponseEntity<RestResponse<ExpenseResponseDTO>> changeExpense(Principal principal, @PathVariable("id") String id, @RequestBody @Valid ExpenseRequestDTO expenseRequestDTO,
+                                                                          BindingResult bindingResult) {
         HttpStatus status = null;
         Error error = null;
         ExpenseResponseDTO expenseResponseDTO = null;
@@ -170,7 +170,7 @@ public class Expense {
 //            }
 //        }
 
-        ExpenseResponse<ExpenseResponseDTO> e = new ExpenseResponse<>(error, expenseResponseDTO);
+        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(error, expenseResponseDTO);
         return new ResponseEntity<>(e, status);
     }
 
