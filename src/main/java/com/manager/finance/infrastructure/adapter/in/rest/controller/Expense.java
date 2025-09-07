@@ -109,7 +109,7 @@ public class Expense {
         if (responseEntity == null) {
             try {
                 UUID uuid = UUID.fromString(id);
-                var model = expenseUseCase.update(uuid, principal, expenseMapper.toModel(expenseRequestDTO));
+                var model = expenseUseCase.patch(uuid, userHelper.toModel(principal), expenseMapper.toModel(expenseRequestDTO));
                 if (model != null) {
                     expenseResponseDTO = expenseMapper.toResponseDto(model);
                     status = HttpStatus.OK;
@@ -141,7 +141,7 @@ public class Expense {
         if (responseEntity == null) {
             try {
                 UUID uuid = UUID.fromString(id);
-                var model = expenseUseCase.update(uuid, principal, expenseMapper.toModel(expenseRequestDTO));
+                var model = expenseUseCase.update(uuid, userHelper.toModel(principal), expenseMapper.toModel(expenseRequestDTO));
                 if (model != null) {
                     expenseResponseDTO = expenseMapper.toResponseDto(model);
                     status = HttpStatus.OK;

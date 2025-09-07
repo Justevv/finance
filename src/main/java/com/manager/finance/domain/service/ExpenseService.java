@@ -113,24 +113,55 @@ public class ExpenseService implements ExpenseUseCase {
     @TrackExecutionTime
     @Transactional
     @Override
-    public ExpenseModel update(UUID id, Principal principal, ExpenseModel expenseModel) {
-        log.debug(crudLogConstants.getInputDTOToChangeEntity(), expenseModel, null);
-        var expense = expenseRepository.getByIdAndUser(id, userHelper.getUser(principal));
+    public ExpenseModel update(UUID id, UserModel principal, ExpenseModel input) {
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), input, null);
+        var current = expenseRepository.getByIdAndUser(id, userHelper.toEntity(principal));
+
         var save = ExpenseModel.builder()
-                .id(expense.id())
-                .description(expenseModel.description() != null ? expenseModel.description() : expense.description())
-                .date(expenseModel.date() != null ? expenseModel.date() : expense.date())
-                .category(expenseModel.category() != null ? expenseModel.category() : expense.category())
-                .place(expenseModel.place() != null ? expenseModel.place() : expense.place())
-                .paymentType(expenseModel.paymentType() != null ? expenseModel.paymentType() : expense.paymentType())
-                .amount(expenseModel.amount() != null ? expenseModel.amount() : expense.amount())
-                .account(expenseModel.account() != null ? expenseModel.account() : expense.account())
-                .transactionType(expenseModel.transactionType() != null ? expenseModel.transactionType() : expense.transactionType())
-                .user(expenseModel.user() != null ? expenseModel.user() : expense.user())
+                .id(current.id())
+                .description(input.description())
+                .date(current.date())
+                .category(categoryService.getOrCreate(principal, input.category()))
+                .place(placeService.getOrCreate(input.place()))
+                .paymentType(input.paymentType())
+                .amount(input.amount())
+                .account(input.account())
+                .transactionType(input.transactionType())
+                .user(current.user())
                 .build();
-        var s = expenseRepository.save(save);
-        log.info(crudLogConstants.getSaveEntityToDatabase(), s);
-        return s;
+        var saved = expenseRepository.save(save);
+        if (saved == null) {
+            throw new SaveProcessException(save);
+        }
+        log.info(crudLogConstants.getSaveEntityToDatabase(), saved);
+        return saved;
+    }
+
+    @TrackExecutionTime
+    @Transactional
+    @Override
+    public ExpenseModel patch(UUID id, UserModel userModel, ExpenseModel input) {
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), input, null);
+        var current = expenseRepository.getByIdAndUser(id, userHelper.toEntity(userModel));
+
+        var save = ExpenseModel.builder()
+                .id(current.id())
+                .description(input.description() != null ? input.description() : current.description())
+                .date(current.date())
+                .category(categoryService.getOrCreate(userModel, input.category()))
+                .place(placeService.getOrCreate(input.place()))
+                .paymentType(input.paymentType() != null ? input.paymentType() : current.paymentType())
+                .amount(input.amount() != null ? input.amount() : current.amount())
+                .account(input.account() != null ? input.account() : current.account())
+                .transactionType(input.transactionType() != null ? input.transactionType() : current.transactionType())
+                .user(current.user())
+                .build();
+        var saved = expenseRepository.save(save);
+        if (saved == null) {
+            throw new SaveProcessException(save);
+        }
+        log.info(crudLogConstants.getSaveEntityToDatabase(), saved);
+        return saved;
     }
 
     @TrackExecutionTime
