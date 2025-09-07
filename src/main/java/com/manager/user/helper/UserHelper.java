@@ -13,10 +13,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+
+import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 
 @Service
 @Slf4j
@@ -109,7 +112,10 @@ public class UserHelper {
                 return userEntity;
             }
         }
-        return null;
+        var userEntity = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+        log.debug("Current user is {}", userEntity);
+        return userEntity;
     }
 
     @TrackExecutionTime

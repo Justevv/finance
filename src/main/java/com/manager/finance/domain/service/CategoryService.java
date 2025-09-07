@@ -2,6 +2,7 @@ package com.manager.finance.domain.service;
 
 import com.manager.finance.application.port.in.CategoryUseCase;
 import com.manager.finance.application.port.out.repository.CategoryRepository;
+import com.manager.finance.domain.exception.SaveProcessException;
 import com.manager.finance.domain.model.CategoryModel;
 import com.manager.finance.domain.exception.EntityNotFoundException;
 import com.manager.finance.domain.model.UserModel;
@@ -26,7 +27,7 @@ import java.util.UUID;
 public class CategoryService implements CategoryUseCase {
     private static final String ENTITY_TYPE_NAME = "category";
     private final CategoryRepository categoryRepository;
-//    private final CategoryRedisRepository categoryRedisRepository;
+    //    private final CategoryRedisRepository categoryRedisRepository;
     private final FavoriteCategoryService favoriteCategoryService;
     private final ModelMapper mapper;
     private final UserHelper userHelper;
@@ -84,15 +85,18 @@ public class CategoryService implements CategoryUseCase {
         return null;
     }
 
-    private CategoryModel saveAndGet(UserModel principal, CategoryModel categoryModel) {
-        log.debug(LogConstants.INPUT_NEW_DTO, categoryModel);
+    private CategoryModel saveAndGet(UserModel user, CategoryModel input) {
+        log.debug(LogConstants.INPUT_NEW_DTO, input);
         var save = CategoryModel.builder()
                 .id(UUID.randomUUID())
-                .name(categoryModel.name())
-                .parentCategory(categoryModel.parentCategory())
+                .name(input.name())
+                .parentCategory(input.parentCategory())
                 .build();
         var saved = categoryRepository.save(save);
-        favoriteCategoryService.save(saved, principal);
+        if (saved == null) {
+            throw new SaveProcessException(save);
+        }
+        favoriteCategoryService.save(saved, user);
         log.info(LogConstants.SAVE_ENTITY_TO_DATABASE, saved);
         return saved;
     }

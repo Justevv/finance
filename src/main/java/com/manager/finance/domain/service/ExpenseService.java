@@ -4,6 +4,7 @@ import com.manager.finance.application.port.in.ExpenseUseCase;
 import com.manager.finance.application.port.out.cache.ExpenseCache;
 import com.manager.finance.application.port.out.repository.ExpenseRepository;
 import com.manager.finance.domain.exception.EntityNotFoundException;
+import com.manager.finance.domain.exception.SaveProcessException;
 import com.manager.finance.domain.model.ExpenseModel;
 import com.manager.finance.domain.model.UserModel;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.CategoryEntity;
@@ -84,26 +85,29 @@ public class ExpenseService implements ExpenseUseCase {
     @TrackExecutionTime
     @Transactional
     @Override
-    public ExpenseModel create(UserModel principal, ExpenseModel expenseModel) {
-        log.debug(crudLogConstants.getInputNewDTO(), expenseModel);
-        var s = categoryService.getOrCreate(principal, expenseModel.category());
-        var d = placeService.getOrCreate(expenseModel.place());
-        ExpenseModel expenseModel1 = ExpenseModel.builder()
+    public ExpenseModel create(UserModel principal, ExpenseModel input) {
+        log.debug(crudLogConstants.getInputNewDTO(), input);
+        var categoryModel = categoryService.getOrCreate(principal, input.category());
+        var placeModel = placeService.getOrCreate(input.place());
+        var save = ExpenseModel.builder()
                 .id(UUID.randomUUID())
-                .description(expenseModel.description())
+                .description(input.description())
                 .date(LocalDateTime.now())
-                .category(s)
-                .place(d)
-                .paymentType(expenseModel.paymentType())
-                .amount(expenseModel.amount())
-                .account(expenseModel.account())
-                .transactionType(expenseModel.transactionType())
+                .category(categoryModel)
+                .place(placeModel)
+                .paymentType(input.paymentType())
+                .amount(input.amount())
+                .account(input.account())
+                .transactionType(input.transactionType())
                 .user(principal)
                 .build();
-        var m = expenseRepository.save(expenseModel1);
-        log.info(crudLogConstants.getSaveEntityToDatabase(), m);
-        expenseCache.save(m);
-        return m;
+        var saved = expenseRepository.save(save);
+        if (saved == null) {
+            throw new SaveProcessException(save);
+        }
+        log.info(crudLogConstants.getSaveEntityToDatabase(), saved);
+        expenseCache.save(saved);
+        return saved;
     }
 
     @TrackExecutionTime
@@ -112,7 +116,7 @@ public class ExpenseService implements ExpenseUseCase {
     public ExpenseModel update(UUID id, Principal principal, ExpenseModel expenseModel) {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), expenseModel, null);
         var expense = expenseRepository.getByIdAndUser(id, userHelper.getUser(principal));
-        ExpenseModel save = ExpenseModel.builder()
+        var save = ExpenseModel.builder()
                 .id(expense.id())
                 .description(expenseModel.description() != null ? expenseModel.description() : expense.description())
                 .date(expenseModel.date() != null ? expenseModel.date() : expense.date())
