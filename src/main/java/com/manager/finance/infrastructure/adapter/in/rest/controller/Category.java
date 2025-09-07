@@ -6,6 +6,7 @@ import com.manager.finance.domain.model.CategoryModel;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.request.CategoryRequestDTO;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.CategoryResponseDTO;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.Error;
+import com.manager.finance.infrastructure.adapter.in.rest.dto.response.ExpenseResponseDTO;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.infrastructure.adapter.in.rest.mapper.DtoMapper;
@@ -84,12 +85,22 @@ public class Category {
 
     @PostMapping
     @TrackExecutionTime
-    public ResponseEntity<Object> addCategory(Principal principal, @RequestBody @Valid CategoryRequestDTO categoryDTO, BindingResult bindingResult) {
-        var responseEntity = errorHelper.checkErrors(bindingResult);
+    public ResponseEntity<RestResponse<CategoryResponseDTO>> addCategory(Principal principal, @RequestBody @Valid CategoryRequestDTO categoryDTO, BindingResult bindingResult) {
+        HttpStatus status;
+        Error error = null;
+        CategoryResponseDTO categoryResponseDTO = null;
+        var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(categoryUseCase.create(userHelper.toModel(principal), dtoMapper.toModel(categoryDTO)));
+            status = HttpStatus.OK;
+            categoryResponseDTO = dtoMapper.toResponseDto(categoryUseCase.create(userHelper.toModel(principal), dtoMapper.toModel(categoryDTO)));
+        } else {
+            status = HttpStatus.BAD_REQUEST;
+            error = new Error(null, responseEntity);
         }
-        return responseEntity;
+
+        RestResponse<CategoryResponseDTO> response = new RestResponse<>(error, categoryResponseDTO);
+        return new ResponseEntity<>(response, status);
+
     }
 
 }

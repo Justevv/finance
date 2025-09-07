@@ -111,8 +111,8 @@ class CategoryTest {
                         .contentType("application/json")
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.name").value(newName));
+                .andExpect(jsonPath("$.payload.id").exists())
+                .andExpect(jsonPath("$.payload.name").value(newName));
     }
 
     @Test
