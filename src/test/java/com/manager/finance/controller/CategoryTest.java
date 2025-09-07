@@ -67,8 +67,8 @@ class CategoryTest {
         Mockito.when(categoryRepository.findAll()).thenReturn((List.of(categoryEntity)));
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/category"))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("[0].id").value(categoryEntity.getId().toString()))
-                .andExpect(jsonPath("[0].name").value(categoryEntity.getName()));
+                .andExpect(jsonPath("$.payload.[0].id").value(categoryEntity.getId().toString()))
+                .andExpect(jsonPath("$.payload.[0].name").value(categoryEntity.getName()));
     }
 
     @Test
@@ -78,8 +78,8 @@ class CategoryTest {
         Mockito.when(categoryRepository.findById(categoryEntity.getId())).thenReturn(Optional.of(categoryEntity));
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/category/{id}", categoryEntity.getId()))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").value(categoryEntity.getId().toString()))
-                .andExpect(jsonPath("$.name").value(categoryEntity.getName()));
+                .andExpect(jsonPath("$.payload.id").value(categoryEntity.getId().toString()))
+                .andExpect(jsonPath("$.payload.name").value(categoryEntity.getName()));
     }
 
 

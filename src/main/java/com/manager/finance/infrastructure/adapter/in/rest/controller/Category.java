@@ -41,8 +41,10 @@ public class Category {
 
     @GetMapping
     @TrackExecutionTime
-    public ResponseEntity<Object> getCategory(Principal principal) {
-        return ResponseEntity.ok(categoryUseCase.getAll(principal));
+    public ResponseEntity<RestResponse<List<CategoryResponseDTO>>> getCategory(Principal principal) {
+        List<CategoryResponseDTO> categoryResponseDTOS = categoryUseCase.getAll(principal).stream().map(dtoMapper::toResponseDto).toList();
+        RestResponse<List<CategoryResponseDTO>> e = new RestResponse<>(null, categoryResponseDTOS);
+        return new ResponseEntity<>(e, HttpStatus.OK);
     }
 
     @GetMapping("/page/{page}")
