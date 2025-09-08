@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
 @Import({UserPrepareHelper.class, PasswordResetTokenPrepareHelper.class})
-class PasswordTest {
+class PasswordControllerTest {
     private final static String RESET_PASSWORD_API = "/v1/user/password/reset";
     private final static String FORGET_PASSWORD_API = "/v1/user/password/forget";
     @MockBean

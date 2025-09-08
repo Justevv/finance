@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import({UserPrepareHelper.class, UserIdConverter.class, RoleIdConverter.class})
 @ActiveProfiles("test")
-class UserAdminTest {
+class UserControllerAdminTest {
     private static final String USER_WITH_ID_API = "/v1/admin/user/{id}";
     private static final String USER_API = "/v1/admin/user";
     private static final String USERNAME_PARAMETER = "username";

@@ -1,4 +1,4 @@
-package com.manager.user.controller;
+package com.manager.user.infrastructure.adapter.in.rest.controller;
 
 import com.manager.user.dto.PasswordUpdateDTO;
 import com.manager.user.dto.UserUpdateDTO;
@@ -20,7 +20,7 @@ import java.util.Map;
 @RequestMapping("/v1/user/password")
 @Slf4j
 @RequiredArgsConstructor
-public class Password {
+public class PasswordController {
     private final PasswordService passwordService;
     private final ErrorHelper errorHelper;
 

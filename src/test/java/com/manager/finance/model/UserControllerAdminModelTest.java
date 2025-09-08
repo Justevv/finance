@@ -23,7 +23,7 @@ import java.util.List;
 
 @SpringBootTest(classes = Manager.class)
 @Import({UserPrepareHelper.class})
-class UserAdminModelTest {
+class UserControllerAdminModelTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean

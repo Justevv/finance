@@ -1,4 +1,4 @@
-package com.manager.user.controller;
+package com.manager.user.infrastructure.adapter.in.rest.controller;
 
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.service.verification.AuthenticationService;
@@ -23,7 +23,7 @@ import java.util.Map;
 @RequestMapping("v1/auth")
 @Slf4j
 @RequiredArgsConstructor
-public class Authentication {
+public class AuthenticationController {
     private static final String INVALID_USERNAME_PASSWORD = "Invalid username/password";
     private final AuthenticationService authenticationService;
 

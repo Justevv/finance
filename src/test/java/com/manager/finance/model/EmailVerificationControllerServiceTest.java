@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @SpringBootTest(classes = Manager.class)
 @Import({UserPrepareHelper.class})
-class EmailVerificationServiceTest {
+class EmailVerificationControllerServiceTest {
     private static final String VERIFICATION_CODE = "100500";
     @Autowired
     private PhoneVerificationService phoneVerificationService;

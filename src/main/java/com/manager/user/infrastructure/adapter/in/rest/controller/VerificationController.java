@@ -1,4 +1,4 @@
-package com.manager.user.controller;
+package com.manager.user.infrastructure.adapter.in.rest.controller;
 
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.service.verification.EmailVerificationService;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("/v1/verification/{userId}")
 @Slf4j
 @RequiredArgsConstructor
-public class Verification {
+public class VerificationController {
     private final EmailVerificationService emailVerificationService;
     private final PhoneVerificationService phoneVerificationService;
 

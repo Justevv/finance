@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @Import({UserPrepareHelper.class})
-class UserServiceTest {
+class UserControllerServiceTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean

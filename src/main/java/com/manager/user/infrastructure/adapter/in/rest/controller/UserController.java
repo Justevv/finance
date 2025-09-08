@@ -1,4 +1,4 @@
-package com.manager.user.controller;
+package com.manager.user.infrastructure.adapter.in.rest.controller;
 
 
 import com.manager.user.dto.UserDTO;
@@ -20,7 +20,7 @@ import java.security.Principal;
 @RequestMapping("/v1/user")
 @Slf4j
 @RequiredArgsConstructor
-public class User {
+public class UserController {
     private final UserService userService;
     private final ErrorHelper errorHelper;
 

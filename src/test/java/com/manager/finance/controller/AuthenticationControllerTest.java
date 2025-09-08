@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import({UserPrepareHelper.class})
 @ActiveProfiles("test")
-class AuthenticationTest {
+class AuthenticationControllerTest {
     private static final String LOGIN_API = "/v1/auth/login";
     @MockBean
     private UserRepository userRepository;
