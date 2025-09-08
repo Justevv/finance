@@ -1,4 +1,4 @@
-package com.manager.user.administrator.model;
+package com.manager.user.domain.service.admin;
 
 
 import com.manager.user.administrator.dto.RoleDTO;
@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RoleModel {
+public class RoleService {
     private static final String ROLE_LOG_NAME = "role";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(ROLE_LOG_NAME);
     private final ModelMapper mapper;

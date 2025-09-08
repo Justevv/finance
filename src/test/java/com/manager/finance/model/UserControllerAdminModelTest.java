@@ -3,7 +3,7 @@ package com.manager.finance.model;
 import com.manager.Manager;
 import com.manager.user.administrator.dto.user.UserAdminDTO;
 import com.manager.user.administrator.dto.user.UserAdminUpdateDTO;
-import com.manager.user.administrator.model.UserAdminModel;
+import com.manager.user.domain.service.admin.UserAdminService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.PhoneVerificationRepository;
@@ -33,7 +33,7 @@ class UserControllerAdminModelTest {
     @MockBean
     private Principal principal;
     @Autowired
-    private UserAdminModel userAdminModel;
+    private UserAdminService userAdminService;
     @Autowired
     private UserPrepareHelper userPrepareHelper;
     private UserEntity user;
@@ -48,7 +48,7 @@ class UserControllerAdminModelTest {
         var userEntities = List.of(user);
         Mockito.when(userRepository.findAll()).thenReturn(userEntities);
 
-        var userResponseDTO = userAdminModel.getAll();
+        var userResponseDTO = userAdminService.getAll();
         Assertions.assertEquals(user.getEmail(), userResponseDTO.get(0).getEmail());
         Assertions.assertEquals(user.getUsername(), userResponseDTO.get(0).getUsername());
         Assertions.assertEquals(user.getPhone(), userResponseDTO.get(0).getPhone());
@@ -61,7 +61,7 @@ class UserControllerAdminModelTest {
     void getUsersAllInfo_shouldReturnUserEntity_when_userIsExists() {
         var userEntities = List.of(user);
         Mockito.when(userRepository.findAll()).thenReturn(userEntities);
-        var userResponseDTO = userAdminModel.get(user);
+        var userResponseDTO = userAdminService.get(user);
         Assertions.assertEquals(user.getEmail(), userResponseDTO.getEmail());
         Assertions.assertEquals(user.getUsername(), userResponseDTO.getUsername());
         Assertions.assertEquals(user.getPhone(), userResponseDTO.getPhone());
@@ -77,7 +77,7 @@ class UserControllerAdminModelTest {
         userDTO.setUsername("newUsername");
         userDTO.setEmail("newEmail");
         userDTO.setPassword("password");
-        var userResponseDTO = userAdminModel.createAndGetDTO(userDTO);
+        var userResponseDTO = userAdminService.createAndGetDTO(userDTO);
         Assertions.assertEquals(userDTO.getEmail(), userResponseDTO.getEmail());
         Assertions.assertEquals(userDTO.getUsername(), userResponseDTO.getUsername());
         Assertions.assertEquals(userDTO.getPhone(), userResponseDTO.getPhone());
@@ -93,7 +93,7 @@ class UserControllerAdminModelTest {
         userDTO.setUsername("newUsername");
         userDTO.setEmail("newEmail");
         userDTO.setPassword("password");
-        var userResponseDTO = userAdminModel.update(user, userDTO);
+        var userResponseDTO = userAdminService.update(user, userDTO);
         Assertions.assertEquals(userDTO.getEmail(), userResponseDTO.getEmail());
         Assertions.assertEquals(userDTO.getUsername(), userResponseDTO.getUsername());
         Assertions.assertEquals(userDTO.getPhone(), userResponseDTO.getPhone());
@@ -103,7 +103,7 @@ class UserControllerAdminModelTest {
 
     @Test
     void delete_shouldReturnNull_when_userIsExists() {
-        var deleteUser = userAdminModel.delete(user);
+        var deleteUser = userAdminService.delete(user);
         Assertions.assertNull(deleteUser);
     }
 

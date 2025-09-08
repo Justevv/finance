@@ -1,6 +1,6 @@
-package com.manager.user.infrastructure.adapter.in.rest.controller.administrator;
+package com.manager.user.infrastructure.adapter.in.rest.controller.admin;
 
-import com.manager.user.administrator.model.RoleModel;
+import com.manager.user.domain.service.admin.RoleService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,19 +15,19 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class PermissionsRole {
-    private final RoleModel roleModel;
+    private final RoleService roleService;
 
     @PostMapping
     @PreAuthorize("hasAuthority('role:crud')")
     public ResponseEntity<Object> addPermissions(@PathVariable("roleId") RoleEntity role, @RequestParam List<String> permissionIds) {
-        var responseDTO = roleModel.addPermission(role, permissionIds);
+        var responseDTO = roleService.addPermission(role, permissionIds);
         return ResponseEntity.ok(responseDTO);
     }
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('role:crud')")
     public ResponseEntity<Object> deletePermissions(@PathVariable("roleId") RoleEntity role, @RequestParam List<String> permissionIds) {
-        var responseDTO = roleModel.deletePermission(role, permissionIds);
+        var responseDTO = roleService.deletePermission(role, permissionIds);
         return ResponseEntity.ok(responseDTO);
     }
 

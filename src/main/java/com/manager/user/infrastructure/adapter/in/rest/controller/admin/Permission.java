@@ -1,7 +1,7 @@
-package com.manager.user.infrastructure.adapter.in.rest.controller.administrator;
+package com.manager.user.infrastructure.adapter.in.rest.controller.admin;
 
 
-import com.manager.user.administrator.model.PermissionModel;
+import com.manager.user.domain.service.admin.PermissionService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +18,12 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class Permission {
-    private final PermissionModel permissionModel;
+    private final PermissionService permissionService;
 
     @GetMapping
     @PreAuthorize("hasAuthority('role:crud')")
     public List<PermissionEntity> getPermissions() {
-        return permissionModel.getPermissions();
+        return permissionService.getPermissions();
     }
 
     @GetMapping("/{id}")

@@ -1,8 +1,8 @@
-package com.manager.user.infrastructure.adapter.in.rest.controller.administrator;
+package com.manager.user.infrastructure.adapter.in.rest.controller.admin;
 
 
 import com.manager.user.administrator.dto.RoleDTO;
-import com.manager.user.administrator.model.RoleModel;
+import com.manager.user.domain.service.admin.RoleService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import jakarta.validation.Valid;
@@ -20,13 +20,13 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class Role {
-    private final RoleModel roleModel;
+    private final RoleService roleService;
     private final ErrorHelper errorHelper;
 
     @GetMapping
     @PreAuthorize("hasAuthority('role:crud')")
     public List<RoleEntity> getRoles() {
-        return roleModel.getAll();
+        return roleService.getAll();
     }
 
     @GetMapping("/{id}")
@@ -40,7 +40,7 @@ public class Role {
     public ResponseEntity<Object> createRole(@Valid RoleDTO role, BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(roleModel.create(role));
+            responseEntity = ResponseEntity.ok(roleService.create(role));
         }
         return responseEntity;
     }
@@ -51,7 +51,7 @@ public class Role {
                                              BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(roleModel.update(role, roleDTO));
+            responseEntity = ResponseEntity.ok(roleService.update(role, roleDTO));
         }
         return responseEntity;
     }
@@ -59,7 +59,7 @@ public class Role {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('role:crud')")
     public ResponseEntity<Void> deleteRole(@PathVariable("id") RoleEntity role) {
-        return ResponseEntity.ok(roleModel.delete(role));
+        return ResponseEntity.ok(roleService.delete(role));
     }
 
 }

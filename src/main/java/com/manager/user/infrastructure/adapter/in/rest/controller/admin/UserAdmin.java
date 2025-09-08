@@ -1,10 +1,10 @@
-package com.manager.user.infrastructure.adapter.in.rest.controller.administrator;
+package com.manager.user.infrastructure.adapter.in.rest.controller.admin;
 
 
 import com.manager.user.administrator.dto.user.UserAdminDTO;
 import com.manager.user.administrator.dto.user.UserAdminResponseDTO;
 import com.manager.user.administrator.dto.user.UserAdminUpdateDTO;
-import com.manager.user.administrator.model.UserAdminModel;
+import com.manager.user.domain.service.admin.UserAdminService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import jakarta.validation.Valid;
@@ -22,19 +22,19 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class UserAdmin {
-    private final UserAdminModel userAdminModel;
+    private final UserAdminService userAdminService;
     private final ErrorHelper errorHelper;
 
     @GetMapping
     @PreAuthorize("hasAuthority('user:read')")
     public List<UserAdminResponseDTO> getUsers() {
-        return userAdminModel.getAll();
+        return userAdminService.getAll();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('user:read')")
     public UserAdminResponseDTO getUser(@PathVariable("id") UserEntity user) {
-        return userAdminModel.get(user);
+        return userAdminService.get(user);
     }
 
     @PostMapping
@@ -42,7 +42,7 @@ public class UserAdmin {
     public ResponseEntity<Object> createUser(@Valid UserAdminDTO userAdminDTO, BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(userAdminModel.createAndGetDTO(userAdminDTO));
+            responseEntity = ResponseEntity.ok(userAdminService.createAndGetDTO(userAdminDTO));
         }
         return responseEntity;
     }
@@ -53,7 +53,7 @@ public class UserAdmin {
                                              BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(userAdminModel.update(user, userUpdateDTO));
+            responseEntity = ResponseEntity.ok(userAdminService.update(user, userUpdateDTO));
         }
         return responseEntity;
     }
@@ -61,7 +61,7 @@ public class UserAdmin {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('user:delete')")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") UserEntity user) {
-        return ResponseEntity.ok(userAdminModel.delete(user));
+        return ResponseEntity.ok(userAdminService.delete(user));
     }
 
 }

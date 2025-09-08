@@ -1,4 +1,4 @@
-package com.manager.user.administrator.model;
+package com.manager.user.domain.service.admin;
 
 import com.manager.user.administrator.dto.user.UserAdminDTO;
 import com.manager.user.administrator.dto.user.UserAdminResponseDTO;
@@ -24,7 +24,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserAdminModel {
+public class UserAdminService {
     private static final String EMAIL_EXISTS_ERROR_MESSAGE = "There is an account with that email address: ";
     private static final String PHONE_EXISTS_ERROR_MESSAGE = "There is an account with that phone: ";
     private static final String USER_LOG_NAME = "adminUser";
