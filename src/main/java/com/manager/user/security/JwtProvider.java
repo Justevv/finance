@@ -1,7 +1,8 @@
 package com.manager.user.security;
 
-import com.manager.user.entity.RoleEntity;
 import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.user.entity.UserEntity;
+import com.manager.user.service.UserService;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,20 +13,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
-    private final UserDetailsService userDetailsService;
+    private final UserService userService;
     @Value("${jwt.secret}")
     private String secretKey;
     @Value("${jwt.expiration}")
@@ -34,14 +33,15 @@ public class JwtProvider {
     private String authorizationHeader;
 
     @PostConstruct
-    protected void init(){
+    protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
     @TrackExecutionTime
-    public String createToken(String username, Collection<RoleEntity> role) {
+    public String createToken(String username, UserEntity user) {
         var claims = Jwts.claims().setSubject(username);
-        claims.put("roles", role);
+        claims.setId(user.getId().toString());
+        claims.put("roles", user.getRoles());
         var currentTime = LocalDateTime.now();
         var validity = currentTime.plusSeconds(validityInSeconds);
 
@@ -54,9 +54,9 @@ public class JwtProvider {
     }
 
     @TrackExecutionTime
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) {
         try {
-            var claimsJws= Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            var claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             throw new JwtAuthenticationException("JWT token is expired or invalid", HttpStatus.UNAUTHORIZED);
@@ -64,19 +64,20 @@ public class JwtProvider {
     }
 
     @TrackExecutionTime
-    public Authentication getAuthentication (String token){
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    public Authentication getAuthentication(String token) {
+        var user = userService.findById(getId(token));
+        return new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities());
 
     }
 
     @TrackExecutionTime
-    public String getUsername(String token){
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    public UUID getId(String token) {
+        String id = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getId();
+        return UUID.fromString(id);
     }
 
     @TrackExecutionTime
-    public String resolveToken(HttpServletRequest request){
+    public String resolveToken(HttpServletRequest request) {
         return request.getHeader(authorizationHeader);
     }
 }

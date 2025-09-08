@@ -52,7 +52,7 @@ public class AuthenticationService {
                 authentication.getPassword()));
         var user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
-        var token = jwtProvider.createToken(username, user.getRoles());
+        var token = jwtProvider.createToken(username, user);
         Map<String, String> response = new HashMap<>();
         response.put("username", username);
         response.put("token", token);

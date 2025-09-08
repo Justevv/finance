@@ -3,8 +3,6 @@ package com.manager.finance.application.port.in;
 import com.manager.finance.domain.model.ExpenseModel;
 import com.manager.finance.domain.model.UserModel;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.CategoryEntity;
-import com.manager.finance.metric.TrackExecutionTime;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.List;
@@ -17,8 +15,6 @@ public interface ExpenseUseCase {
 
     ExpenseModel update(UUID id, UserModel principal, ExpenseModel expenseRequestDTO);
 
-    @TrackExecutionTime
-    @Transactional
     ExpenseModel patch(UUID id, UserModel userModel, ExpenseModel input);
 
     void delete(UUID id, Principal principal);

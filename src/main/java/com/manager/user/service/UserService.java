@@ -5,6 +5,7 @@ import com.manager.user.dto.UserUpdateDTO;
 import com.manager.user.dto.response.UserResponseDTO;
 import com.manager.user.entity.UserEntity;
 import com.manager.user.exception.UserAlreadyExistException;
+import com.manager.user.exception.UserNotFoundException;
 import com.manager.user.helper.UserHelper;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.metric.TrackExecutionTime;
@@ -30,6 +31,11 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserHelper userHelper;
+
+    @TrackExecutionTime
+    public UserEntity findById(UUID id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    }
 
     @TrackExecutionTime
     public UserResponseDTO getUser(Principal principal) {

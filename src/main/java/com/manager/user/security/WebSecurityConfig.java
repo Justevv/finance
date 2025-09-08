@@ -1,6 +1,5 @@
 package com.manager.user.security;
 
-import com.manager.user.service.SecurityUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +11,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -22,14 +19,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @Slf4j
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-    private static final int STRENGTH_PASSWORD = 8;
     private static final String CREATE_USER_API = "/v1/user";
     private static final String LOGIN_API = "/v1/auth/login";
     private static final String VERIFICATION_API = "/v1/verification/**";
     private static final String RESET_PASSWORD_API = "/v1/user/password/reset";
     private static final String FORGET_PASSWORD_API = "/v1/user/password/forget";
     private final JwtConfigure jwtConfigure;
-    private final SecurityUserService securityUserService;
     @Value("${path.mainPage}")
     private String mainPagePath;
     @Value("${path.css}")
@@ -73,11 +68,6 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder(STRENGTH_PASSWORD);
     }
 
 }
