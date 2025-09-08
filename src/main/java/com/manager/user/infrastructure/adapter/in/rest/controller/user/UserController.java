@@ -1,9 +1,9 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.user;
 
 
-import com.manager.user.dto.UserDTO;
-import com.manager.user.dto.UserUpdateDTO;
-import com.manager.user.dto.response.UserResponseDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.UserDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDTO;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.service.UserService;

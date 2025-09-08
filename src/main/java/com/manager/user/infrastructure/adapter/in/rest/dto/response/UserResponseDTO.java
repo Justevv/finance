@@ -1,4 +1,4 @@
-package com.manager.user.dto.response;
+package com.manager.user.infrastructure.adapter.in.rest.dto.response;
 
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import lombok.AllArgsConstructor;

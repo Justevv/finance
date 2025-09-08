@@ -1,6 +1,6 @@
 package com.manager.user.service.verification;
 
-import com.manager.user.dto.PasswordUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.PasswordUpdateDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PasswordResetTokenEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.event.ResetPasswordEvent;

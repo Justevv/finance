@@ -1,7 +1,7 @@
 package com.manager.user.config;
 
 
-import com.manager.user.dto.response.PhoneVerificationResponseDto;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.PhoneVerificationResponseDto;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SslConfigs;

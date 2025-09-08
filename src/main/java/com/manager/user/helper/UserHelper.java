@@ -3,7 +3,7 @@ package com.manager.user.helper;
 
 import com.manager.finance.domain.model.UserModel;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.dto.UserDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.UserDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.exception.UserAlreadyExistException;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;

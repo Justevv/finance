@@ -1,7 +1,7 @@
 package com.manager.finance.model;
 
-import com.manager.user.dto.UserDTO;
-import com.manager.user.dto.UserUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.UserDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.PhoneVerificationRepository;

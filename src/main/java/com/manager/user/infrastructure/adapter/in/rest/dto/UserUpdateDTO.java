@@ -1,11 +1,11 @@
-package com.manager.user.dto;
+package com.manager.user.infrastructure.adapter.in.rest.dto;
 
 import lombok.Data;
 import lombok.ToString;
 
 import jakarta.validation.constraints.Email;
 
-import static com.manager.user.dto.UserDTO.EMAIL_REGEXP;
+import static com.manager.user.infrastructure.adapter.in.rest.dto.UserDTO.EMAIL_REGEXP;
 
 @Data
 public class UserUpdateDTO{

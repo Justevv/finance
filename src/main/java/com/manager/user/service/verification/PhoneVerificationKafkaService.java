@@ -1,6 +1,6 @@
 package com.manager.user.service.verification;
 
-import com.manager.user.dto.response.PhoneVerificationResponseDto;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.PhoneVerificationResponseDto;
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.PhoneVerificationRepository;
 import lombok.RequiredArgsConstructor;

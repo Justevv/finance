@@ -1,8 +1,8 @@
 package com.manager.user.service;
 
-import com.manager.user.dto.UserDTO;
-import com.manager.user.dto.UserUpdateDTO;
-import com.manager.user.dto.response.UserResponseDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.UserDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.exception.UserAlreadyExistException;
 import com.manager.user.exception.UserNotFoundException;

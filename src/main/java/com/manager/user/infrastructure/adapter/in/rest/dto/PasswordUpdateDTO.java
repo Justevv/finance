@@ -1,4 +1,4 @@
-package com.manager.user.dto;
+package com.manager.user.infrastructure.adapter.in.rest.dto;
 
 import lombok.Data;
 import lombok.ToString;
