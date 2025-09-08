@@ -1,7 +1,7 @@
-package com.manager.user.repository;
+package com.manager.user.infrastructure.adapter.out.persistence.repository;
 
 
-import com.manager.user.entity.RoleEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

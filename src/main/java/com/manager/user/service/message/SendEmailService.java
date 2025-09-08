@@ -1,6 +1,6 @@
 package com.manager.user.service.message;
 
-import com.manager.user.entity.EmailVerificationEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

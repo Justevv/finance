@@ -1,12 +1,12 @@
 package com.manager.user.service.verification;
 
 import com.manager.user.dto.PasswordUpdateDTO;
-import com.manager.user.entity.PasswordResetToken;
-import com.manager.user.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PasswordResetTokenEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.event.ResetPasswordEvent;
 import com.manager.user.exception.PasswordResetTokenNotFoundException;
-import com.manager.user.repository.PasswordResetTokenRepository;
-import com.manager.user.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.PasswordResetTokenRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,10 +42,10 @@ public class PasswordService {
         return true;
     }
 
-    private PasswordResetToken createPasswordResetToken(UserEntity user) {
+    private PasswordResetTokenEntity createPasswordResetToken(UserEntity user) {
         log.debug("Create PasswordResetToken for user {}", user);
         var token = UUID.randomUUID().toString();
-        var passwordResetToken = new PasswordResetToken(token, user, resetPasswordTokenExpiredTime);
+        var passwordResetToken = new PasswordResetTokenEntity(token, user, resetPasswordTokenExpiredTime);
         passwordResetTokenRepository.deleteAll(passwordResetTokenRepository.findByUser(user));
         passwordResetTokenRepository.save(passwordResetToken);
         log.info("PasswordResetToken was created: {}", passwordResetToken);

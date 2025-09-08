@@ -1,6 +1,6 @@
-package com.manager.user.repository;
+package com.manager.user.infrastructure.adapter.out.persistence.repository;
 
-import com.manager.user.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

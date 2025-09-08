@@ -1,4 +1,4 @@
-package com.manager.user.entity;
+package com.manager.user.infrastructure.adapter.out.persistence.entity;
 
 
 public enum PermissionEntity {

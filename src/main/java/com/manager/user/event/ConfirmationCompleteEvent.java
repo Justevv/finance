@@ -1,6 +1,6 @@
 package com.manager.user.event;
 
-import com.manager.user.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;

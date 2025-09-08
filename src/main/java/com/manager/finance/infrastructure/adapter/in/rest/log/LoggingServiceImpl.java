@@ -1,6 +1,6 @@
 package com.manager.finance.infrastructure.adapter.in.rest.log;
 
-import com.manager.user.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

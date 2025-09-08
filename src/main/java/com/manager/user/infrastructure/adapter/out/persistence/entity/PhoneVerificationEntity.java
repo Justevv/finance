@@ -1,4 +1,4 @@
-package com.manager.user.entity;
+package com.manager.user.infrastructure.adapter.out.persistence.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,11 +16,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "email_verification")
+@Table(name = "phone_verification")
 @NoArgsConstructor
 @Getter
 @Setter
-public class EmailVerificationEntity implements Serializable {
+public class PhoneVerificationEntity implements Serializable {
     @Id
     private UUID id;
     @ToString.Exclude
@@ -31,7 +31,7 @@ public class EmailVerificationEntity implements Serializable {
     private UserEntity user;
     private boolean isSent;
 
-    public EmailVerificationEntity(String code, int expireInSeconds) {
+    public PhoneVerificationEntity(String code, int expireInSeconds) {
         this.id = UUID.randomUUID();
         this.code = code;
         this.expireTime = LocalDateTime.now().plusSeconds(expireInSeconds);

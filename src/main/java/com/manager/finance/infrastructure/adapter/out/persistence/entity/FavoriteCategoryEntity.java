@@ -1,6 +1,6 @@
 package com.manager.finance.infrastructure.adapter.out.persistence.entity;
 
-import com.manager.user.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;

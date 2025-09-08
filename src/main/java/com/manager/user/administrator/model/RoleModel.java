@@ -2,11 +2,11 @@ package com.manager.user.administrator.model;
 
 
 import com.manager.user.administrator.dto.RoleDTO;
-import com.manager.user.entity.PermissionEntity;
-import com.manager.user.entity.RoleEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import com.manager.user.exception.UserAlreadyExistException;
 import com.manager.finance.log.CrudLogConstants;
-import com.manager.user.repository.RoleRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

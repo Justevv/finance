@@ -1,4 +1,4 @@
-package com.manager.user.entity;
+package com.manager.user.infrastructure.adapter.out.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;

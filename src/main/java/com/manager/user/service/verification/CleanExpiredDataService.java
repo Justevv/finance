@@ -1,9 +1,9 @@
 package com.manager.user.service.verification;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.repository.EmailVerificationRepository;
-import com.manager.user.repository.PasswordResetTokenRepository;
-import com.manager.user.repository.PhoneVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.EmailVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.PasswordResetTokenRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.PhoneVerificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

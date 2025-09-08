@@ -1,7 +1,7 @@
 package com.manager.user.security;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.service.UserService;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

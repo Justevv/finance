@@ -1,6 +1,6 @@
 package com.manager.user.converter;
 
-import com.manager.user.entity.PermissionEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

@@ -1,6 +1,6 @@
 package com.manager.user.administrator.dto;
 
-import com.manager.user.entity.PermissionEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
 import lombok.Data;
 
 import java.util.Collection;

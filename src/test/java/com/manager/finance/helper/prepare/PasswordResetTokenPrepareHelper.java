@@ -1,6 +1,6 @@
 package com.manager.finance.helper.prepare;
 
-import com.manager.user.entity.PasswordResetToken;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PasswordResetTokenEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 
@@ -12,8 +12,8 @@ public class PasswordResetTokenPrepareHelper {
     @Autowired
     private UserPrepareHelper userPrepareHelper;
 
-    public PasswordResetToken createPasswordResetToken() {
-        var passwordResetToken = new PasswordResetToken();
+    public PasswordResetTokenEntity createPasswordResetToken() {
+        var passwordResetToken = new PasswordResetTokenEntity();
         passwordResetToken.setId(UUID.randomUUID());
         passwordResetToken.setToken("token");
         passwordResetToken.setUser(userPrepareHelper.createUser());

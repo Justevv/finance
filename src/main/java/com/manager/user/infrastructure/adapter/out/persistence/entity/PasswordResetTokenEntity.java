@@ -1,4 +1,4 @@
-package com.manager.user.entity;
+package com.manager.user.infrastructure.adapter.out.persistence.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Table(name = "password_reset_token")
 @Getter
 @Setter
-public class PasswordResetToken {
+public class PasswordResetTokenEntity {
 
     @Id
     private UUID id;
@@ -26,10 +26,10 @@ public class PasswordResetToken {
     private UserEntity user;
     private LocalDateTime expireTime;
 
-    public PasswordResetToken() {
+    public PasswordResetTokenEntity() {
     }
 
-    public PasswordResetToken(String token, UserEntity user, int expireInSeconds) {
+    public PasswordResetTokenEntity(String token, UserEntity user, int expireInSeconds) {
         this.token = token;
         this.user = user;
         this.expireTime = LocalDateTime.now().plusSeconds(expireInSeconds);

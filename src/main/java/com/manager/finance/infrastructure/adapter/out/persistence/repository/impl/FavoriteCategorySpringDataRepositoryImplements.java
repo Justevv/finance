@@ -5,7 +5,7 @@ import com.manager.finance.domain.model.FavoriteCategoryModel;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.FavoriteCategoryEntity;
 import com.manager.finance.infrastructure.adapter.out.persistence.mapper.EntityMapper;
 import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.FavoriteCategorySpringDataRepository;
-import com.manager.user.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

@@ -2,7 +2,7 @@ package com.manager.user.service.verification;
 
 import com.manager.user.dto.response.PhoneVerificationResponseDto;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.repository.PhoneVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.PhoneVerificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package com.manager.user.listener;
 
 import com.manager.user.event.ConfirmationCompleteEvent;
-import com.manager.user.repository.RoleRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

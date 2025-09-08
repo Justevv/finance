@@ -1,4 +1,4 @@
-package com.manager.user.entity;
+package com.manager.user.infrastructure.adapter.out.persistence.entity;
 
 import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.persistence.Entity;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class AuthenticationLog {
+public class AuthenticationLogEntity {
     @Id
     private UUID id;
     private String username;

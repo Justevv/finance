@@ -1,6 +1,6 @@
 package com.manager.user.service.message;
 
-import com.manager.user.entity.PhoneVerificationEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PhoneVerificationEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

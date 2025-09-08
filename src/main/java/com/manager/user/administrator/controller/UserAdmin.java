@@ -5,7 +5,7 @@ import com.manager.user.administrator.dto.user.UserAdminDTO;
 import com.manager.user.administrator.dto.user.UserAdminResponseDTO;
 import com.manager.user.administrator.dto.user.UserAdminUpdateDTO;
 import com.manager.user.administrator.model.UserAdminModel;
-import com.manager.user.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
 package com.manager.user.listener;
 
-import com.manager.user.entity.AuthenticationLog;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.AuthenticationLogEntity;
 import com.manager.user.event.AuthenticationEvent;
-import com.manager.user.repository.AuthenticationLogRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.AuthenticationLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -24,7 +24,7 @@ public class AuthenticationListener {
     @EventListener
     public void onApplicationEvent(AuthenticationEvent event) {
         log.debug("Event start {}", event);
-        var authenticationLog = AuthenticationLog.builder()
+        var authenticationLog = AuthenticationLogEntity.builder()
                 .id(UUID.randomUUID())
                 .dateTime(LocalDateTime.now())
                 .ipAddress(event.getRemoteAddr())

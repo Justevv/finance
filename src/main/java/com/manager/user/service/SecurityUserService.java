@@ -1,7 +1,7 @@
 package com.manager.user.service;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

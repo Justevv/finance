@@ -1,7 +1,7 @@
 package com.manager.user.administrator.controller;
 
 import com.manager.user.administrator.model.RoleModel;
-import com.manager.user.entity.RoleEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

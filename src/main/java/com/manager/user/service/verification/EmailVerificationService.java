@@ -1,12 +1,12 @@
 package com.manager.user.service.verification;
 
-import com.manager.user.entity.EmailVerificationEntity;
-import com.manager.user.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.event.ConfirmationCompleteEvent;
 import com.manager.user.exception.VerificationNotFoundException;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.repository.EmailVerificationRepository;
-import com.manager.user.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.EmailVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;

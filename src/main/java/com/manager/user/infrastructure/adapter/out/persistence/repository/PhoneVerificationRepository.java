@@ -1,7 +1,7 @@
-package com.manager.user.repository;
+package com.manager.user.infrastructure.adapter.out.persistence.repository;
 
-import com.manager.user.entity.PhoneVerificationEntity;
-import com.manager.user.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PhoneVerificationEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

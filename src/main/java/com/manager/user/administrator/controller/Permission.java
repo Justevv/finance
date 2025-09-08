@@ -2,7 +2,7 @@ package com.manager.user.administrator.controller;
 
 
 import com.manager.user.administrator.model.PermissionModel;
-import com.manager.user.entity.PermissionEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;

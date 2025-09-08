@@ -2,8 +2,8 @@ package com.manager.user.service.verification;
 
 import com.manager.user.event.AuthenticationEvent;
 import com.manager.user.exception.UserIpAddressWasBlockedException;
-import com.manager.user.repository.AuthenticationLogRepository;
-import com.manager.user.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.AuthenticationLogRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
 import com.manager.user.security.AuthenticationRequestDTO;
 import com.manager.user.security.JwtProvider;
 import com.manager.user.service.LoginAttemptService;

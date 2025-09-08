@@ -2,7 +2,7 @@ package com.manager.finance.infrastructure.adapter.in.rest.dto.request;
 
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.AccountEntity;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.TransactionType;
-import com.manager.user.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import lombok.Builder;
 
 import java.math.BigDecimal;
