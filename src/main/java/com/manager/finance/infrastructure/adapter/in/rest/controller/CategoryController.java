@@ -1,12 +1,11 @@
 package com.manager.finance.infrastructure.adapter.in.rest.controller;
 
 import com.manager.finance.application.port.in.CategoryUseCase;
-import com.manager.finance.domain.exception.EntityNotFoundException;
 import com.manager.finance.domain.model.CategoryModel;
+import com.manager.finance.infrastructure.adapter.in.exception.InvalidUUIDException;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.request.CategoryRequestDTO;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.CategoryResponseDTO;
-import com.manager.finance.infrastructure.adapter.in.rest.dto.response.Error;
-import com.manager.finance.infrastructure.adapter.in.rest.dto.response.ExpenseResponseDTO;
+import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestError;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.infrastructure.adapter.in.rest.mapper.DtoMapper;
@@ -30,11 +29,13 @@ import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
+import static com.manager.finance.constant.Constant.CATEGORY_ENTITY;
+
 @RestController
 @RequestMapping("/v1/category")
 @Slf4j
 @RequiredArgsConstructor
-public class Category {
+public class CategoryController {
     private final CategoryUseCase categoryUseCase;
     private final DtoMapper<CategoryRequestDTO, CategoryResponseDTO, CategoryModel> dtoMapper;
     private final ErrorHelper errorHelper;
@@ -42,7 +43,7 @@ public class Category {
 
     @GetMapping
     @TrackExecutionTime
-    public ResponseEntity<RestResponse<List<CategoryResponseDTO>>> getCategory(Principal principal) {
+    public ResponseEntity<RestResponse<List<CategoryResponseDTO>>> getCategories(Principal principal) {
         List<CategoryResponseDTO> categoryResponseDTOS = categoryUseCase.getAll(principal).stream().map(dtoMapper::toResponseDto).toList();
         RestResponse<List<CategoryResponseDTO>> e = new RestResponse<>(null, categoryResponseDTOS);
         return new ResponseEntity<>(e, HttpStatus.OK);
@@ -61,33 +62,26 @@ public class Category {
     @TrackExecutionTime
     public ResponseEntity<RestResponse<CategoryResponseDTO>> getCategory(Principal principal, @PathVariable("id") String id) {
         HttpStatus status;
-        Error error = null;
-        CategoryResponseDTO categoryResponseDTO = null;
+        RestError restError = null;
+        CategoryResponseDTO categoryResponseDTO;
         try {
             UUID uuid = UUID.fromString(id);
             var model = categoryUseCase.get(uuid, principal);
             status = HttpStatus.OK;
             categoryResponseDTO = dtoMapper.toResponseDto(model);
         } catch (IllegalArgumentException e) {
-            status = HttpStatus.BAD_REQUEST;
-            error = Error.builder()
-                    .text("Invalid UUID")
-                    .build();
-        } catch (EntityNotFoundException e) {
-            status = HttpStatus.NOT_FOUND;
-            error = Error.builder()
-                    .text("Entity not found")
-                    .build();
+            throw new InvalidUUIDException(id, CATEGORY_ENTITY);
         }
-        RestResponse<CategoryResponseDTO> e = new RestResponse<>(error, categoryResponseDTO);
-        return new ResponseEntity<>(e, status);
+
+        RestResponse<CategoryResponseDTO> response = new RestResponse<>(restError, categoryResponseDTO);
+        return new ResponseEntity<>(response, status);
     }
 
     @PostMapping
     @TrackExecutionTime
     public ResponseEntity<RestResponse<CategoryResponseDTO>> addCategory(Principal principal, @RequestBody @Valid CategoryRequestDTO categoryDTO, BindingResult bindingResult) {
         HttpStatus status;
-        Error error = null;
+        RestError restError = null;
         CategoryResponseDTO categoryResponseDTO = null;
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
@@ -95,10 +89,10 @@ public class Category {
             categoryResponseDTO = dtoMapper.toResponseDto(categoryUseCase.create(userHelper.toModel(principal), dtoMapper.toModel(categoryDTO)));
         } else {
             status = HttpStatus.BAD_REQUEST;
-            error = new Error(null, responseEntity);
+            restError = new RestError(null, responseEntity);
         }
 
-        RestResponse<CategoryResponseDTO> response = new RestResponse<>(error, categoryResponseDTO);
+        RestResponse<CategoryResponseDTO> response = new RestResponse<>(restError, categoryResponseDTO);
         return new ResponseEntity<>(response, status);
 
     }

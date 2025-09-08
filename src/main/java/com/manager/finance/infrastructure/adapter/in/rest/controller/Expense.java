@@ -3,7 +3,7 @@ package com.manager.finance.infrastructure.adapter.in.rest.controller;
 import com.manager.finance.application.port.in.ExpenseUseCase;
 import com.manager.finance.domain.exception.EntityNotFoundException;
 import com.manager.finance.domain.model.ExpenseModel;
-import com.manager.finance.infrastructure.adapter.in.rest.dto.response.Error;
+import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestError;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.infrastructure.adapter.in.rest.mapper.DtoMapper;
@@ -59,7 +59,7 @@ public class Expense {
     @TrackExecutionTime
     public ResponseEntity<RestResponse> getExpense(Principal principal, @PathVariable("id") String id) {
         HttpStatus status = null;
-        Error error = null;
+        RestError restError = null;
         ExpenseResponseDTO expenseResponseDTO = null;
         try {
             UUID uuid = UUID.fromString(id);
@@ -69,13 +69,13 @@ public class Expense {
                 status = HttpStatus.OK;
             } else {
                 status = HttpStatus.NOT_FOUND;
-                error = new Error("Entity not found", null);
+                restError = new RestError("Entity not found", null);
             }
         } catch (IllegalArgumentException e) {
             status = HttpStatus.BAD_REQUEST;
-            error = new Error("Invalid UUID", null);
+            restError = new RestError("Invalid UUID", null);
         }
-        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(error, expenseResponseDTO);
+        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(restError, expenseResponseDTO);
         return new ResponseEntity<>(e, status);
     }
 
@@ -83,7 +83,7 @@ public class Expense {
     @TrackExecutionTime
     public ResponseEntity<RestResponse<ExpenseResponseDTO>> addExpense(Principal principal, @RequestBody @Valid ExpenseRequestDTO expenseRequestDTO, BindingResult bindingResult) {
         HttpStatus status = null;
-        Error error = null;
+        RestError restError = null;
         ExpenseResponseDTO expenseResponseDTO = null;
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
@@ -91,10 +91,10 @@ public class Expense {
             expenseResponseDTO = expenseMapper.toResponseDto(expenseUseCase.create(userHelper.toModel(principal), expenseMapper.toModel(expenseRequestDTO)));
         } else {
             status = HttpStatus.BAD_REQUEST;
-            error = new Error(null, responseEntity);
+            restError = new RestError(null, responseEntity);
         }
 
-        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(error, expenseResponseDTO);
+        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(restError, expenseResponseDTO);
         return new ResponseEntity<>(e, status);
     }
 
@@ -103,7 +103,7 @@ public class Expense {
     public ResponseEntity<RestResponse<ExpenseResponseDTO>> changeExpenseProperty(Principal principal, @PathVariable("id") String id,
                                                                                   @RequestBody @Valid ExpenseRequestDTO expenseRequestDTO, BindingResult bindingResult) {
         HttpStatus status = null;
-        Error error = null;
+        RestError restError = null;
         ExpenseResponseDTO expenseResponseDTO = null;
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
@@ -115,18 +115,18 @@ public class Expense {
                     status = HttpStatus.OK;
                 } else {
                     status = HttpStatus.NOT_FOUND;
-                    error = new Error("Entity not found", null);
+                    restError = new RestError("Entity not found", null);
                 }
             } catch (IllegalArgumentException e) {
                 status = HttpStatus.BAD_REQUEST;
-                error = new Error("Invalid UUID", null);
+                restError = new RestError("Invalid UUID", null);
             }
         } else {
             status = HttpStatus.BAD_REQUEST;
-            error = new Error(null, responseEntity);
+            restError = new RestError(null, responseEntity);
         }
 
-        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(error, expenseResponseDTO);
+        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(restError, expenseResponseDTO);
         return new ResponseEntity<>(e, status);
     }
 
@@ -135,7 +135,7 @@ public class Expense {
     public ResponseEntity<RestResponse<ExpenseResponseDTO>> changeExpense(Principal principal, @PathVariable("id") String id, @RequestBody @Valid ExpenseRequestDTO expenseRequestDTO,
                                                                           BindingResult bindingResult) {
         HttpStatus status = null;
-        Error error = null;
+        RestError restError = null;
         ExpenseResponseDTO expenseResponseDTO = null;
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
@@ -147,15 +147,15 @@ public class Expense {
                     status = HttpStatus.OK;
                 } else {
                     status = HttpStatus.NOT_FOUND;
-                    error = new Error("Entity not found", null);
+                    restError = new RestError("Entity not found", null);
                 }
             } catch (IllegalArgumentException e) {
                 status = HttpStatus.BAD_REQUEST;
-                error = new Error("Invalid UUID", null);
+                restError = new RestError("Invalid UUID", null);
             }
         } else {
             status = HttpStatus.BAD_REQUEST;
-            error = new Error(null, responseEntity);
+            restError = new RestError(null, responseEntity);
         }
 //        if (responseEntity == null) {
 //            try {
@@ -170,7 +170,7 @@ public class Expense {
 //            }
 //        }
 
-        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(error, expenseResponseDTO);
+        RestResponse<ExpenseResponseDTO> e = new RestResponse<>(restError, expenseResponseDTO);
         return new ResponseEntity<>(e, status);
     }
 

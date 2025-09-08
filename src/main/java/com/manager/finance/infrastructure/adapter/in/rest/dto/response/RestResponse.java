@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record RestResponse<R>(
-        Error error,
+        RestError error,
         R payload
 ) {
 }

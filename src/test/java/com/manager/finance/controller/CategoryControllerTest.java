@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
 @Import({UserPrepareHelper.class, CategoryPrepareHelper.class, CategoryIdConverter.class})
-class CategoryTest {
+class CategoryControllerTest {
     @MockBean
     private UserRepository userRepository;
     @MockBean
