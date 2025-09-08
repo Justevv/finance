@@ -1,4 +1,4 @@
-package com.manager.user.security;
+package com.manager.user.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

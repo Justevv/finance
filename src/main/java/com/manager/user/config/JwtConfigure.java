@@ -1,5 +1,6 @@
-package com.manager.user.security;
+package com.manager.user.config;
 
+import com.manager.user.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
