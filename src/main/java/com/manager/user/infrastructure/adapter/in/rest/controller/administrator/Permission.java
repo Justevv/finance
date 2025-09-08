@@ -1,4 +1,4 @@
-package com.manager.user.administrator.controller;
+package com.manager.user.infrastructure.adapter.in.rest.controller.administrator;
 
 
 import com.manager.user.administrator.model.PermissionModel;

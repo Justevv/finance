@@ -18,6 +18,6 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
     List<PasswordResetTokenEntity> findByUser(UserEntity user);
 
     @Modifying
-    @Query("DELETE FROM PasswordResetToken prt WHERE prt.expireTime < ?1")
+    @Query("DELETE FROM PasswordResetTokenEntity prt WHERE prt.expireTime < ?1")
     void deleteByExpireTimeBefore(LocalDateTime dateTime);
 }

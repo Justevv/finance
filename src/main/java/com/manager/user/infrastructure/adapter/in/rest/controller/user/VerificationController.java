@@ -1,4 +1,4 @@
-package com.manager.user.infrastructure.adapter.in.rest.controller;
+package com.manager.user.infrastructure.adapter.in.rest.controller.user;
 
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.service.verification.EmailVerificationService;
