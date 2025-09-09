@@ -10,7 +10,7 @@ import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.CategorySpringDataRepository;
 import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.FavoriteCategorySpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
-import com.manager.user.service.SecurityUserService;
+import com.manager.user.domain.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

@@ -1,7 +1,7 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.user;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.service.verification.AuthenticationService;
+import com.manager.user.domain.service.verification.AuthenticationService;
 import com.manager.user.security.AuthenticationRequestDTO;
 import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.servlet.http.HttpServletRequest;

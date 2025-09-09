@@ -1,8 +1,8 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.user;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.service.verification.EmailVerificationService;
-import com.manager.user.service.verification.PhoneVerificationService;
+import com.manager.user.domain.service.verification.EmailVerificationService;
+import com.manager.user.domain.service.verification.PhoneVerificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

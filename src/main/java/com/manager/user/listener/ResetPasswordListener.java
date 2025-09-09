@@ -2,7 +2,7 @@ package com.manager.user.listener;
 
 
 import com.manager.user.event.ResetPasswordEvent;
-import com.manager.user.service.message.EmailService;
+import com.manager.user.domain.service.message.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.manager.user.service.message;
+package com.manager.user.domain.service.message;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;

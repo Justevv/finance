@@ -1,4 +1,4 @@
-package com.manager.user.service.message;
+package com.manager.user.domain.service.message;
 
 import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
 import lombok.RequiredArgsConstructor;

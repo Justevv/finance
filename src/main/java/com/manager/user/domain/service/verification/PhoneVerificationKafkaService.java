@@ -1,4 +1,4 @@
-package com.manager.user.service.verification;
+package com.manager.user.domain.service.verification;
 
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.PhoneVerificationResponseDto;
 import com.manager.finance.metric.TrackExecutionTime;

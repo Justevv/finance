@@ -1,4 +1,4 @@
-package com.manager.user.service;
+package com.manager.user.domain.service;
 
 import com.manager.user.infrastructure.adapter.in.rest.dto.UserDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;

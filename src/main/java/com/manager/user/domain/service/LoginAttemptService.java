@@ -1,4 +1,4 @@
-package com.manager.user.service;
+package com.manager.user.domain.service;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

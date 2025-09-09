@@ -1,6 +1,6 @@
 package com.manager.user.listener;
 
-import com.manager.user.service.LoginAttemptService;
+import com.manager.user.domain.service.LoginAttemptService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;

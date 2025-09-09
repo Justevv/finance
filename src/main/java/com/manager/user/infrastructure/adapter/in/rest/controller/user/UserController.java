@@ -6,7 +6,7 @@ import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDTO;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.service.UserService;
+import com.manager.user.domain.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

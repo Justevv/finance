@@ -6,8 +6,8 @@ import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.EmailVerificationRepository;
-import com.manager.user.service.verification.EmailVerificationService;
-import com.manager.user.service.verification.PhoneVerificationService;
+import com.manager.user.domain.service.verification.EmailVerificationService;
+import com.manager.user.domain.service.verification.PhoneVerificationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

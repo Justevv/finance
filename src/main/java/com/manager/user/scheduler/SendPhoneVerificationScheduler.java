@@ -1,7 +1,7 @@
 package com.manager.user.scheduler;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.service.verification.PhoneVerificationKafkaService;
+import com.manager.user.domain.service.verification.PhoneVerificationKafkaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;

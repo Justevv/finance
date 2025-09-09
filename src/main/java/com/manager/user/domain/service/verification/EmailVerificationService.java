@@ -1,4 +1,4 @@
-package com.manager.user.service.verification;
+package com.manager.user.domain.service.verification;
 
 import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
