@@ -2,10 +2,12 @@ package com.manager.finance.model;
 
 import com.manager.Manager;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PhoneVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.EmailVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.domain.service.verification.EmailVerificationService;
 import com.manager.user.domain.service.verification.PhoneVerificationService;
 import org.junit.jupiter.api.Assertions;
@@ -21,6 +23,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+
 @SpringBootTest(classes = Manager.class)
 @Import({UserPrepareHelper.class})
 class EmailVerificationControllerServiceTest {
@@ -30,13 +34,16 @@ class EmailVerificationControllerServiceTest {
     @Autowired
     private EmailVerificationService emailVerificationService;
     @MockBean
-    private UserRepository userRepository;
+    private UserSpringDataRepository userRepository;
     @MockBean
-    private EmailVerificationRepository emailVerificationRepository;
+    private EmailVerificationSpringDataRepository emailVerificationRepository;
+    @MockBean
+    private PhoneVerificationSpringDataRepository phoneVerificationSpringDataRepository;
     @Autowired
     private UserPrepareHelper userPrepareHelper;
     private UserEntity userEntity;
     private EmailVerificationEntity verificationCode;
+    private PhoneVerificationEntity phoneVerificationEntity;
 
     @BeforeEach
     private void prepareData() {
@@ -46,19 +53,25 @@ class EmailVerificationControllerServiceTest {
         verificationCode.setUser(userEntity);
         verificationCode.setCode(VERIFICATION_CODE);
         verificationCode.setExpireTime(LocalDateTime.MAX);
+
+        phoneVerificationEntity = new PhoneVerificationEntity();
+        phoneVerificationEntity.setId(UUID.randomUUID());
+        phoneVerificationEntity.setUser(userEntity);
+        phoneVerificationEntity.setCode(VERIFICATION_CODE);
+        phoneVerificationEntity.setExpireTime(LocalDateTime.MAX);
         Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
     }
 
     @Test
     void confirmPhone_shouldReturnTrue_when_verificationIsValid() {
-        Mockito.when(emailVerificationRepository.findByUser(userEntity)).thenReturn(Optional.of(verificationCode));
+        Mockito.when(phoneVerificationSpringDataRepository.findByUser(userEntity)).thenReturn(Optional.of(phoneVerificationEntity));
 
         Assertions.assertTrue(phoneVerificationService.verifyPhone(userEntity.getId(), VERIFICATION_CODE));
     }
 
     @Test
     void confirmEmail_shouldReturnTrue_when_verificationIsValid() {
-        Mockito.when(emailVerificationRepository.findByUser(userEntity)).thenReturn(Optional.of(verificationCode));
+        Mockito.when(emailVerificationRepository.findByUser(any())).thenReturn(Optional.of(verificationCode));
 
         Assertions.assertTrue(emailVerificationService.verifyEmail(userEntity.getId(), VERIFICATION_CODE));
     }
@@ -66,7 +79,7 @@ class EmailVerificationControllerServiceTest {
     @Test
     void confirmPhone_shouldReturnFalse_when_verificationAlreadyExists() {
         Mockito.when(userRepository.findByPhoneAndIsPhoneConfirmed(userEntity.getPhone(), true)).thenReturn(Optional.of(userEntity));
-        Mockito.when(emailVerificationRepository.findByUser(userEntity)).thenReturn(Optional.of(verificationCode));
+        Mockito.when(phoneVerificationSpringDataRepository.findByUser(userEntity)).thenReturn(Optional.of(phoneVerificationEntity));
 
         Assertions.assertFalse(phoneVerificationService.verifyPhone(userEntity.getId(), VERIFICATION_CODE));
     }
@@ -74,7 +87,7 @@ class EmailVerificationControllerServiceTest {
     @Test
     void confirmEmail_shouldReturnFalse_when_verificationAlreadyExists() {
         Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));
-        Mockito.when(emailVerificationRepository.findByUser(userEntity)).thenReturn(Optional.of(verificationCode));
+        Mockito.when(emailVerificationRepository.findByUser(any())).thenReturn(Optional.of(verificationCode));
 
         Assertions.assertFalse(emailVerificationService.verifyEmail(userEntity.getId(), VERIFICATION_CODE));
     }

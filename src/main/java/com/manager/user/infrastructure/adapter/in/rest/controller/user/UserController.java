@@ -1,12 +1,18 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.user;
 
 
-import com.manager.user.infrastructure.adapter.in.rest.dto.UserDTO;
+import com.manager.user.domain.model.UserModel;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestUpdateDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDTO;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.domain.service.UserService;
+import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
+import com.manager.user.infrastructure.adapter.in.rest.mapper.UserDtoMapper;
+import com.manager.user.infrastructure.adapter.out.persistence.mapper.UserEntityMapper;
+import com.manager.user.infrastructure.adapter.out.persistence.mapper.UserPrincipalMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +29,9 @@ import java.security.Principal;
 public class UserController {
     private final UserService userService;
     private final ErrorHelper errorHelper;
+    private final DtoMapper<UserRequestDTO, UserResponseDTO, UserModel> mapper;
+    private final DtoMapper<UserRequestUpdateDTO, UserResponseDTO, UserModel> mapper2;
+    private final UserPrincipalMapper principalMapper;
 
     @GetMapping
     @TrackExecutionTime
@@ -32,10 +41,10 @@ public class UserController {
 
     @PostMapping
     @TrackExecutionTime
-    public ResponseEntity<Object> createUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
+    public ResponseEntity<Object> createUser(@RequestBody @Valid UserRequestDTO userRequestDto, BindingResult bindingResult) {
         ResponseEntity<Object> responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
-            var responseDTO = userService.createAndGetDTO(userDTO);
+            var responseDTO = userService.create(mapper.toModel(userRequestDto));
             responseEntity = ResponseEntity.ok(responseDTO);
         }
         return responseEntity;
@@ -43,10 +52,10 @@ public class UserController {
 
     @PutMapping
     @TrackExecutionTime
-    public ResponseEntity<Object> updateUser(Principal principal, @Valid UserUpdateDTO crudDTO, BindingResult bindingResult) {
+    public ResponseEntity<Object> updateUser(Principal principal, @Valid UserRequestUpdateDTO crudDTO, BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(userService.update(principal, crudDTO));
+            responseEntity = ResponseEntity.ok(userService.update(principalMapper.toModel(principal), mapper2.toModel(crudDTO)));
         }
         return responseEntity;
     }
@@ -54,7 +63,7 @@ public class UserController {
     @DeleteMapping
     @TrackExecutionTime
     public ResponseEntity<Void> deleteUser(Principal principal) {
-        return ResponseEntity.ok(userService.delete(principal));
+        return ResponseEntity.ok(userService.delete(principalMapper.toModel(principal)));
     }
 
 }

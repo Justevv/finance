@@ -7,7 +7,7 @@ import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.ExpenseEntity;
 import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.ExpenseSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import com.manager.user.domain.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({UserPrepareHelper.class, ExpenseIdConverter.class, ExpensePrepareHelper.class})
 class ExpenseModelTest {
     @MockBean
-    private UserRepository userRepository;
+    private UserSpringDataRepository userRepository;
     @MockBean
     private ExpenseSpringDataRepository expenseRepository;
     @MockBean

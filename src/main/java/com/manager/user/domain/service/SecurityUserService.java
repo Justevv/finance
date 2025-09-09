@@ -1,7 +1,7 @@
 package com.manager.user.domain.service;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityUserService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final UserSpringDataRepository userRepository;
 
     @Override
     @TrackExecutionTime

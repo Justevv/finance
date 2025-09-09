@@ -1,16 +1,17 @@
 package com.manager.user.domain.service;
 
-import com.manager.user.infrastructure.adapter.in.rest.dto.UserDTO;
-import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
-import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDTO;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
+import com.manager.finance.log.CrudLogConstants;
+import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.user.application.port.out.repository.UserRepository;
+import com.manager.user.domain.model.UserModel;
 import com.manager.user.exception.UserAlreadyExistException;
 import com.manager.user.exception.UserNotFoundException;
 import com.manager.user.helper.UserHelper;
-import com.manager.finance.log.CrudLogConstants;
-import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDTO;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class UserService {
     private final UserHelper userHelper;
 
     @TrackExecutionTime
-    public UserEntity findById(UUID id) {
+    public UserModel findById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
@@ -45,30 +46,23 @@ public class UserService {
 
     @Transactional
     @TrackExecutionTime
-    public UserResponseDTO createAndGetDTO(UserDTO userDTO) throws UserAlreadyExistException {
-        var user = create(userDTO);
-        return UserResponseDTO.fromUser(user);
-    }
-
-    @TrackExecutionTime
-    public UserEntity create(UserDTO userDTO) throws UserAlreadyExistException {
+    public UserModel create(UserModel userDTO) throws UserAlreadyExistException {
         var user = createUser(userDTO);
         userHelper.createVerification(user);
         return user;
     }
 
-    @TrackExecutionTime
-    private UserEntity createUser(UserDTO userDTO) throws UserAlreadyExistException {
-        log.debug(crudLogConstants.getInputNewDTO(), userDTO);
-        userHelper.checkUniqueUserCreateParameters(userDTO);
+    private UserModel createUser(UserModel inputUser) throws UserAlreadyExistException {
+        log.debug(crudLogConstants.getInputNewDTO(), inputUser);
+        userHelper.checkUniqueUserCreateParameters(inputUser);
 
-        var user = UserEntity.builder()
+        var user = UserModel.builder()
                 .id(UUID.randomUUID())
-                .username(userDTO.getUsername())
-                .email(userDTO.getEmail())
-                .phone(userDTO.getPhone())
+                .username(inputUser.username())
+                .email(inputUser.email())
+                .phone(inputUser.phone())
                 .roles(Set.of(roleRepository.findByName("ROLE_USER").orElseThrow()))
-                .password(passwordEncoder.encode(userDTO.getPassword()))
+                .password(passwordEncoder.encode(inputUser.password()))
                 .build();
 
         userRepository.save(user);
@@ -84,29 +78,39 @@ public class UserService {
 
     @Transactional
     @TrackExecutionTime
-    public UserResponseDTO update(Principal principal, UserUpdateDTO userUpdateDTO) throws UserAlreadyExistException {
-        log.debug(crudLogConstants.getInputDTOToChangeEntity(), userUpdateDTO, principal);
-        var user = userHelper.getUser(principal);
-        log.debug(crudLogConstants.getInputDTOToChangeEntity(), user, userUpdateDTO);
-        userHelper.updateUsername(user, userUpdateDTO.getUsername());
-        userHelper.updateEmail(user, userUpdateDTO.getEmail());
-        userHelper.updatePhone(user, userUpdateDTO.getPhone());
-        userHelper.updatePassword(user, userUpdateDTO.getPassword());
-        userRepository.save(user);
-        log.info(crudLogConstants.getUpdateEntityToDatabase(), user);
-        var adminUserResponseDTO = convertUserToUserResponseDTO(user);
-        log.debug(crudLogConstants.getOutputDTOAfterMapping(), adminUserResponseDTO);
-        return adminUserResponseDTO;
+    public UserModel update(UserModel principal, UserModel input) throws UserAlreadyExistException {
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), input, principal);
+        var currentUser = userRepository.getById(principal.id());
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), currentUser, input);
+        var s = userHelper.checkUsername(currentUser, input.username());
+        var e = userHelper.checkEmail(currentUser, input.email());
+        var ty = userHelper.checkPhone(currentUser, input.phone());
+        var d = userHelper.checkPassword(currentUser, input.password());
+
+        UserModel save = UserModel.builder()
+                .id(currentUser.id())
+                .username(s ? input.username() : currentUser.username())
+                .password(d ? passwordEncoder.encode(input.password()) : currentUser.password())
+                .phone(ty ? input.phone() : currentUser.phone())
+                .email(e ? input.email() : currentUser.email())
+                .isPhoneConfirmed(!ty && currentUser.isPhoneConfirmed())
+                .isEmailConfirmed(!e && currentUser.isEmailConfirmed())
+                .roles(currentUser.roles())
+                .build();
+
+        var saved = userRepository.save(save);
+        log.info(crudLogConstants.getUpdateEntityToDatabase(), saved);
+        return saved;
     }
 
     @Transactional
     @TrackExecutionTime
-    public Void delete(Principal principal) {
+    public Void delete(UserModel principal) {
         log.debug(crudLogConstants.getInputEntityForDelete(), principal);
-        var user = userHelper.getUser(principal);
-        log.debug(crudLogConstants.getInputEntityForDelete(), user);
-        userRepository.delete(user);
-        log.info(crudLogConstants.getDeleteEntityFromDatabase(), user);
+        var currentUser = userRepository.getById(principal.id());
+        log.debug(crudLogConstants.getInputEntityForDelete(), currentUser);
+        userRepository.delete(currentUser);
+        log.info(crudLogConstants.getDeleteEntityFromDatabase(), currentUser);
         return null;
     }
 

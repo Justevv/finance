@@ -5,7 +5,7 @@ import com.manager.finance.application.port.out.repository.CategoryRepository;
 import com.manager.finance.domain.exception.SaveProcessException;
 import com.manager.finance.domain.model.CategoryModel;
 import com.manager.finance.domain.exception.EntityNotFoundException;
-import com.manager.finance.domain.model.UserModel;
+import com.manager.user.domain.model.UserModel;
 import com.manager.user.helper.UserHelper;
 import com.manager.finance.log.LogConstants;
 import com.manager.finance.metric.TrackExecutionTime;

@@ -12,6 +12,8 @@ import com.manager.finance.infrastructure.adapter.in.rest.dto.response.ExpenseRe
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.CategoryEntity;
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.helper.UserHelper;
+import com.manager.user.infrastructure.adapter.out.persistence.mapper.UserEntityMapper;
+import com.manager.user.infrastructure.adapter.out.persistence.mapper.UserPrincipalMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ public class Expense {
     private final DtoMapper<ExpenseRequestDTO, ExpenseResponseDTO, ExpenseModel> expenseMapper;
     private final ErrorHelper errorHelper;
     private final UserHelper userHelper;
+    private final UserPrincipalMapper userMapper;
 
     @GetMapping("/page/{page}")
     @TrackExecutionTime
@@ -88,7 +91,7 @@ public class Expense {
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
             status = HttpStatus.OK;
-            expenseResponseDTO = expenseMapper.toResponseDto(expenseUseCase.create(userHelper.toModel(principal), expenseMapper.toModel(expenseRequestDTO)));
+            expenseResponseDTO = expenseMapper.toResponseDto(expenseUseCase.create(userMapper.toModel(principal), expenseMapper.toModel(expenseRequestDTO)));
         } else {
             status = HttpStatus.BAD_REQUEST;
             restError = new RestError(null, responseEntity);

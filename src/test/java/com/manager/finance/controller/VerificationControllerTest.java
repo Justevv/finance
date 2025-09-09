@@ -2,11 +2,13 @@ package com.manager.finance.controller;
 
 import com.manager.Manager;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PhoneVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.converter.UserIdConverter;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.EmailVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,15 +37,18 @@ class VerificationControllerTest {
     private static final String VERIFICATION_EMAIL_API = "/v1/verification/{userId}/email";
     private static final String CODE_PARAM_NAME = "code";
     @MockBean
-    private UserRepository userRepository;
+    private UserSpringDataRepository userRepository;
     @MockBean
-    private EmailVerificationRepository emailVerificationRepository;
+    private EmailVerificationSpringDataRepository emailVerificationRepository;
+    @MockBean
+    private PhoneVerificationSpringDataRepository phoneVerificationSpringDataRepository;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private UserPrepareHelper userPrepareHelper;
     private UserEntity userEntity;
     private EmailVerificationEntity verificationCode;
+    private PhoneVerificationEntity phoneVerificationEntity;
 
     @BeforeEach
     private void prepareData() {
@@ -51,13 +57,18 @@ class VerificationControllerTest {
         verificationCode.setUser(userEntity);
         verificationCode.setCode(VERIFICATION_CODE);
         verificationCode.setExpireTime(LocalDateTime.MAX);
+
+        phoneVerificationEntity = new PhoneVerificationEntity();
+        phoneVerificationEntity.setUser(userEntity);
+        phoneVerificationEntity.setCode(VERIFICATION_CODE);
+        phoneVerificationEntity.setExpireTime(LocalDateTime.MAX);
         Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
     }
 
     @Test
     @SneakyThrows
     void confirmPhone_shouldReturnTrue_when_verificationIsValid() {
-        Mockito.when(emailVerificationRepository.findByUser(userEntity)).thenReturn(Optional.of(verificationCode));
+        Mockito.when(phoneVerificationSpringDataRepository.findByUser(userEntity)).thenReturn(Optional.of(phoneVerificationEntity));
         mockMvc.perform(MockMvcRequestBuilders.post(VERIFICATION_PHONE_API, userEntity.getId())
                         .param(CODE_PARAM_NAME, verificationCode.getCode()))
                 .andExpect(status().is(200))
@@ -67,7 +78,7 @@ class VerificationControllerTest {
     @Test
     @SneakyThrows
     void confirmEmail_shouldReturnTrue_when_verificationIsValid() {
-        Mockito.when(emailVerificationRepository.findByUser(userEntity)).thenReturn(Optional.of(verificationCode));
+        Mockito.when(emailVerificationRepository.findByUser(any())).thenReturn(Optional.of(verificationCode));
         mockMvc.perform(MockMvcRequestBuilders.post(VERIFICATION_EMAIL_API, userEntity.getId())
                         .param(CODE_PARAM_NAME, verificationCode.getCode()))
                 .andExpect(status().is(200))
@@ -78,7 +89,7 @@ class VerificationControllerTest {
     @SneakyThrows
     void confirmPhone_shouldReturnFalse_when_verificationAlreadyExists() {
         Mockito.when(userRepository.findByPhoneAndIsPhoneConfirmed(userEntity.getPhone(), true)).thenReturn(Optional.of(userEntity));
-        Mockito.when(emailVerificationRepository.findByUser(userEntity)).thenReturn(Optional.of(verificationCode));
+        Mockito.when(phoneVerificationSpringDataRepository.findByUser(userEntity)).thenReturn(Optional.of(phoneVerificationEntity));
         mockMvc.perform(MockMvcRequestBuilders.post(VERIFICATION_PHONE_API, userEntity.getId())
                         .param(CODE_PARAM_NAME, verificationCode.getCode()))
                 .andExpect(status().is(200))
@@ -89,7 +100,7 @@ class VerificationControllerTest {
     @SneakyThrows
     void confirmEmail_shouldReturnFalse_when_verificationAlreadyExists() {
         Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));
-        Mockito.when(emailVerificationRepository.findByUser(userEntity)).thenReturn(Optional.of(verificationCode));
+        Mockito.when(emailVerificationRepository.findByUser(any())).thenReturn(Optional.of(verificationCode));
         mockMvc.perform(MockMvcRequestBuilders.post(VERIFICATION_EMAIL_API, userEntity.getId())
                         .param(CODE_PARAM_NAME, verificationCode.getCode()))
                 .andExpect(status().is(200))

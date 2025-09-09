@@ -1,12 +1,13 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
+import com.manager.finance.infrastructure.adapter.out.persistence.entity.ExpenseEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.converter.UserIdConverter;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.PhoneVerificationRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.EmailVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,11 +43,11 @@ class UserControllerTest {
     private static final String NEW_PHONE = "1";
     private static final String NEW_EMAIL = "st@a.ru";
     @MockBean
-    private UserRepository userRepository;
+    private UserSpringDataRepository userRepository;
     @MockBean
-    private EmailVerificationRepository emailVerificationRepository;
+    private EmailVerificationSpringDataRepository emailVerificationRepository;
     @MockBean
-    private PhoneVerificationRepository phoneVerificationRepository;
+    private PhoneVerificationSpringDataRepository phoneVerificationRepository;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -76,6 +77,7 @@ class UserControllerTest {
     @WithMockUser
     @SneakyThrows
     void putUser_shouldReturnUserAndOk_when_userIsExists() {
+        Mockito.when(userRepository.save(Mockito.any(UserEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
         Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
         mockMvc.perform(MockMvcRequestBuilders.put(USER_HIMSELF_API)
                         .param(USERNAME_PARAMETER, NEW_USERNAME)

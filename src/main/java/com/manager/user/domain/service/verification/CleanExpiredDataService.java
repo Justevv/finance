@@ -1,9 +1,9 @@
 package com.manager.user.domain.service.verification;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.EmailVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.PasswordResetTokenRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.PhoneVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 @Slf4j
 @RequiredArgsConstructor
 public class CleanExpiredDataService {
-    private final EmailVerificationRepository emailVerificationRepository;
-    private final PhoneVerificationRepository phoneVerificationRepository;
+    private final EmailVerificationSpringDataRepository emailVerificationRepository;
+    private final PhoneVerificationSpringDataRepository phoneVerificationRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Transactional

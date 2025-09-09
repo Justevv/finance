@@ -6,7 +6,7 @@ import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity
 import com.manager.user.event.ResetPasswordEvent;
 import com.manager.user.exception.PasswordResetTokenNotFoundException;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.PasswordResetTokenRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,7 @@ import static com.manager.finance.constant.Constant.USER_EMAIL_DOES_NOT_EXISTS;
 @RequiredArgsConstructor
 public class PasswordService {
     private static final String PASSWORD_RESET_TOKEN_DOES_NOT_EXISTS_ERROR_MESSAGE = "Password reset token doesn't exists";
-    private final UserRepository userRepository;
+    private final UserSpringDataRepository userRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;

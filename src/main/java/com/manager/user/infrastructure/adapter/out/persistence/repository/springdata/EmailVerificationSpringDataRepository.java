@@ -1,4 +1,4 @@
-package com.manager.user.infrastructure.adapter.out.persistence.repository;
+package com.manager.user.infrastructure.adapter.out.persistence.repository.springdata;
 
 import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface EmailVerificationRepository extends JpaRepository<EmailVerificationEntity, UUID> {
+public interface EmailVerificationSpringDataRepository extends JpaRepository<EmailVerificationEntity, UUID> {
     Optional<EmailVerificationEntity> findByUser(UserEntity user);
 
     @Modifying

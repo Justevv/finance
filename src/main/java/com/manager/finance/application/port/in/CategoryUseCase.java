@@ -1,7 +1,7 @@
 package com.manager.finance.application.port.in;
 
 import com.manager.finance.domain.model.CategoryModel;
-import com.manager.finance.domain.model.UserModel;
+import com.manager.user.domain.model.UserModel;
 
 import java.security.Principal;
 import java.util.List;

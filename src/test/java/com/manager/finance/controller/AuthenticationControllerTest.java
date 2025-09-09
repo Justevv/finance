@@ -5,7 +5,7 @@ import com.manager.Manager;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.AuthenticationLogRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuthenticationControllerTest {
     private static final String LOGIN_API = "/v1/auth/login";
     @MockBean
-    private UserRepository userRepository;
+    private UserSpringDataRepository userRepository;
     @MockBean
     private AuthenticationLogRepository authenticationLogRepository;
     @Autowired

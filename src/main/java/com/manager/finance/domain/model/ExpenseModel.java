@@ -3,6 +3,7 @@ package com.manager.finance.domain.model;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.AccountEntity;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.PaymentTypeEntity;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.TransactionType;
+import com.manager.user.domain.model.UserModel;
 import lombok.Builder;
 
 import java.math.BigDecimal;

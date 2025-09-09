@@ -7,7 +7,7 @@ import com.manager.finance.helper.converter.PlaceIdConverter;
 import com.manager.finance.helper.prepare.PlacePrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.PlaceSpringDataRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import com.manager.user.domain.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({UserPrepareHelper.class, PlacePrepareHelper.class, PlaceIdConverter.class})
 class PlaceTest {
     @MockBean
-    private UserRepository userRepository;
+    private UserSpringDataRepository userRepository;
     @MockBean
     private PlaceSpringDataRepository placeRepository;
     @MockBean

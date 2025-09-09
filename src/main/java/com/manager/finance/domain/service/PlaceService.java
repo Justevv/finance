@@ -52,29 +52,28 @@ public class PlaceService implements PlaceUseCase {
         return place;
     }
 
-    public PlaceModel getOrCreate(PlaceModel placeDTO) {
-        if (placeDTO == null) {
+    public PlaceModel getOrCreate(PlaceModel inputPlace) {
+        if (inputPlace == null) {
             return null;
-        } else if (placeDTO.id() != null) {
-            var category = placeRepository.findById(placeDTO.id());
-            if (category.isPresent()) {
-                return category.get();
+        } else if (inputPlace.id() != null) {
+            var currentPlace = placeRepository.findById(inputPlace.id());
+            if (currentPlace.isPresent()) {
+                return currentPlace.get();
             }
-        } else if (placeDTO.name() != null) {
-            var category = placeRepository.findByName(placeDTO.name());
-            var d = PlaceModel.builder()
+        } else if (inputPlace.name() != null) {
+            var currentPlace = placeRepository.findByName(inputPlace.name());
+            var save = PlaceModel.builder()
                     .id(UUID.randomUUID())
-                    .address(placeDTO.address())
-                    .name(placeDTO.name())
+                    .address(inputPlace.address())
+                    .name(inputPlace.name())
                     .build();
-            return category.orElseGet(() -> saveAndGet(d));
+            return currentPlace.orElseGet(() -> saveAndGet(save));
         }
         return null;
     }
 
     private PlaceModel saveAndGet(PlaceModel placeModel) {
         log.debug(crudLogConstants.getInputNewDTO(), placeModel);
-//        var place = getMapper().map(placeModel, PlaceEntity.class);
         var saved = placeRepository.save(placeModel);
         log.info(crudLogConstants.getSaveEntityToDatabase(), saved);
         return saved;

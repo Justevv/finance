@@ -7,7 +7,7 @@ import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity
 import com.manager.user.exception.UserAlreadyExistException;
 import com.manager.user.helper.UserHelper;
 import com.manager.finance.log.CrudLogConstants;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import com.manager.user.domain.service.verification.EmailVerificationService;
 import com.manager.user.domain.service.verification.PhoneVerificationService;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class UserAdminService {
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(USER_LOG_NAME);
     @Getter
     private final ModelMapper mapper;
-    private final UserRepository userRepository;
+    private final UserSpringDataRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final PhoneVerificationService phoneVerificationService;
     private final EmailVerificationService emailVerificationService;

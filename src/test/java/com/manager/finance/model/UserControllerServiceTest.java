@@ -1,12 +1,13 @@
 package com.manager.finance.model;
 
-import com.manager.user.infrastructure.adapter.in.rest.dto.UserDTO;
+import com.manager.user.domain.model.UserModel;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.PhoneVerificationRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.EmailVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.domain.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,11 +25,11 @@ import java.util.Optional;
 @Import({UserPrepareHelper.class})
 class UserControllerServiceTest {
     @MockBean
-    private UserRepository userRepository;
+    private UserSpringDataRepository userRepository;
     @MockBean
-    private EmailVerificationRepository emailVerificationRepository;
+    private EmailVerificationSpringDataRepository emailVerificationRepository;
     @MockBean
-    private PhoneVerificationRepository phoneVerificationRepository;
+    private PhoneVerificationSpringDataRepository phoneVerificationRepository;
     @MockBean
     private Principal principal;
     @Autowired
@@ -43,6 +44,7 @@ class UserControllerServiceTest {
         Mockito.when(principal.getName()).thenReturn(principalName);
         user = userPrepareHelper.createUser();
         Mockito.when(userRepository.findByUsername(principalName)).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
     }
 
     @Test
@@ -54,32 +56,42 @@ class UserControllerServiceTest {
 
     @Test
     void create_shouldReturnUser_when_userDTOIsOk() {
-        var userDTO = new UserDTO();
-        userDTO.setPhone("newPhone");
-        userDTO.setUsername("newUsername");
-        userDTO.setEmail("newEmail");
-        userDTO.setPassword("password");
-        var user = userService.createAndGetDTO(userDTO);
-        Assertions.assertEquals(userDTO.getEmail(), user.getEmail());
-        Assertions.assertEquals(userDTO.getUsername(), user.getUsername());
-        Assertions.assertEquals(userDTO.getPhone(), user.getPhone());
+        var userDTO = UserModel.builder()
+                .phone("newPhone")
+                .username("newUsername")
+                .email("newEmail")
+                .password("password")
+                .build();
+        var user = userService.create(userDTO);
+        Assertions.assertEquals(userDTO.email(), user.email());
+        Assertions.assertEquals(userDTO.username(), user.username());
+        Assertions.assertEquals(userDTO.phone(), user.phone());
     }
 
     @Test
     void update_shouldReturnUser_when_userDTOIsOk() {
-        var userDTO = new UserUpdateDTO();
-        userDTO.setPhone("newPhone");
-        userDTO.setUsername("newUsername");
-        userDTO.setEmail("newEmail");
-        userDTO.setPassword("password");
+        Mockito.when(userRepository.save(Mockito.any(UserEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        var userDTO = UserModel.builder()
+                .phone("newPhone")
+                .username("newUsername")
+                .email("newEmail")
+                .password("password")
+                .build();
+
+        var principal = UserModel.builder()
+                .id(user.getId())
+                .build();
         var userResponseDTO = userService.update(principal, userDTO);
-        Assertions.assertEquals(userDTO.getEmail(), userResponseDTO.getEmail());
-        Assertions.assertEquals(userDTO.getUsername(), userResponseDTO.getUsername());
-        Assertions.assertEquals(userDTO.getPhone(), userResponseDTO.getPhone());
+        Assertions.assertEquals(userDTO.email(), userResponseDTO.email());
+        Assertions.assertEquals(userDTO.username(), userResponseDTO.username());
+        Assertions.assertEquals(userDTO.phone(), userResponseDTO.phone());
     }
 
     @Test
     void delete_shouldReturnNull_when_userIsExists() {
+        var principal = UserModel.builder()
+            .id(user.getId())
+            .build();
         var deleteUser = userService.delete(principal);
         Assertions.assertNull(deleteUser);
     }

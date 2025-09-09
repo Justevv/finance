@@ -1,4 +1,4 @@
-package com.manager.user.infrastructure.adapter.out.persistence.repository;
+package com.manager.user.infrastructure.adapter.out.persistence.repository.springdata;
 
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PhoneVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface PhoneVerificationRepository extends JpaRepository<PhoneVerificationEntity, UUID> {
+public interface PhoneVerificationSpringDataRepository extends JpaRepository<PhoneVerificationEntity, UUID> {
     Optional<PhoneVerificationEntity> findByUser(UserEntity user);
 
     @Modifying

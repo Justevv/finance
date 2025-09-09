@@ -2,7 +2,7 @@ package com.manager.user.domain.service.verification;
 
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.PhoneVerificationResponseDto;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.PhoneVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 public class PhoneVerificationKafkaService {
-    private final PhoneVerificationRepository phoneVerificationRepository;
+    private final PhoneVerificationSpringDataRepository phoneVerificationRepository;
     private final KafkaTemplate<String, PhoneVerificationResponseDto> kafkaTemplate;
     private final ModelMapper mapper;
     @Value("${manager.schedule.send-sms.batch-size}")

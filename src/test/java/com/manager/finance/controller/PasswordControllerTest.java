@@ -4,7 +4,7 @@ import com.manager.Manager;
 import com.manager.finance.helper.prepare.PasswordResetTokenPrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.PasswordResetTokenRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import com.manager.user.domain.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ class PasswordControllerTest {
     private final static String RESET_PASSWORD_API = "/v1/user/password/reset";
     private final static String FORGET_PASSWORD_API = "/v1/user/password/forget";
     @MockBean
-    private UserRepository userRepository;
+    private UserSpringDataRepository userRepository;
     @MockBean
     private PasswordResetTokenRepository passwordResetTokenRepository;
     @MockBean

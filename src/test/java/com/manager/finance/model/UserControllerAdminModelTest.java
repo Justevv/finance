@@ -6,9 +6,9 @@ import com.manager.user.administrator.dto.user.UserAdminUpdateDTO;
 import com.manager.user.domain.service.admin.UserAdminService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.PhoneVerificationRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.EmailVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,11 +25,11 @@ import java.util.List;
 @Import({UserPrepareHelper.class})
 class UserControllerAdminModelTest {
     @MockBean
-    private UserRepository userRepository;
+    private UserSpringDataRepository userRepository;
     @MockBean
-    private EmailVerificationRepository emailVerificationRepository;
+    private EmailVerificationSpringDataRepository emailVerificationRepository;
     @MockBean
-    private PhoneVerificationRepository phoneVerificationRepository;
+    private PhoneVerificationSpringDataRepository phoneVerificationRepository;
     @MockBean
     private Principal principal;
     @Autowired

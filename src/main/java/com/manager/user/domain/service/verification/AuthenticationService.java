@@ -3,7 +3,7 @@ package com.manager.user.domain.service.verification;
 import com.manager.user.event.AuthenticationEvent;
 import com.manager.user.exception.UserIpAddressWasBlockedException;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.AuthenticationLogRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import com.manager.user.security.AuthenticationRequestDTO;
 import com.manager.user.security.JwtProvider;
 import com.manager.user.domain.service.LoginAttemptService;
@@ -30,7 +30,7 @@ public class AuthenticationService {
     @Value("${authentication.blockPeriod}")
     private int blockPeriod;
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
+    private final UserSpringDataRepository userRepository;
     private final JwtProvider jwtProvider;
     private final ApplicationEventPublisher eventPublisher;
     private final AuthenticationLogRepository authenticationLogRepository;

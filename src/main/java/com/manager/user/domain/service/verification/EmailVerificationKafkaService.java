@@ -2,7 +2,7 @@ package com.manager.user.domain.service.verification;
 
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.EmailVerificationResponseDto;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.EmailVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 public class EmailVerificationKafkaService {
-    private final EmailVerificationRepository emailVerificationRepository;
+    private final EmailVerificationSpringDataRepository emailVerificationRepository;
     private final KafkaTemplate<String, EmailVerificationResponseDto> kafkaTemplate;
     private final ModelMapper mapper;
     @Value("${manager.schedule.send-email.batch-size}")

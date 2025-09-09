@@ -7,10 +7,10 @@ import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity
 import com.manager.finance.helper.converter.RoleIdConverter;
 import com.manager.finance.helper.converter.UserIdConverter;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.PhoneVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.UserRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.EmailVerificationRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,11 +47,11 @@ class UserControllerAdminTest {
     private static final String NEW_EMAIL = "st@a.ru";
     private static final String NEW_ROLE = "newRole";
     @MockBean
-    private UserRepository userRepository;
+    private UserSpringDataRepository userRepository;
     @MockBean
-    private EmailVerificationRepository emailVerificationRepository;
+    private EmailVerificationSpringDataRepository emailVerificationRepository;
     @MockBean
-    private PhoneVerificationRepository phoneVerificationRepository;
+    private PhoneVerificationSpringDataRepository phoneVerificationRepository;
     @MockBean
     private RoleRepository roleRepository;
     @Autowired

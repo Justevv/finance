@@ -1,4 +1,4 @@
-package com.manager.user.infrastructure.adapter.out.persistence.repository;
+package com.manager.user.infrastructure.adapter.out.persistence.repository.springdata;
 
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<UserEntity, UUID> {
+public interface UserSpringDataRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findByUsername(String username);
 
     List<UserEntity> findByEmail(String email);
