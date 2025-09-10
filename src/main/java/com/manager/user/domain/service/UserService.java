@@ -40,8 +40,8 @@ public class UserService implements UserUseCase {
     @Transactional
     @TrackExecutionTime
     @Override
-    public UserModel create(UserModel userDTO) throws UserAlreadyExistException {
-        var user = createUser(userDTO);
+    public UserModel create(UserModel inputUser) throws UserAlreadyExistException {
+        var user = createUser(inputUser);
         userHelper.createVerification(user);
         return user;
     }
