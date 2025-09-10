@@ -1,6 +1,5 @@
-package com.manager.user.administrator.dto.user;
+package com.manager.user.infrastructure.adapter.in.rest.dto.request;
 
-import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,7 +10,7 @@ import java.util.Collection;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class UserAdminUpdateDTO extends UserUpdateDTO {
+public class UserAdminDTO extends UserDTO {
     private boolean isPhoneConfirmed;
     private boolean isEmailConfirmed;
     private Collection<RoleEntity> roles;

@@ -1,9 +1,9 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.admin;
 
 
-import com.manager.user.administrator.dto.user.UserAdminDTO;
-import com.manager.user.administrator.dto.user.UserAdminResponseDTO;
-import com.manager.user.administrator.dto.user.UserAdminUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminUpdateDTO;
 import com.manager.user.domain.service.admin.UserAdminService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;

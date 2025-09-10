@@ -1,8 +1,8 @@
 package com.manager.finance.model;
 
 import com.manager.Manager;
-import com.manager.user.administrator.dto.user.UserAdminDTO;
-import com.manager.user.administrator.dto.user.UserAdminUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminUpdateDTO;
 import com.manager.user.domain.service.admin.UserAdminService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;

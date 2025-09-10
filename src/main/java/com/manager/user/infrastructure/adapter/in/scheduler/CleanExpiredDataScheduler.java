@@ -1,4 +1,4 @@
-package com.manager.user.scheduler;
+package com.manager.user.infrastructure.adapter.in.scheduler;
 
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.domain.service.verification.CleanExpiredDataService;
@@ -14,19 +14,19 @@ import org.springframework.stereotype.Service;
 public class CleanExpiredDataScheduler {
     private final CleanExpiredDataService cleanExpiredDataService;
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 1000000)
     @TrackExecutionTime
     public void cleanExpiredEmailVerification() {
         cleanExpiredDataService.cleanExpiredEmailVerification();
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 1000000)
     @TrackExecutionTime
     public void cleanExpiredPhoneVerification() {
         cleanExpiredDataService.cleanExpiredPhoneVerification();
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 1000000)
     @TrackExecutionTime
     public void cleanExpiredPasswordResetToken() {
         cleanExpiredDataService.cleanExpiredPasswordResetToken();

@@ -1,4 +1,4 @@
-package com.manager.user.scheduler;
+package com.manager.user.infrastructure.adapter.in.scheduler;
 
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.domain.service.verification.EmailVerificationKafkaService;

@@ -1,4 +1,4 @@
-package com.manager.user.administrator.dto;
+package com.manager.user.infrastructure.adapter.in.rest.dto.request;
 
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
 import lombok.Data;

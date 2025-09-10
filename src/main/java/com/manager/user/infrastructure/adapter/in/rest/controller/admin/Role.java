@@ -1,7 +1,7 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.admin;
 
 
-import com.manager.user.administrator.dto.RoleDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.RoleDTO;
 import com.manager.user.domain.service.admin.RoleService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;

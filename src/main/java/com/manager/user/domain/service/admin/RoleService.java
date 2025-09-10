@@ -1,7 +1,7 @@
 package com.manager.user.domain.service.admin;
 
 
-import com.manager.user.administrator.dto.RoleDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.RoleDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import com.manager.user.exception.UserAlreadyExistException;
