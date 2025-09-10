@@ -3,6 +3,7 @@ package com.manager.user.domain.model;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import lombok.Builder;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public record UserModel(
         UUID id,
         String username,
+        @ToString.Exclude
         String password,
         String phone,
         String email,

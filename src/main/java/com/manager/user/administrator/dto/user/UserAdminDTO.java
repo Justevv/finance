@@ -1,7 +1,6 @@
 package com.manager.user.administrator.dto.user;
 
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserDTO;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

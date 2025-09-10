@@ -76,7 +76,7 @@ public class UserService {
 
     @Transactional
     @TrackExecutionTime
-    public UserModel update(UserModel principal, UserModel input) throws UserAlreadyExistException {
+    public UserModel update(UserModel principal, UserModel input) {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), input, principal);
         var currentUser = userRepository.getById(principal.id());
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), currentUser, input);

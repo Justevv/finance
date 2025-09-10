@@ -16,7 +16,7 @@ public class UserPrepareHelper {
 
     public UserEntity createUser() {
         var userEntity = new UserEntity();
-        userEntity.setId(UUID.randomUUID());
+        userEntity.setId(UUID.fromString("3a2830b2-6d06-4964-bba5-e90a29d0fcd0"));
         userEntity.setUsername("user");
         userEntity.setPhone("phone");
         userEntity.setPassword("$2a$04$kLf5hQQ8yshxEfcMk9etVupP2It5u889YM9KLVpuAnSEAvc3oDq.6");

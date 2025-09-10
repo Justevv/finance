@@ -39,14 +39,12 @@ public class UserPrincipalMapper {
         log.debug("input principal is {}", principal);
         if (principal instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
             var user = usernamePasswordAuthenticationToken.getPrincipal();
-            if (user instanceof UserEntity userEntity) {
+            if (user instanceof UserModel userEntity) {
                 log.debug("Current user is {}", userEntity);
-                return toModel(userEntity);
+                return userEntity;
             }
         }
-        var userEntity = userRepository.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
-        log.debug("Current user is {}", userEntity);
-        return userEntity;
+
+        throw new RuntimeException("principal");
     }
 }

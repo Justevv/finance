@@ -1,6 +1,7 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
+import com.manager.finance.helper.WithMockCustomUser;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.ExpenseEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.converter.UserIdConverter;
@@ -74,25 +75,30 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockCustomUser
     @SneakyThrows
     void putUser_shouldReturnUserAndOk_when_userIsExists() {
         Mockito.when(userRepository.save(Mockito.any(UserEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
         Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
+        var content = String.format("""
+                                {
+                                    "username": "%s",
+                                    "email": "%s",
+                                    "phone": "%s",
+                                    "password":"1"
+                                }""", NEW_USERNAME, NEW_EMAIL, NEW_PHONE);
         mockMvc.perform(MockMvcRequestBuilders.put(USER_HIMSELF_API)
-                        .param(USERNAME_PARAMETER, NEW_USERNAME)
-                        .param(PASSWORD_PARAMETER, "1")
-                        .param(PHONE_PARAMETER, NEW_PHONE)
-                        .param(EMAIL_PARAMETER, NEW_EMAIL)
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.username").value(NEW_USERNAME))
-                .andExpect(jsonPath("$.phone").value(NEW_PHONE))
-                .andExpect(jsonPath("$.email").value(NEW_EMAIL));
+                .andExpect(jsonPath("$.payload.username").value(NEW_USERNAME))
+                .andExpect(jsonPath("$.payload.phone").value(NEW_PHONE))
+                .andExpect(jsonPath("$.payload.email").value(NEW_EMAIL));
     }
 
     @Test
-    @WithMockUser
+    @WithMockCustomUser
     @SneakyThrows
     void deleteUser_shouldReturnNullAndOk_when_userIsExists() {
         Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
@@ -121,7 +127,11 @@ class UserControllerTest {
 
         Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
         mockMvc.perform(MockMvcRequestBuilders.put(USER_HIMSELF_API)
-                        .param(EMAIL_PARAMETER, newEmail)
+                                                .content("""
+                                {
+                                    "email": "wrongEmail"
+                                }""")
+                .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(400))
                 .andExpect(content().contentType("application/json"));
@@ -166,9 +176,9 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.username").value(NEW_USERNAME))
-                .andExpect(jsonPath("$.phone").value(NEW_PHONE))
-                .andExpect(jsonPath("$.email").value(NEW_EMAIL));
+                .andExpect(jsonPath("$.payload.username").value(NEW_USERNAME))
+                .andExpect(jsonPath("$.payload.phone").value(NEW_PHONE))
+                .andExpect(jsonPath("$.payload.email").value(NEW_EMAIL));
     }
 
 }

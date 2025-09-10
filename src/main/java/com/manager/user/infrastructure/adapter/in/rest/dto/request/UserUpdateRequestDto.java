@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.ToString;
 
 @Builder
-public record UserRequestUpdateDTO(
+public record UserUpdateRequestDto(
         String username,
         @ToString.Exclude
         String password,

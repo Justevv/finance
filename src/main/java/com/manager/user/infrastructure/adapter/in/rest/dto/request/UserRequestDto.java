@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.ToString;
 
 @Builder
-public record UserRequestDTO(
+public record UserRequestDto(
         @NotBlank
         String username,
         @ToString.Exclude

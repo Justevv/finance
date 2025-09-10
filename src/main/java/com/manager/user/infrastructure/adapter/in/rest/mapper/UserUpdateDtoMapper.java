@@ -1,17 +1,17 @@
 package com.manager.user.infrastructure.adapter.in.rest.mapper;
 
 import com.manager.user.domain.model.UserModel;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserUpdateRequestDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class UserUpdateDtoMapper implements DtoMapper<UserRequestUpdateDTO, UserResponseDto, UserModel> {
+public class UserUpdateDtoMapper implements DtoMapper<UserUpdateRequestDto, UserResponseDto, UserModel> {
 
     @Override
-    public UserModel toModel(UserRequestUpdateDTO dto) {
+    public UserModel toModel(UserUpdateRequestDto dto) {
         if (dto == null) {
             return null;
         }

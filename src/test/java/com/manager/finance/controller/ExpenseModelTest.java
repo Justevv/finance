@@ -1,6 +1,7 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
+import com.manager.finance.helper.WithMockCustomUser;
 import com.manager.finance.helper.converter.ExpenseIdConverter;
 import com.manager.finance.helper.prepare.ExpensePrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
@@ -133,7 +134,7 @@ class ExpenseModelTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockCustomUser
     @SneakyThrows
     void postExpense() {
         Mockito.when(expenseRepository.save(Mockito.any(ExpenseEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));

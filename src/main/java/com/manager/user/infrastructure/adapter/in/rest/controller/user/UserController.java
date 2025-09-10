@@ -7,8 +7,8 @@ import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.UserService;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestDTO;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestDto;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserUpdateRequestDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.OldUserResponseDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDto;
 import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
@@ -36,8 +36,8 @@ import java.security.Principal;
 public class UserController {
     private final UserService userService;
     private final ErrorHelper errorHelper;
-    private final DtoMapper<UserRequestDTO, UserResponseDto, UserModel> mapper;
-    private final DtoMapper<UserRequestUpdateDTO, UserResponseDto, UserModel> mapper2;
+    private final DtoMapper<UserRequestDto, UserResponseDto, UserModel> mapper;
+    private final DtoMapper<UserUpdateRequestDto, UserResponseDto, UserModel> mapper2;
     private final UserPrincipalMapper principalMapper;
 
     @GetMapping
@@ -48,7 +48,7 @@ public class UserController {
 
     @PostMapping
     @TrackExecutionTime
-    public ResponseEntity<RestResponse<UserResponseDto>> createUser(@RequestBody @Valid UserRequestDTO userRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<RestResponse<UserResponseDto>> createUser(@RequestBody @Valid UserRequestDto userRequestDto, BindingResult bindingResult) {
         HttpStatus status;
         RestError restError = null;
         UserResponseDto responseDto = null;
@@ -67,12 +67,22 @@ public class UserController {
 
     @PutMapping
     @TrackExecutionTime
-    public ResponseEntity<Object> updateUser(Principal principal, @Valid UserRequestUpdateDTO crudDTO, BindingResult bindingResult) {
-        var responseEntity = errorHelper.checkErrors(bindingResult);
-        if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(userService.update(principalMapper.toModel(principal), mapper2.toModel(crudDTO)));
+    public ResponseEntity<RestResponse<UserResponseDto>> updateUser(Principal principal, @RequestBody @Valid UserUpdateRequestDto userRequestDto, BindingResult bindingResult) {
+        HttpStatus status;
+        RestError restError = null;
+        UserResponseDto userResponseDto = null;
+        var dtoErrors = errorHelper.checkErrors2(bindingResult);
+        if (dtoErrors == null) {
+            var model = userService.update(principalMapper.toModel(principal), mapper2.toModel(userRequestDto));
+            userResponseDto = mapper.toResponseDto(model);
+            status = HttpStatus.OK;
+        } else {
+            status = HttpStatus.BAD_REQUEST;
+            restError = new RestError(null, dtoErrors);
         }
-        return responseEntity;
+
+        RestResponse<UserResponseDto> restResponse = new RestResponse<>(restError, userResponseDto);
+        return new ResponseEntity<>(restResponse, status);
     }
 
     @DeleteMapping
