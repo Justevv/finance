@@ -39,7 +39,7 @@ public class UserSpringDataRepositoryImp implements UserRepository {
 
     @Override
     public void delete(UserModel user) {
-
+        repository.delete(mapper.toEntity(user));
     }
 
     @Override
