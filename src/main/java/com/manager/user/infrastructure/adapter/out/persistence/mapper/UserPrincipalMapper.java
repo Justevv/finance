@@ -1,23 +1,18 @@
 package com.manager.user.infrastructure.adapter.out.persistence.mapper;
 
-import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
-
-import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class UserPrincipalMapper {
-    private final UserRepository userRepository;
 
     public UserModel toModel(UserEntity dto) {
         if (dto == null) {

@@ -42,8 +42,10 @@ public class UserController {
 
     @GetMapping
     @TrackExecutionTime
-    public OldUserResponseDTO getUser(Principal principal) {
-        return userUseCase.getUser(principal);
+    public ResponseEntity<RestResponse<UserResponseDto>> getUser(Principal principal) {
+        var user =  mapper.toResponseDto(principalMapper.toModel(principal));
+        RestResponse<UserResponseDto> response = new RestResponse<>(null, user);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping

@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,13 +35,6 @@ public class UserService implements UserUseCase {
     @Override
     public UserModel findById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-    }
-
-    @TrackExecutionTime
-    @Override
-    public OldUserResponseDTO getUser(Principal principal) {
-        var user = userHelper.getUser(principal);
-        return OldUserResponseDTO.fromUser(user);
     }
 
     @Transactional
