@@ -85,19 +85,19 @@ public class UserService implements UserUseCase {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), input, principal);
         var currentUser = userRepository.getById(principal.id());
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), currentUser, input);
-        var s = userHelper.checkUsername(currentUser, input.username());
-        var e = userHelper.checkEmail(currentUser, input.email());
-        var ty = userHelper.checkPhone(currentUser, input.phone());
-        var d = userHelper.checkPassword(currentUser, input.password());
+        var updateUsername = userHelper.checkUsername(currentUser, input.username());
+        var updateEmail = userHelper.checkEmail(currentUser, input.email());
+        var updatePhone = userHelper.checkPhone(currentUser, input.phone());
+        var updatePassword = userHelper.checkPassword(currentUser, input.password());
 
         UserModel save = UserModel.builder()
                 .id(currentUser.id())
-                .username(s ? input.username() : currentUser.username())
-                .password(d ? passwordEncoder.encode(input.password()) : currentUser.password())
-                .phone(ty ? input.phone() : currentUser.phone())
-                .email(e ? input.email() : currentUser.email())
-                .isPhoneConfirmed(!ty && currentUser.isPhoneConfirmed())
-                .isEmailConfirmed(!e && currentUser.isEmailConfirmed())
+                .username(updateUsername ? input.username() : currentUser.username())
+                .password(updatePassword ? passwordEncoder.encode(input.password()) : currentUser.password())
+                .phone(updatePhone ? input.phone() : currentUser.phone())
+                .email(updateEmail ? input.email() : currentUser.email())
+                .isPhoneConfirmed(!updatePhone && currentUser.isPhoneConfirmed())
+                .isEmailConfirmed(!updateEmail && currentUser.isEmailConfirmed())
                 .roles(currentUser.roles())
                 .build();
 
