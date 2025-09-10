@@ -1,16 +1,14 @@
 package com.manager.user.infrastructure.adapter.in.rest.mapper;
 
 import com.manager.user.domain.model.UserModel;
-import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestUpdateDTO;
-import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class UserUpdateDtoMapper implements DtoMapper<UserRequestUpdateDTO, UserResponseDTO, UserModel> {
+public class UserUpdateDtoMapper implements DtoMapper<UserRequestUpdateDTO, UserResponseDto, UserModel> {
 
     @Override
     public UserModel toModel(UserRequestUpdateDTO dto) {
@@ -26,11 +24,11 @@ public class UserUpdateDtoMapper implements DtoMapper<UserRequestUpdateDTO, User
     }
 
     @Override
-    public UserResponseDTO toResponseDto(UserModel dto) {
+    public UserResponseDto toResponseDto(UserModel dto) {
         if (dto == null) {
             return null;
         }
-        return UserResponseDTO.builder()
+        return UserResponseDto.builder()
                 .id(dto.id())
                 .username(dto.username())
                 .phone(dto.phone())

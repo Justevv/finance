@@ -1,11 +1,11 @@
 package com.manager.user.infrastructure.adapter.in.rest.dto.response;
 
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.index.Indexed;
 
 import java.util.UUID;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponseDTO {
+public class OldUserResponseDTO {
     @Id
     @Indexed
     private UUID id;
@@ -23,8 +23,8 @@ public class UserResponseDTO {
     private String phone;
 
 
-    public static UserResponseDTO fromUser(UserEntity user) {
-        return UserResponseDTO.builder()
+    public static OldUserResponseDTO fromUser(UserEntity user) {
+        return OldUserResponseDTO.builder()
                 .phone(user.getPhone())
                 .email(user.getEmail())
                 .username(user.getUsername())

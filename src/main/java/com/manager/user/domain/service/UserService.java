@@ -7,9 +7,7 @@ import com.manager.user.domain.model.UserModel;
 import com.manager.user.exception.UserAlreadyExistException;
 import com.manager.user.exception.UserNotFoundException;
 import com.manager.user.helper.UserHelper;
-import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
-import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDTO;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.OldUserResponseDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
 import jakarta.transaction.Transactional;
@@ -39,9 +37,9 @@ public class UserService {
     }
 
     @TrackExecutionTime
-    public UserResponseDTO getUser(Principal principal) {
+    public OldUserResponseDTO getUser(Principal principal) {
         var user = userHelper.getUser(principal);
-        return UserResponseDTO.fromUser(user);
+        return OldUserResponseDTO.fromUser(user);
     }
 
     @Transactional
@@ -70,8 +68,8 @@ public class UserService {
         return user;
     }
 
-    private UserResponseDTO convertUserToUserResponseDTO(UserEntity user) {
-        var userResponseDTO = UserResponseDTO.fromUser(user);
+    private OldUserResponseDTO convertUserToUserResponseDTO(UserEntity user) {
+        var userResponseDTO = OldUserResponseDTO.fromUser(user);
         log.debug(crudLogConstants.getOutputDTOAfterMapping(), userResponseDTO);
         return userResponseDTO;
     }
