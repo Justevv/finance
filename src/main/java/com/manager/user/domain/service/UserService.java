@@ -2,6 +2,7 @@ package com.manager.user.domain.service;
 
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.user.application.port.in.UserUseCase;
 import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.exception.UserAlreadyExistException;
@@ -23,7 +24,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserUseCase {
     private static final String USER_LOG_NAME = "user";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(USER_LOG_NAME);
     private final UserRepository userRepository;
@@ -32,11 +33,13 @@ public class UserService {
     private final UserHelper userHelper;
 
     @TrackExecutionTime
+    @Override
     public UserModel findById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @TrackExecutionTime
+    @Override
     public OldUserResponseDTO getUser(Principal principal) {
         var user = userHelper.getUser(principal);
         return OldUserResponseDTO.fromUser(user);
@@ -44,6 +47,7 @@ public class UserService {
 
     @Transactional
     @TrackExecutionTime
+    @Override
     public UserModel create(UserModel userDTO) throws UserAlreadyExistException {
         var user = createUser(userDTO);
         userHelper.createVerification(user);
@@ -76,6 +80,7 @@ public class UserService {
 
     @Transactional
     @TrackExecutionTime
+    @Override
     public UserModel update(UserModel principal, UserModel input) {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), input, principal);
         var currentUser = userRepository.getById(principal.id());
@@ -103,13 +108,13 @@ public class UserService {
 
     @Transactional
     @TrackExecutionTime
-    public Void delete(UserModel principal) {
+    @Override
+    public void delete(UserModel principal) {
         log.debug(crudLogConstants.getInputEntityForDelete(), principal);
         var currentUser = userRepository.getById(principal.id());
         log.debug(crudLogConstants.getInputEntityForDelete(), currentUser);
         userRepository.delete(currentUser);
         log.info(crudLogConstants.getDeleteEntityFromDatabase(), currentUser);
-        return null;
     }
 
 }

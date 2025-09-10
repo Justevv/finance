@@ -5,8 +5,8 @@ import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestError
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.user.application.port.in.UserUseCase;
 import com.manager.user.domain.model.UserModel;
-import com.manager.user.domain.service.UserService;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserUpdateRequestDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.OldUserResponseDTO;
@@ -34,7 +34,7 @@ import java.security.Principal;
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final UserUseCase userUseCase;
     private final ErrorHelper errorHelper;
     private final DtoMapper<UserRequestDto, UserResponseDto, UserModel> mapper;
     private final DtoMapper<UserUpdateRequestDto, UserResponseDto, UserModel> mapper2;
@@ -43,7 +43,7 @@ public class UserController {
     @GetMapping
     @TrackExecutionTime
     public OldUserResponseDTO getUser(Principal principal) {
-        return userService.getUser(principal);
+        return userUseCase.getUser(principal);
     }
 
     @PostMapping
@@ -55,7 +55,7 @@ public class UserController {
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
             status = HttpStatus.OK;
-            responseDto = mapper.toResponseDto(userService.create(mapper.toModel(userRequestDto)));
+            responseDto = mapper.toResponseDto(userUseCase.create(mapper.toModel(userRequestDto)));
         } else {
             status = HttpStatus.BAD_REQUEST;
             restError = new RestError(null, responseEntity);
@@ -73,7 +73,7 @@ public class UserController {
         UserResponseDto userResponseDto = null;
         var dtoErrors = errorHelper.checkErrors2(bindingResult);
         if (dtoErrors == null) {
-            var model = userService.update(principalMapper.toModel(principal), mapper2.toModel(userRequestDto));
+            var model = userUseCase.update(principalMapper.toModel(principal), mapper2.toModel(userRequestDto));
             userResponseDto = mapper.toResponseDto(model);
             status = HttpStatus.OK;
         } else {
@@ -88,7 +88,8 @@ public class UserController {
     @DeleteMapping
     @TrackExecutionTime
     public ResponseEntity<Void> deleteUser(Principal principal) {
-        return ResponseEntity.ok(userService.delete(principalMapper.toModel(principal)));
+        userUseCase.delete(principalMapper.toModel(principal));
+        return ResponseEntity.ok(null);
     }
 
 }

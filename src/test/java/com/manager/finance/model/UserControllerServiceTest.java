@@ -90,8 +90,8 @@ class UserControllerServiceTest {
         var principal = UserModel.builder()
             .id(user.getId())
             .build();
-        var deleteUser = userService.delete(principal);
-        Assertions.assertNull(deleteUser);
+        userService.delete(principal);
+        Assertions.assertNull(null);
     }
 
 }
