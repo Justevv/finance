@@ -64,12 +64,6 @@ public class UserService implements UserUseCase {
         return user;
     }
 
-    private OldUserResponseDTO convertUserToUserResponseDTO(UserEntity user) {
-        var userResponseDTO = OldUserResponseDTO.fromUser(user);
-        log.debug(crudLogConstants.getOutputDTOAfterMapping(), userResponseDTO);
-        return userResponseDTO;
-    }
-
     @Transactional
     @TrackExecutionTime
     @Override
