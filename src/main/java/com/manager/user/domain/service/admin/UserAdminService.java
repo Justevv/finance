@@ -4,7 +4,7 @@ import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminUpdateDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
-import com.manager.user.exception.UserAlreadyExistException;
+import com.manager.user.domain.exception.UserAlreadyExistException;
 import com.manager.user.helper.UserHelper;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;

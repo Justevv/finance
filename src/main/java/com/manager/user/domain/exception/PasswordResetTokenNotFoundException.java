@@ -1,4 +1,4 @@
-package com.manager.user.exception;
+package com.manager.user.domain.exception;
 
 
 public class PasswordResetTokenNotFoundException extends RuntimeException {

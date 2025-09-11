@@ -2,8 +2,8 @@ package com.manager.user.infrastructure.adapter.out.persistence.repository.impl;
 
 import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.domain.model.UserModel;
-import com.manager.user.exception.UserNotFoundException;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.exception.UserNotFoundException;
 import com.manager.user.infrastructure.adapter.out.persistence.mapper.EntityMapper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import lombok.RequiredArgsConstructor;

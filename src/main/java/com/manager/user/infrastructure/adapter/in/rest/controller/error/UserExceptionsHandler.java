@@ -2,7 +2,7 @@ package com.manager.user.infrastructure.adapter.in.rest.controller.error;
 
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestError;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
-import com.manager.user.exception.UserNotFoundException;
+import com.manager.user.domain.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

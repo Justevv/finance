@@ -1,7 +1,7 @@
 package com.manager.user.application.port.in;
 
 import com.manager.user.domain.model.UserModel;
-import com.manager.user.exception.UserAlreadyExistException;
+import com.manager.user.domain.exception.UserAlreadyExistException;
 
 import java.util.UUID;
 

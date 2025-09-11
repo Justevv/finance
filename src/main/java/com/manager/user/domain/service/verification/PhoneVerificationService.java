@@ -5,7 +5,7 @@ import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.model.VerificationModel;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PhoneVerificationEntity;
 import com.manager.user.event.ConfirmationCompleteEvent;
-import com.manager.user.exception.VerificationNotFoundException;
+import com.manager.user.domain.exception.VerificationNotFoundException;
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;

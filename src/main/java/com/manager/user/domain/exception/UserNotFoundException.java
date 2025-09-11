@@ -1,4 +1,4 @@
-package com.manager.user.exception;
+package com.manager.user.domain.exception;
 
 import java.util.UUID;
 

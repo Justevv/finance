@@ -4,7 +4,7 @@ package com.manager.user.domain.service.admin;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.RoleDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
-import com.manager.user.exception.UserAlreadyExistException;
+import com.manager.user.domain.exception.UserAlreadyExistException;
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;

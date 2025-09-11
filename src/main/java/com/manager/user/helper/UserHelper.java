@@ -5,7 +5,7 @@ import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.verification.EmailVerificationService;
 import com.manager.user.domain.service.verification.PhoneVerificationService;
-import com.manager.user.exception.UserAlreadyExistException;
+import com.manager.user.domain.exception.UserAlreadyExistException;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.mapper.EntityMapper;

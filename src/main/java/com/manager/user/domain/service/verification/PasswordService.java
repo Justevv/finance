@@ -4,7 +4,7 @@ import com.manager.user.infrastructure.adapter.in.rest.dto.PasswordUpdateDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PasswordResetTokenEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.event.ResetPasswordEvent;
-import com.manager.user.exception.PasswordResetTokenNotFoundException;
+import com.manager.user.domain.exception.PasswordResetTokenNotFoundException;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.PasswordResetTokenRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import lombok.RequiredArgsConstructor;

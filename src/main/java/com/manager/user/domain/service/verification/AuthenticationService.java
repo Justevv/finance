@@ -1,7 +1,7 @@
 package com.manager.user.domain.service.verification;
 
 import com.manager.user.event.AuthenticationEvent;
-import com.manager.user.exception.UserIpAddressWasBlockedException;
+import com.manager.user.domain.exception.UserIpAddressWasBlockedException;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.AuthenticationLogRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import com.manager.user.security.AuthenticationRequestDTO;
