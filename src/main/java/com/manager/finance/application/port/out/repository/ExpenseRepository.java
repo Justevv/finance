@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ExpenseRepository {
-    List<ExpenseModel> findByUser(UserEntity userEntity);
+    List<ExpenseModel> findByUser(UUID userId);
 
-    ExpenseModel getByIdAndUser(UUID id, UserEntity userEntity);
+    ExpenseModel getByIdAndUser(UUID id, UUID userId);
 
-    boolean existsByIdAndUser(UUID id, UserEntity userEntity);
+    boolean existsByIdAndUser(UUID id, UUID userId);
 
-    List<ExpenseModel> findByUser(UserEntity userEntity, Pageable pageable);
+    List<ExpenseModel> findByUser(UUID userId, Pageable pageable);
 
     void deleteById(UUID id);
 

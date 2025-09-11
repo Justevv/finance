@@ -1,6 +1,7 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
+import com.manager.finance.helper.WithMockCustomUser;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.CategoryEntity;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.FavoriteCategoryEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
@@ -100,7 +101,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockCustomUser
     @SneakyThrows
     void postCategory() {
         Mockito.when(categoryRepository.save(Mockito.any(CategoryEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));

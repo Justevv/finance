@@ -1,7 +1,6 @@
 package com.manager.finance.infrastructure.adapter.out.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -47,8 +46,7 @@ public class ExpenseEntity {
     @Enumerated(EnumType.ORDINAL)
     private TransactionType transactionType;
     @NotNull
-    @ManyToOne
-    private UserEntity user;
+    private UUID userId;
 
     @Override
     public boolean equals(Object o) {

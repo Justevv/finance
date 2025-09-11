@@ -15,43 +15,42 @@ import org.springframework.stereotype.Component;
 public class ExpenseEntityMapper implements EntityMapper<ExpenseEntity, ExpenseModel> {
     private final EntityMapper<CategoryEntity, CategoryModel> categoryMapper;
     private final EntityMapper<PlaceEntity, PlaceModel> placeMapper;
-    private final UserHelper userHelper;
 
     @Override
-    public ExpenseModel toModel(ExpenseEntity dto) {
-        if (dto == null) {
+    public ExpenseModel toModel(ExpenseEntity entity) {
+        if (entity == null) {
             return null;
         }
         return ExpenseModel.builder()
-                .id(dto.getId())
-                .description(dto.getDescription())
-                .date(dto.getDate())
-                .category(categoryMapper.toModel(dto.getCategory()))
-                .place(placeMapper.toModel(dto.getPlace()))
-//                .paymentType(dto.paymentType())
-                .amount(dto.getAmount())
-//                .account(dto.getAccount())
-                .transactionType(dto.getTransactionType())
-                .user(userHelper.toModel(dto.getUser()))
+                .id(entity.getId())
+                .description(entity.getDescription())
+                .date(entity.getDate())
+                .category(categoryMapper.toModel(entity.getCategory()))
+                .place(placeMapper.toModel(entity.getPlace()))
+//                .paymentType(entity.paymentType())
+                .amount(entity.getAmount())
+//                .account(entity.getAccount())
+                .transactionType(entity.getTransactionType())
+                .userId(entity.getUserId())
                 .build();
     }
 
     @Override
-    public ExpenseEntity toEntity(ExpenseModel dto) {
-        if (dto == null) {
+    public ExpenseEntity toEntity(ExpenseModel model) {
+        if (model == null) {
             return null;
         }
         return ExpenseEntity.builder()
-                .id(dto.id())
-                .description(dto.description())
-                .date(dto.date())
-                .category(categoryMapper.toEntity(dto.category()))
-                .place(placeMapper.toEntity(dto.place()))
-//                .paymentType(dto.paymentType())
-                .amount(dto.amount())
-//                .account(dto.getAccount())
-                .transactionType(dto.transactionType())
-                .user(userHelper.toEntity(dto.user()))
+                .id(model.id())
+                .description(model.description())
+                .date(model.date())
+                .category(categoryMapper.toEntity(model.category()))
+                .place(placeMapper.toEntity(model.place()))
+//                .paymentType(model.paymentType())
+                .amount(model.amount())
+//                .account(model.getAccount())
+                .transactionType(model.transactionType())
+                .userId(model.userId())
                 .build();
     }
 }

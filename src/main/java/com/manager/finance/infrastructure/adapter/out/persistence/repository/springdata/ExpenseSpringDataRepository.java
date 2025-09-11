@@ -17,27 +17,27 @@ import java.util.UUID;
 public interface ExpenseSpringDataRepository extends JpaRepository<ExpenseEntity, UUID> {
 
     @TrackExecutionTime
-    List<ExpenseEntity> findByUser(UserEntity userEntity);
+    List<ExpenseEntity> findByUserId(UUID userId);
 
     @TrackExecutionTime
-    Optional<ExpenseEntity> findByIdAndUser(UUID id, UserEntity userEntity);
+    Optional<ExpenseEntity> findByIdAndUserId(UUID id, UUID userId);
 
     @TrackExecutionTime
-    boolean existsByIdAndUser(UUID id, UserEntity userEntity);
+    boolean existsByIdAndUserId(UUID id, UUID userId);
 
     @TrackExecutionTime
-    List<ExpenseEntity> findByUser(UserEntity userEntity, Pageable pageable);
+    List<ExpenseEntity> findByUserId(UUID userId, Pageable pageable);
 
     @Modifying
-    @Query("DELETE FROM ExpenseEntity ee WHERE ee.id = ?1 AND ee.user = ?2")
+    @Query("DELETE FROM ExpenseEntity ee WHERE ee.id = ?1 AND ee.userId = ?2")
     void deleteById(UUID id, UserEntity user);
 
     @TrackExecutionTime
-    @Query("SELECT SUM(ee.amount) FROM ExpenseEntity ee where ee.user = ?1")
+    @Query("SELECT SUM(ee.amount) FROM ExpenseEntity ee where ee.userId = ?1")
     double selectAmount(Principal principal);
 
     @TrackExecutionTime
-    @Query("SELECT SUM(ee.amount) FROM ExpenseEntity ee where ee.category = ?1 and ee.user = ?2")
+    @Query("SELECT SUM(ee.amount) FROM ExpenseEntity ee where ee.category = ?1 and ee.userId = ?2")
     double selectAmount(Principal principal, CategoryEntity categoryEntity);
 
 }

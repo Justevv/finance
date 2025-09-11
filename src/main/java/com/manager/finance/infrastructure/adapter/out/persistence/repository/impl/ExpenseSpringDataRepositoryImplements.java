@@ -29,13 +29,13 @@ public class ExpenseSpringDataRepositoryImplements implements ExpenseRepository 
 
 
     @Override
-    public List<ExpenseModel> findByUser(UserEntity userEntity) {
-        return expenseSpringDataRepository.findByUser(userEntity).stream().map(mapper::toModel).toList();
+    public List<ExpenseModel> findByUser(UUID userId) {
+        return expenseSpringDataRepository.findByUserId(userId).stream().map(mapper::toModel).toList();
     }
 
     @Override
-    public ExpenseModel getByIdAndUser(UUID id, UserEntity userEntity) {
-        Optional<ExpenseEntity> byIdAndUser = expenseSpringDataRepository.findByIdAndUser(id, userEntity);
+    public ExpenseModel getByIdAndUser(UUID id, UUID userId) {
+        Optional<ExpenseEntity> byIdAndUser = expenseSpringDataRepository.findByIdAndUserId(id, userId);
         if (byIdAndUser.isPresent()) {
             return byIdAndUser.map(mapper::toModel).get();
         } else {
@@ -44,13 +44,13 @@ public class ExpenseSpringDataRepositoryImplements implements ExpenseRepository 
     }
 
     @Override
-    public boolean existsByIdAndUser(UUID id, UserEntity userEntity) {
-        return expenseSpringDataRepository.existsByIdAndUser(id, userEntity);
+    public boolean existsByIdAndUser(UUID id, UUID userId) {
+        return expenseSpringDataRepository.existsByIdAndUserId(id, userId);
     }
 
     @Override
-    public List<ExpenseModel> findByUser(UserEntity userEntity, Pageable pageable) {
-        return expenseSpringDataRepository.findByUser(userEntity, pageable).stream().map(mapper::toModel).toList();
+    public List<ExpenseModel> findByUser(UUID userId, Pageable pageable) {
+        return expenseSpringDataRepository.findByUserId(userId, pageable).stream().map(mapper::toModel).toList();
     }
 
     @Override

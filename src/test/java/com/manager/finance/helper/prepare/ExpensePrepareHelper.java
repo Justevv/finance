@@ -27,7 +27,7 @@ public class ExpensePrepareHelper {
         expenseEntity.setDate(LocalDateTime.now());
         expenseEntity.setDescription("expenseDescription");
         expenseEntity.setAmount(BigDecimal.valueOf(700));
-        expenseEntity.setUser(userPrepareHelper.createUser());
+        expenseEntity.setUserId(userPrepareHelper.createUser().getId());
         return expenseEntity;
     }
 

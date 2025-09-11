@@ -7,9 +7,9 @@ import com.manager.finance.helper.prepare.ExpensePrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.ExpenseEntity;
 import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.ExpenseSpringDataRepository;
+import com.manager.user.domain.service.SecurityUserService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
-import com.manager.user.domain.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -57,14 +58,14 @@ class ExpenseModelTest {
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         Mockito.when(securityUserService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
         expenseEntity = expensePrepareHelper.createExpense();
-        Mockito.when(expenseRepository.findByIdAndUser(eq(expenseEntity.getId()), Mockito.any(UserEntity.class))).thenReturn(Optional.of(expenseEntity));
+        Mockito.when(expenseRepository.findByIdAndUserId(eq(expenseEntity.getId()), any(UUID.class))).thenReturn(Optional.of(expenseEntity));
     }
 
     @Test
     @WithMockUser
     @SneakyThrows
     void getExpenses() {
-        Mockito.when(expenseRepository.findByUser(userEntity)).thenReturn((List.of(expenseEntity)));
+        Mockito.when(expenseRepository.findByUserId(userEntity.getId())).thenReturn((List.of(expenseEntity)));
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/expense")
                 )
                 .andExpect(status().is(200))
@@ -80,7 +81,7 @@ class ExpenseModelTest {
     @WithMockUser
     @SneakyThrows
     void getExpensesPage() {
-        Mockito.when(expenseRepository.findByUser(eq(userEntity), any(PageRequest.class))).thenReturn((List.of(expenseEntity)));
+        Mockito.when(expenseRepository.findByUserId(eq(userEntity.getId()), any(PageRequest.class))).thenReturn((List.of(expenseEntity)));
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/expense/page/0")
                         .param("countPerPage", "10")
                 )
@@ -97,7 +98,7 @@ class ExpenseModelTest {
     @WithMockUser
     @SneakyThrows
     void getExpense() {
-        Mockito.when(expenseRepository.findByIdAndUser(eq(expenseEntity.getId()), eq(userEntity))).thenReturn(Optional.ofNullable(expenseEntity));
+        Mockito.when(expenseRepository.findByIdAndUserId(eq(expenseEntity.getId()), eq(userEntity.getId()))).thenReturn(Optional.ofNullable(expenseEntity));
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/expense/{id}", expenseEntity.getId())
                         .param("startWith", "0")
                         .param("count", "10")
@@ -112,7 +113,7 @@ class ExpenseModelTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockCustomUser
     @SneakyThrows
     void putExpense() {
         Mockito.when(expenseRepository.save(Mockito.any(ExpenseEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -155,7 +156,7 @@ class ExpenseModelTest {
     @WithMockUser
     @SneakyThrows
     void deleteExpense() {
-        Mockito.when(expenseRepository.existsByIdAndUser(expenseEntity.getId(), userEntity)).thenReturn(true);
+        Mockito.when(expenseRepository.existsByIdAndUserId(expenseEntity.getId(), userEntity.getId())).thenReturn(true);
         mockMvc.perform(MockMvcRequestBuilders.delete("/v1/expense/{id}", expenseEntity.getId()))
                 .andExpect(status().is(200));
     }
