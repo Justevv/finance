@@ -15,7 +15,6 @@ import com.manager.user.helper.UserHelper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,6 @@ public class ExpenseService implements ExpenseUseCase {
     private final ExpenseRepository expenseRepository;
     private final CategoryService categoryService;
     private final PlaceService placeService;
-    private final ModelMapper mapper;
     private final UserHelper userHelper;
     private final ExpenseCache expenseCache;
     private CrudLogConstants crudLogConstants;

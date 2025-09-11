@@ -10,7 +10,7 @@ import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestRespo
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.infrastructure.adapter.in.rest.mapper.DtoMapper;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.helper.UserHelper;
+import com.manager.user.infrastructure.adapter.out.persistence.mapper.UserPrincipalMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class CategoryController {
     private final CategoryUseCase categoryUseCase;
     private final DtoMapper<CategoryRequestDTO, CategoryResponseDTO, CategoryModel> dtoMapper;
     private final ErrorHelper errorHelper;
-    private final UserHelper userHelper;
+    private final UserPrincipalMapper principalMapper;
 
     @GetMapping
     @TrackExecutionTime
@@ -52,7 +52,7 @@ public class CategoryController {
     @GetMapping("/page/{page}")
     @TrackExecutionTime
     public ResponseEntity<RestResponse<List<CategoryResponseDTO>>> getCategoryPage(Principal principal, @PathVariable("page") int page,
-                                                     @RequestParam(defaultValue = "200") int countPerPage) {
+                                                                                   @RequestParam(defaultValue = "200") int countPerPage) {
         List<CategoryResponseDTO> categoryResponseDTOS = categoryUseCase.getPage(page, countPerPage).stream().map(dtoMapper::toResponseDto).toList();
         RestResponse<List<CategoryResponseDTO>> e = new RestResponse<>(null, categoryResponseDTOS);
         return new ResponseEntity<>(e, HttpStatus.OK);
@@ -86,7 +86,7 @@ public class CategoryController {
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
             status = HttpStatus.OK;
-            categoryResponseDTO = dtoMapper.toResponseDto(categoryUseCase.create(userHelper.toModel(principal), dtoMapper.toModel(categoryDTO)));
+            categoryResponseDTO = dtoMapper.toResponseDto(categoryUseCase.create(principalMapper.toModel(principal), dtoMapper.toModel(categoryDTO)));
         } else {
             status = HttpStatus.BAD_REQUEST;
             restError = new RestError(null, responseEntity);

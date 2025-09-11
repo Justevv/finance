@@ -183,15 +183,6 @@ public class UserHelper {
     }
 
     @TrackExecutionTime
-    public UserModel toModel(Principal principal) {
-        var userEntity = getUser(principal);
-        return UserModel.builder()
-                .id(userEntity.getId())
-                .username(userEntity.getUsername())
-                .build();
-    }
-
-    @TrackExecutionTime
     public UserEntity toEntity(UserModel userModel) {
         log.debug("input userModel is {}", userModel);
         return UserEntity.builder()
