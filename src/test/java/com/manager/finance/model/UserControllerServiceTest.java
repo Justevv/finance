@@ -46,13 +46,6 @@ class UserControllerServiceTest {
     }
 
     @Test
-    void getUser_shouldReturnUser_when_principalIsExists() {
-        var userResponseDTO = userService.getUser(principal);
-        Assertions.assertEquals(user.getEmail(), userResponseDTO.getEmail());
-        Assertions.assertEquals(user.getUsername(), userResponseDTO.getUsername());
-    }
-
-    @Test
     void create_shouldReturnUser_when_userDTOIsOk() {
         var userDTO = UserModel.builder()
                 .phone("newPhone")

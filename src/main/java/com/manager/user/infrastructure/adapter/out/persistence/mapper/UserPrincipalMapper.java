@@ -40,6 +40,6 @@ public class UserPrincipalMapper {
             }
         }
 
-        throw new RuntimeException("principal");
+        return null;
     }
 }

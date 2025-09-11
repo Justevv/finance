@@ -62,16 +62,16 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockCustomUser
     @SneakyThrows
     void getUser_shouldReturnUserAndOk_when_userIsExists() {
         Mockito.when(userRepository.findAll()).thenReturn((List.of(userEntity)));
         System.out.println(userRepository.findAll());
         mockMvc.perform(MockMvcRequestBuilders.get(USER_HIMSELF_API))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.username").value(userEntity.getUsername()))
-                .andExpect(jsonPath("$.email").value(userEntity.getEmail()))
-                .andExpect(jsonPath("$.phone").value(userEntity.getPhone()));
+                .andExpect(jsonPath("$.payload.username").value(userEntity.getUsername()))
+                .andExpect(jsonPath("$.payload.email").value(userEntity.getEmail()))
+                .andExpect(jsonPath("$.payload.phone").value(userEntity.getPhone()));
     }
 
     @Test
@@ -108,15 +108,15 @@ class UserControllerTest {
 
 
     @Test
-    @WithMockUser(authorities = {"user:read"})
+    @WithMockCustomUser
     @SneakyThrows
     void getUsers_shouldReturnUsersAndOk_when_userHasAuthorities() {
         Mockito.when(userRepository.findAll()).thenReturn((List.of(userEntity)));
         mockMvc.perform(MockMvcRequestBuilders.get(USER_API))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.username").value(userEntity.getUsername()))
-                .andExpect(jsonPath("$.email").value(userEntity.getEmail()))
-                .andExpect(jsonPath("$.phone").value(userEntity.getPhone()));
+                .andExpect(jsonPath("$.payload.username").value(userEntity.getUsername()))
+                .andExpect(jsonPath("$.payload.email").value(userEntity.getEmail()))
+                .andExpect(jsonPath("$.payload.phone").value(userEntity.getPhone()));
     }
 
     @Test

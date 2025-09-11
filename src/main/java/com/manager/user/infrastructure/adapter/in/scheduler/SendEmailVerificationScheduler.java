@@ -20,9 +20,9 @@ public class SendEmailVerificationScheduler {
     @TrackExecutionTime
     public void sendConfirmEmail() {
         boolean hasRecords = true;
-        while (hasRecords){
-           hasRecords = emailVerificationKafkaService.sendConfirmEmail();
-        };
+        while (hasRecords) {
+            hasRecords = emailVerificationKafkaService.sendConfirmEmail();
+        }
     }
 
 }
