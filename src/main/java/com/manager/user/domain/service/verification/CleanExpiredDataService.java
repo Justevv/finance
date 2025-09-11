@@ -1,8 +1,9 @@
 package com.manager.user.domain.service.verification;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
+import com.manager.user.application.port.in.ExpiredDataUseCase;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.PasswordResetTokenRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,13 +16,14 @@ import java.time.LocalDateTime;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CleanExpiredDataService {
+public class CleanExpiredDataService implements ExpiredDataUseCase {
     private final EmailVerificationSpringDataRepository emailVerificationRepository;
     private final PhoneVerificationSpringDataRepository phoneVerificationRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Transactional
     @TrackExecutionTime
+    @Override
     public void cleanExpiredEmailVerification() {
         log.debug("Try to clean expired email verify");
         emailVerificationRepository.deleteByExpireTimeBefore(LocalDateTime.now());
@@ -30,6 +32,7 @@ public class CleanExpiredDataService {
 
     @Transactional
     @TrackExecutionTime
+    @Override
     public void cleanExpiredPhoneVerification() {
         log.debug("Try to clean expired phone verify");
         phoneVerificationRepository.deleteByExpireTimeBefore(LocalDateTime.now());
@@ -38,6 +41,7 @@ public class CleanExpiredDataService {
 
     @Transactional
     @TrackExecutionTime
+    @Override
     public void cleanExpiredPasswordResetToken() {
         log.debug("Try to clean expired password reset token");
         passwordResetTokenRepository.deleteByExpireTimeBefore(LocalDateTime.now());
