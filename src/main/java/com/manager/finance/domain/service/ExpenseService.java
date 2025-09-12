@@ -44,15 +44,14 @@ public class ExpenseService implements ExpenseUseCase {
 
     @TrackExecutionTime
     @Override
-    public ExpenseModel get(UUID id, Principal principal) {
-        var user = userHelper.getUser(principal);
-        var expense = expenseCache.findByIdAndUserId(id, user.getId());
+    public ExpenseModel get(UUID id, UUID userId) {
+        var expense = expenseCache.findByIdAndUserId(id, userId);
         ExpenseModel expenseModel = null;
         if (expense.isPresent()) {
             expenseModel = expense.get();
             log.debug(crudLogConstants.getGetDTOFromCache(), expenseModel);
         } else {
-            expenseModel = expenseRepository.getByIdAndUser(id, user.getId());
+            expenseModel = expenseRepository.getByIdAndUser(id, userId);
             expenseCache.save(expenseModel);
             log.debug(crudLogConstants.getLoadEntityFromDatabase(), expenseModel);
             log.debug(crudLogConstants.getSaveDTOToCache(), expenseModel);
@@ -62,11 +61,11 @@ public class ExpenseService implements ExpenseUseCase {
     }
 
     @TrackExecutionTime
-    public List<ExpenseModel> getAll(int page, int countPerPage, Principal principal) {
-        var user = userHelper.getUser(principal);
+    @Override
+    public List<ExpenseModel> getAll(int page, int countPerPage, UUID userId) {
         log.debug("Input start page is {}, count on page is {}", page, countPerPage);
         Pageable pageable = PageRequest.of(page, countPerPage);
-        var expenseEntities = expenseRepository.findByUser(user.getId(), pageable);
+        var expenseEntities = expenseRepository.findByUser(userId, pageable);
         log.debug(crudLogConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }
@@ -83,9 +82,9 @@ public class ExpenseService implements ExpenseUseCase {
     @TrackExecutionTime
     @Transactional
     @Override
-    public ExpenseModel create(UserModel userModel, ExpenseModel expenseModel) {
+    public ExpenseModel create(UUID userId, ExpenseModel expenseModel) {
         log.debug(crudLogConstants.getInputNewDTO(), expenseModel);
-        var categoryModel = categoryService.getOrCreate(userModel, expenseModel.category());
+        var categoryModel = categoryService.getOrCreate(userId, expenseModel.category());
         var placeModel = placeService.getOrCreate(expenseModel.place());
         var save = ExpenseModel.builder()
                 .id(UUID.randomUUID())
@@ -97,7 +96,7 @@ public class ExpenseService implements ExpenseUseCase {
                 .amount(expenseModel.amount())
                 .account(expenseModel.account())
                 .transactionType(expenseModel.transactionType())
-                .userId(userModel.id())
+                .userId(userId)
                 .build();
         var saved = expenseRepository.save(save);
         if (saved == null) {
@@ -111,15 +110,15 @@ public class ExpenseService implements ExpenseUseCase {
     @TrackExecutionTime
     @Transactional
     @Override
-    public ExpenseModel update(UUID id, UserModel principal, ExpenseModel input) {
+    public ExpenseModel update(UUID id, UUID userId, ExpenseModel input) {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), input, null);
-        var current = expenseRepository.getByIdAndUser(id, principal.id());
+        var current = expenseRepository.getByIdAndUser(id, userId);
 
         var save = ExpenseModel.builder()
                 .id(current.id())
                 .description(input.description())
                 .date(current.date())
-                .category(categoryService.getOrCreate(principal, input.category()))
+                .category(categoryService.getOrCreate(userId, input.category()))
                 .place(placeService.getOrCreate(input.place()))
                 .paymentType(input.paymentType())
                 .amount(input.amount())
@@ -138,15 +137,15 @@ public class ExpenseService implements ExpenseUseCase {
     @TrackExecutionTime
     @Transactional
     @Override
-    public ExpenseModel patch(UUID id, UserModel userModel, ExpenseModel input) {
+    public ExpenseModel patch(UUID id, UUID userId, ExpenseModel input) {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), input, null);
-        var current = expenseRepository.getByIdAndUser(id, userModel.id());
+        var current = expenseRepository.getByIdAndUser(id, userId);
 
         var save = ExpenseModel.builder()
                 .id(current.id())
                 .description(input.description() != null ? input.description() : current.description())
                 .date(current.date())
-                .category(categoryService.getOrCreate(userModel, input.category()))
+                .category(categoryService.getOrCreate(userId, input.category()))
                 .place(placeService.getOrCreate(input.place()))
                 .paymentType(input.paymentType() != null ? input.paymentType() : current.paymentType())
                 .amount(input.amount() != null ? input.amount() : current.amount())

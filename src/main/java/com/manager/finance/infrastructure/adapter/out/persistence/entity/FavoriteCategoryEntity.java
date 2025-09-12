@@ -1,6 +1,5 @@
 package com.manager.finance.infrastructure.adapter.out.persistence.entity;
 
-import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -26,7 +25,6 @@ public class FavoriteCategoryEntity implements Serializable {
     private UUID id;
     @ManyToOne
     private CategoryEntity category;
-    @ManyToOne
-    private UserEntity user;
+    private UUID userId;
 
 }

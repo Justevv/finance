@@ -49,7 +49,7 @@ public class Expense {
     public ResponseEntity<RestResponse<List<ExpenseResponseDTO>>> getExpensesPage(Principal principal, @PathVariable("page") int page,
                                                                                   @RequestParam(defaultValue = "100") int countPerPage) {
         log.debug("Input filter {}, search {}", page, countPerPage);
-        var s = expenseUseCase.getAll(page, countPerPage, principal).stream().map(expenseMapper::toResponseDto).toList();
+        var s = expenseUseCase.getAll(page, countPerPage, principalMapper.toModel(principal).id()).stream().map(expenseMapper::toResponseDto).toList();
         RestResponse<List<ExpenseResponseDTO>> e = new RestResponse<>(null, s);
         return new ResponseEntity<>(e, HttpStatus.OK);
     }
@@ -70,7 +70,7 @@ public class Expense {
         ExpenseResponseDTO expenseResponseDTO = null;
         try {
             UUID uuid = UUID.fromString(id);
-            var model = expenseUseCase.get(uuid, principal);
+            var model = expenseUseCase.get(uuid, principalMapper.toModel(principal).id());
             if (model != null) {
                 expenseResponseDTO = expenseMapper.toResponseDto(model);
                 status = HttpStatus.OK;
@@ -95,7 +95,7 @@ public class Expense {
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
             status = HttpStatus.OK;
-            expenseResponseDTO = expenseMapper.toResponseDto(expenseUseCase.create(principalMapper.toModel(principal), expenseMapper.toModel(expenseRequestDTO)));
+            expenseResponseDTO = expenseMapper.toResponseDto(expenseUseCase.create(principalMapper.toModel(principal).id(), expenseMapper.toModel(expenseRequestDTO)));
         } else {
             status = HttpStatus.BAD_REQUEST;
             restError = new RestError(null, responseEntity);
@@ -116,7 +116,7 @@ public class Expense {
         if (responseEntity == null) {
             try {
                 UUID uuid = UUID.fromString(id);
-                var model = expenseUseCase.patch(uuid, principalMapper.toModel(principal), expenseMapper.toModel(expenseRequestDTO));
+                var model = expenseUseCase.patch(uuid, principalMapper.toModel(principal).id(), expenseMapper.toModel(expenseRequestDTO));
                 if (model != null) {
                     expenseResponseDTO = expenseMapper.toResponseDto(model);
                     status = HttpStatus.OK;
@@ -148,7 +148,7 @@ public class Expense {
         if (responseEntity == null) {
             try {
                 UUID uuid = UUID.fromString(id);
-                var model = expenseUseCase.update(uuid, principalMapper.toModel(principal), expenseMapper.toModel(expenseRequestDTO));
+                var model = expenseUseCase.update(uuid, principalMapper.toModel(principal).id(), expenseMapper.toModel(expenseRequestDTO));
                 if (model != null) {
                     expenseResponseDTO = expenseMapper.toResponseDto(model);
                     status = HttpStatus.OK;

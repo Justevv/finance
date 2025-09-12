@@ -2,13 +2,12 @@ package com.manager.finance.domain.service;
 
 import com.manager.finance.application.port.in.CategoryUseCase;
 import com.manager.finance.application.port.out.repository.CategoryRepository;
+import com.manager.finance.domain.exception.EntityNotFoundException;
 import com.manager.finance.domain.exception.SaveProcessException;
 import com.manager.finance.domain.model.CategoryModel;
-import com.manager.finance.domain.exception.EntityNotFoundException;
-import com.manager.user.domain.model.UserModel;
-import com.manager.user.helper.UserHelper;
 import com.manager.finance.log.LogConstants;
 import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.user.helper.UserHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +32,7 @@ public class CategoryService implements CategoryUseCase {
 
     @TrackExecutionTime
     @Override
-    public CategoryModel get(UUID id, Principal principal) {
+    public CategoryModel get(UUID id, UUID userId) {
         var category = categoryRepository.findById(id);
         if (category.isPresent()) {
             return category.get();
@@ -45,7 +43,7 @@ public class CategoryService implements CategoryUseCase {
 
     @TrackExecutionTime
     @Override
-    public List<CategoryModel> getAll(Principal principal) {
+    public List<CategoryModel> getAll(UUID userId) {
         var categories = categoryRepository.findAll();
         log.debug(LogConstants.LIST_FILTERED_RESPONSE_DTO, categories);
         return categories;
@@ -62,15 +60,15 @@ public class CategoryService implements CategoryUseCase {
     @TrackExecutionTime
     @Override
     @Transactional
-    public CategoryModel create(UserModel principal, CategoryModel categoryModel) {
+    public CategoryModel create(UUID userId, CategoryModel categoryModel) {
         var existedCategory = categoryRepository.findByName(categoryModel.name());
-        var category = existedCategory.orElseGet(() -> saveAndGet(principal, categoryModel));
+        var category = existedCategory.orElseGet(() -> saveAndGet(userId, categoryModel));
         log.debug("Category {}", category);
         return category;
     }
 
     @TrackExecutionTime
-    public CategoryModel getOrCreate(UserModel principal, CategoryModel categoryModel) {
+    public CategoryModel getOrCreate(UUID userId, CategoryModel categoryModel) {
         if (categoryModel == null) {
             return null;
         } else if (categoryModel.id() != null) {
@@ -80,12 +78,12 @@ public class CategoryService implements CategoryUseCase {
             }
         } else if (categoryModel.name() != null) {
             var category = categoryRepository.findByName(categoryModel.name());
-            return category.orElseGet(() -> saveAndGet(principal, categoryModel));
+            return category.orElseGet(() -> saveAndGet(userId, categoryModel));
         }
         return null;
     }
 
-    private CategoryModel saveAndGet(UserModel user, CategoryModel input) {
+    private CategoryModel saveAndGet(UUID userId, CategoryModel input) {
         log.debug(LogConstants.INPUT_NEW_DTO, input);
         var save = CategoryModel.builder()
                 .id(UUID.randomUUID())
@@ -96,7 +94,7 @@ public class CategoryService implements CategoryUseCase {
         if (saved == null) {
             throw new SaveProcessException(save);
         }
-        favoriteCategoryService.save(saved, user);
+        favoriteCategoryService.save(saved, userId);
         log.info(LogConstants.SAVE_ENTITY_TO_DATABASE, saved);
         return saved;
     }

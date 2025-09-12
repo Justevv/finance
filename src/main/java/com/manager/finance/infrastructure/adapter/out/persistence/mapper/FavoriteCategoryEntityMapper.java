@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FavoriteCategoryEntityMapper implements EntityMapper<FavoriteCategoryEntity, FavoriteCategoryModel> {
     private final EntityMapper<CategoryEntity, CategoryModel> categoryMapper;
-    private final UserHelper userHelper;
 
     @Override
     public FavoriteCategoryModel toModel(FavoriteCategoryEntity dto) {
@@ -22,7 +21,7 @@ public class FavoriteCategoryEntityMapper implements EntityMapper<FavoriteCatego
         return FavoriteCategoryModel.builder()
                 .id(dto.getId())
                 .category(categoryMapper.toModel(dto.getCategory()))
-                .user(userHelper.toModel(dto.getUser()))
+                .userId(dto.getUserId())
                 .build();
     }
 
@@ -34,7 +33,7 @@ public class FavoriteCategoryEntityMapper implements EntityMapper<FavoriteCatego
         return FavoriteCategoryEntity.builder()
                 .id(dto.id())
                 .category(categoryMapper.toEntity(dto.category()))
-                .user(userHelper.toEntity(dto.user()))
+                .userId(dto.userId())
                 .build();
     }
 }

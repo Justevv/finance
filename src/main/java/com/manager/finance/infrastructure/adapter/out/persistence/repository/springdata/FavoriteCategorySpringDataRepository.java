@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FavoriteCategorySpringDataRepository extends JpaRepository<FavoriteCategoryEntity, UUID> {
-    List<FavoriteCategoryEntity> findByUser(UserEntity userEntity);
+    List<FavoriteCategoryEntity> findByUserId(UUID userId);
 
     @Modifying
     @Query("DELETE FROM FavoriteCategoryEntity fce WHERE fce.id = ?1")

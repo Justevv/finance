@@ -18,11 +18,11 @@ public class FavoriteCategoryService {
 
     private final FavoriteCategoryRepository repository;
 
-    public void save(CategoryModel category, UserModel user) {
+    public void save(CategoryModel category, UUID userId) {
         FavoriteCategoryModel categoryModel = FavoriteCategoryModel.builder()
                 .id(UUID.randomUUID())
                 .category(category)
-                .user(user)
+                .userId(userId)
                 .build();
         repository.save(categoryModel);
         log.info(LogConstants.SAVE_ENTITY_TO_DATABASE, categoryModel);

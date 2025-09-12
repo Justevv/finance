@@ -44,7 +44,7 @@ public class CategoryController {
     @GetMapping
     @TrackExecutionTime
     public ResponseEntity<RestResponse<List<CategoryResponseDTO>>> getCategories(Principal principal) {
-        List<CategoryResponseDTO> categoryResponseDTOS = categoryUseCase.getAll(principal).stream().map(dtoMapper::toResponseDto).toList();
+        List<CategoryResponseDTO> categoryResponseDTOS = categoryUseCase.getAll(principalMapper.toModel(principal).id()).stream().map(dtoMapper::toResponseDto).toList();
         RestResponse<List<CategoryResponseDTO>> e = new RestResponse<>(null, categoryResponseDTOS);
         return new ResponseEntity<>(e, HttpStatus.OK);
     }
@@ -66,7 +66,7 @@ public class CategoryController {
         CategoryResponseDTO categoryResponseDTO;
         try {
             UUID uuid = UUID.fromString(id);
-            var model = categoryUseCase.get(uuid, principal);
+            var model = categoryUseCase.get(uuid, principalMapper.toModel(principal).id());
             status = HttpStatus.OK;
             categoryResponseDTO = dtoMapper.toResponseDto(model);
         } catch (IllegalArgumentException e) {
@@ -86,7 +86,7 @@ public class CategoryController {
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
             status = HttpStatus.OK;
-            categoryResponseDTO = dtoMapper.toResponseDto(categoryUseCase.create(principalMapper.toModel(principal), dtoMapper.toModel(categoryDTO)));
+            categoryResponseDTO = dtoMapper.toResponseDto(categoryUseCase.create(principalMapper.toModel(principal).id(), dtoMapper.toModel(categoryDTO)));
         } else {
             status = HttpStatus.BAD_REQUEST;
             restError = new RestError(null, responseEntity);

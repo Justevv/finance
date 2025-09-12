@@ -62,7 +62,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockCustomUser
     @SneakyThrows
     void getCategories() {
         Mockito.when(categoryRepository.findAll()).thenReturn((List.of(categoryEntity)));
@@ -73,7 +73,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockCustomUser
     @SneakyThrows
     void getCategory() {
         Mockito.when(categoryRepository.findById(categoryEntity.getId())).thenReturn(Optional.of(categoryEntity));

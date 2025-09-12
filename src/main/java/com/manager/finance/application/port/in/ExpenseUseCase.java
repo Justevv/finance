@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ExpenseUseCase {
-    ExpenseModel get(UUID id, Principal principal);
+    ExpenseModel get(UUID id, UUID userId);
 
-    ExpenseModel create(UserModel principal, ExpenseModel expenseModel);
+    ExpenseModel create(UUID userId, ExpenseModel expenseModel);
 
-    ExpenseModel update(UUID id, UserModel principal, ExpenseModel expenseRequestDTO);
+    ExpenseModel update(UUID id, UUID userId, ExpenseModel expenseRequestDTO);
 
-    ExpenseModel patch(UUID id, UserModel userModel, ExpenseModel input);
+    ExpenseModel patch(UUID id, UUID userId, ExpenseModel input);
 
     void delete(UUID id, Principal principal);
 
-    List<ExpenseModel> getAll(int page, int countPerPage, Principal principal);
+    List<ExpenseModel> getAll(int page, int countPerPage, UUID userId);
 
     double getSum(Principal principal);
 
