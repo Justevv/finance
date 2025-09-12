@@ -7,7 +7,6 @@ import com.manager.finance.helper.prepare.ExpensePrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.ExpenseEntity;
 import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.ExpenseSpringDataRepository;
-import com.manager.user.domain.service.SecurityUserService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import lombok.SneakyThrows;
@@ -20,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -41,8 +39,6 @@ class ExpenseModelTest {
     private UserSpringDataRepository userRepository;
     @MockBean
     private ExpenseSpringDataRepository expenseRepository;
-    @MockBean
-    private SecurityUserService securityUserService;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -56,7 +52,6 @@ class ExpenseModelTest {
     void prepare() {
         userEntity = userPrepareHelper.createUser();
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
-        Mockito.when(securityUserService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
         expenseEntity = expensePrepareHelper.createExpense();
         Mockito.when(expenseRepository.findByIdAndUserId(eq(expenseEntity.getId()), any(UUID.class))).thenReturn(Optional.of(expenseEntity));
     }

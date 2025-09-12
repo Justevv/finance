@@ -11,7 +11,6 @@ import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.CategorySpringDataRepository;
 import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.FavoriteCategorySpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
-import com.manager.user.domain.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -42,8 +41,6 @@ class CategoryControllerTest {
     private CategorySpringDataRepository categoryRepository;
     @MockBean
     private FavoriteCategorySpringDataRepository favoriteCategorySpringDataRepository;
-    @MockBean
-    private SecurityUserService securityUserService;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -57,7 +54,6 @@ class CategoryControllerTest {
     void prepare() {
         userEntity = userPrepareHelper.createUser();
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
-        Mockito.when(securityUserService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
         categoryEntity = categoryPrepareHelper.createCategory();
     }
 

@@ -8,7 +8,6 @@ import com.manager.finance.helper.prepare.PlacePrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.finance.infrastructure.adapter.out.persistence.repository.springdata.PlaceSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
-import com.manager.user.domain.service.SecurityUserService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -37,8 +36,6 @@ class PlaceTest {
     private UserSpringDataRepository userRepository;
     @MockBean
     private PlaceSpringDataRepository placeRepository;
-    @MockBean
-    private SecurityUserService securityUserService;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -52,7 +49,6 @@ class PlaceTest {
     void prepare() {
         userEntity = userPrepareHelper.createUser();
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
-        Mockito.when(securityUserService.loadUserByUsername(userEntity.getUsername())).thenReturn(userEntity);
         placeEntity = placePrepareHelper.createPlace();
         Mockito.when(placeRepository.findById(placeEntity.getId())).thenReturn(Optional.of(placeEntity));
     }
