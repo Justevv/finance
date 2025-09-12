@@ -59,12 +59,12 @@ public class ExpenseSpringDataRepositoryImplements implements ExpenseRepository 
     }
 
     @Override
-    public double selectSum(Principal principal) {
+    public double selectSum(UUID userId) {
         return 0;
     }
 
     @Override
-    public double selectSum(Principal principal, CategoryEntity categoryEntity) {
+    public double selectSum(UUID userId, CategoryEntity categoryEntity) {
         return 0;
     }
 

@@ -2,9 +2,7 @@ package com.manager.finance.application.port.in;
 
 import com.manager.finance.domain.model.ExpenseModel;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.CategoryEntity;
-import com.manager.user.domain.model.UserModel;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,15 +15,15 @@ public interface ExpenseUseCase {
 
     ExpenseModel patch(UUID id, UUID userId, ExpenseModel input);
 
-    void delete(UUID id, Principal principal);
+    void delete(UUID id, UUID userId);
 
     List<ExpenseModel> getAll(int page, int countPerPage, UUID userId);
 
-    double getSum(Principal principal);
+    double getSum(UUID userId);
 
-    double getSum(Principal principal, CategoryEntity categoryEntity);
+    double getSum(UUID userId, CategoryEntity categoryEntity);
 
-    void checkExpense(UUID id, Principal principal);
+    void checkExpense(UUID id, UUID userId);
 
-    List<ExpenseModel> getAll(Principal principal);
+    List<ExpenseModel> getAll(UUID userId);
 }

@@ -72,9 +72,8 @@ public class ExpenseService implements ExpenseUseCase {
 
 
     @TrackExecutionTime
-    public List<ExpenseModel> getAll(Principal principal) {
-        var user = userHelper.getUser(principal);
-        var expenseEntities = expenseRepository.findByUser(user.getId());
+    public List<ExpenseModel> getAll(UUID userId) {
+        var expenseEntities = expenseRepository.findByUser(userId);
         log.debug(crudLogConstants.getListFiltered(), expenseEntities);
         return expenseEntities;
     }
@@ -164,36 +163,35 @@ public class ExpenseService implements ExpenseUseCase {
     @TrackExecutionTime
     @Transactional
     @Override
-    public void delete(UUID id, Principal principal) {
-        getOrThrow(id, principal);
+    public void delete(UUID id, UUID userId) {
+        getOrThrow(id, userId);
         log.debug(LogConstants.DELETE_ENTITY_FROM_DATABASE_BY_ID, ENTITY_TYPE_NAME, id);
         expenseRepository.deleteById(id);
     }
 
     @TrackExecutionTime
     @Override
-    public double getSum(Principal principal) {
-        return expenseRepository.selectSum(principal);
+    public double getSum(UUID userId) {
+        return expenseRepository.selectSum(userId);
     }
 
     @TrackExecutionTime
     @Override
-    public double getSum(Principal principal, CategoryEntity categoryEntity) {
-        return expenseRepository.selectSum(principal, categoryEntity);
+    public double getSum(UUID userId, CategoryEntity categoryEntity) {
+        return expenseRepository.selectSum(userId, categoryEntity);
     }
 
     @TrackExecutionTime
     @Override
-    public void checkExpense(UUID id, Principal principal) {
-        var exist = expenseRepository.existsByIdAndUser(id, userHelper.getUser(principal).getId());
+    public void checkExpense(UUID id, UUID userId) {
+        var exist = expenseRepository.existsByIdAndUser(id, userId);
         if (!exist) {
             throw new EntityNotFoundException(ENTITY_TYPE_NAME, id);
         }
     }
 
-    private void getOrThrow(UUID id, Principal principal) {
-        var user = userHelper.getUser(principal);
-        var exist = expenseRepository.existsByIdAndUser(id, user.getId());
+    private void getOrThrow(UUID id, UUID userId) {
+        var exist = expenseRepository.existsByIdAndUser(id, userId);
         if (!exist) {
             throw new EntityNotFoundException(ENTITY_TYPE_NAME, id);
         }

@@ -62,7 +62,7 @@ class ExpenseModelTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockCustomUser
     @SneakyThrows
     void getExpenses() {
         Mockito.when(expenseRepository.findByUserId(userEntity.getId())).thenReturn((List.of(expenseEntity)));
@@ -153,7 +153,7 @@ class ExpenseModelTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockCustomUser
     @SneakyThrows
     void deleteExpense() {
         Mockito.when(expenseRepository.existsByIdAndUserId(expenseEntity.getId(), userEntity.getId())).thenReturn(true);

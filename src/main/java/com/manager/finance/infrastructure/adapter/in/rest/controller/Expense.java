@@ -57,7 +57,7 @@ public class Expense {
     @GetMapping
     @TrackExecutionTime
     public ResponseEntity<RestResponse<List<ExpenseResponseDTO>>> getExpenses(Principal principal) {
-        var all = expenseUseCase.getAll(principal).stream().map(expenseMapper::toResponseDto).toList();
+        var all = expenseUseCase.getAll(principalMapper.toModel(principal).id()).stream().map(expenseMapper::toResponseDto).toList();
         RestResponse<List<ExpenseResponseDTO>> e = new RestResponse<>(null, all);
         return new ResponseEntity<>(e, HttpStatus.OK);
     }
@@ -175,7 +175,7 @@ public class Expense {
         ResponseEntity<Object> responseEntity;
         try {
             UUID uuid = UUID.fromString(id);
-            expenseUseCase.delete(uuid, principal);
+            expenseUseCase.delete(uuid, principalMapper.toModel(principal).id());
             responseEntity = ResponseEntity.ok(null);
         } catch (IllegalArgumentException e) {
             responseEntity = new ResponseEntity<>("Invalid UUID", HttpStatus.BAD_REQUEST);
@@ -186,33 +186,16 @@ public class Expense {
         }
         return responseEntity;
     }
-
-    private ResponseEntity<Object> check(String id, Principal principal) {
-        ResponseEntity<Object> responseEntity;
-        try {
-            UUID uuid = UUID.fromString(id);
-            expenseUseCase.delete(uuid, principal);
-            responseEntity = ResponseEntity.ok(null);
-        } catch (IllegalArgumentException e) {
-            responseEntity = new ResponseEntity<>("Invalid UUID", HttpStatus.BAD_REQUEST);
-        } catch (EntityNotFoundException e) {
-            responseEntity = new ResponseEntity<>("Entity not found", HttpStatus.NOT_FOUND);
-        } catch (UsernameNotFoundException e) {
-            responseEntity = new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-        return responseEntity;
-    }
-
     @GetMapping("sum")
     @TrackExecutionTime
     public double getCategoryRepo(Principal principal) {
-        return expenseUseCase.getSum(principal);
+        return expenseUseCase.getSum(principalMapper.toModel(principal).id());
     }
 
     @GetMapping("sum/{groupId}")
     @TrackExecutionTime
     public double getCategoryRepo(Principal principal, @PathVariable("groupId") CategoryEntity categoryEntity) {
-        return expenseUseCase.getSum(principal, categoryEntity);
+        return expenseUseCase.getSum(principalMapper.toModel(principal).id(), categoryEntity);
     }
 }
 

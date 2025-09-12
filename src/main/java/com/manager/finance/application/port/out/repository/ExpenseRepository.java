@@ -20,9 +20,9 @@ public interface ExpenseRepository {
 
     void deleteById(UUID id);
 
-    double selectSum(Principal principal);
+    double selectSum(UUID userId);
 
-    double selectSum(Principal principal, CategoryEntity categoryEntity);
+    double selectSum(UUID userId, CategoryEntity categoryEntity);
 
     ExpenseModel save(ExpenseModel expense);
 }
