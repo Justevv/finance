@@ -42,16 +42,10 @@ public class PasswordController {
         String response = null;
         var errors = errorHelper.checkErrors2(bindingResult);
         if (errors == null) {
-            try {
-                passwordUseCase.createPasswordResetToken(mapper.toModel(userDTO));
-                status = HttpStatus.OK;
-                response = "Token created";
-            } catch (UsernameNotFoundException e) {
-                restError = RestError.builder()
-                        .text("User not found")
-                        .build();
-                status = HttpStatus.NOT_FOUND;
-            }
+            passwordUseCase.createPasswordResetToken(mapper.toModel(userDTO));
+            status = HttpStatus.OK;
+            response = "Token created";
+
         } else {
             status = HttpStatus.BAD_REQUEST;
             restError = new RestError(null, errors);
