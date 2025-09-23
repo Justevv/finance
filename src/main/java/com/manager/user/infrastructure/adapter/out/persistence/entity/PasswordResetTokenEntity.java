@@ -5,6 +5,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Table(name = "password_reset_token")
 @Getter
 @Setter
+@Builder
 public class PasswordResetTokenEntity {
 
     @Id
