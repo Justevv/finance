@@ -1,7 +1,7 @@
 package com.manager.user.security;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
+import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.UserService;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -38,10 +38,10 @@ public class JwtProvider {
     }
 
     @TrackExecutionTime
-    public String createToken(String username, UserEntity user) {
+    public String createToken(String username, UserModel user) {
         var claims = Jwts.claims().setSubject(username);
-        claims.setId(user.getId().toString());
-        claims.put("roles", user.getRoles());
+        claims.setId(user.id().toString());
+        claims.put("roles", user.roles());
         var currentTime = LocalDateTime.now();
         var validity = currentTime.plusSeconds(validityInSeconds);
 

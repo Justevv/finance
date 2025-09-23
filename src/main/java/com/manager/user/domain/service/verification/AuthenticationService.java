@@ -1,5 +1,6 @@
 package com.manager.user.domain.service.verification;
 
+import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.event.AuthenticationEvent;
 import com.manager.user.domain.exception.UserIpAddressWasBlockedException;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.AuthenticationLogRepository;
@@ -30,7 +31,7 @@ public class AuthenticationService {
     @Value("${authentication.blockPeriod}")
     private int blockPeriod;
     private final AuthenticationManager authenticationManager;
-    private final UserSpringDataRepository userRepository;
+    private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final ApplicationEventPublisher eventPublisher;
     private final AuthenticationLogRepository authenticationLogRepository;
