@@ -4,7 +4,7 @@ import com.manager.Manager;
 import com.manager.finance.helper.WithMockCustomUser;
 import com.manager.finance.helper.prepare.PasswordResetTokenPrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.PasswordResetTokenRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PasswordResetTokenSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ class PasswordControllerTest {
     @MockBean
     private UserSpringDataRepository userRepository;
     @MockBean
-    private PasswordResetTokenRepository passwordResetTokenRepository;
+    private PasswordResetTokenSpringDataRepository passwordResetTokenRepository;
     @Autowired
     private MockMvc mockMvc;
     @Autowired

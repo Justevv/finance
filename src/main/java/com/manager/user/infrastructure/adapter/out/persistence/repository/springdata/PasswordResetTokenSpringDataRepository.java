@@ -1,4 +1,4 @@
-package com.manager.user.infrastructure.adapter.out.persistence.repository;
+package com.manager.user.infrastructure.adapter.out.persistence.repository.springdata;
 
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PasswordResetTokenEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetTokenEntity, UUID> {
+public interface PasswordResetTokenSpringDataRepository extends JpaRepository<PasswordResetTokenEntity, UUID> {
 
     Optional<PasswordResetTokenEntity> findByToken(String token);
 

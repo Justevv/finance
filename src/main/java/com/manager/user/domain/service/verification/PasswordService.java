@@ -1,14 +1,13 @@
 package com.manager.user.domain.service.verification;
 
 import com.manager.user.application.port.in.PasswordUseCase;
+import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.domain.exception.PasswordResetTokenNotFoundException;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.event.ResetPasswordEvent;
 import com.manager.user.infrastructure.adapter.in.rest.dto.PasswordUpdateDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PasswordResetTokenEntity;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.PasswordResetTokenRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PasswordResetTokenSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +26,8 @@ import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 @RequiredArgsConstructor
 public class PasswordService implements PasswordUseCase {
     private static final String PASSWORD_RESET_TOKEN_DOES_NOT_EXISTS_ERROR_MESSAGE = "Password reset token doesn't exists";
-    private final UserSpringDataRepository userRepository;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final UserRepository userRepository;
+    private final PasswordResetTokenSpringDataRepository passwordResetTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
     @Value("${resetPasswordTokenExpiredTime}")

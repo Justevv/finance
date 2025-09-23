@@ -1,0 +1,17 @@
+package com.manager.user.application.port.out.repository;
+
+import com.manager.user.domain.model.PasswordResetTokenModel;
+import com.manager.user.domain.model.UserModel;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+public interface PasswordResetTokenRepository {
+
+    Optional<PasswordResetTokenModel> findByToken(String token);
+
+    List<PasswordResetTokenModel> findByUser(UserModel user);
+
+    void deleteByExpireTimeBefore(LocalDateTime dateTime);
+}

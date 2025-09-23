@@ -2,7 +2,7 @@ package com.manager.user.domain.service.verification;
 
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.application.port.in.ExpiredDataUseCase;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.PasswordResetTokenRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PasswordResetTokenSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class CleanExpiredDataService implements ExpiredDataUseCase {
     private final EmailVerificationSpringDataRepository emailVerificationRepository;
     private final PhoneVerificationSpringDataRepository phoneVerificationRepository;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final PasswordResetTokenSpringDataRepository passwordResetTokenRepository;
 
     @Transactional
     @TrackExecutionTime
