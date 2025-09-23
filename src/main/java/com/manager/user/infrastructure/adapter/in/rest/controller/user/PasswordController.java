@@ -37,15 +37,15 @@ public class PasswordController {
     @PostMapping("/forget")
     @TrackExecutionTime
     public ResponseEntity<RestResponse<String>> forgetPassword(@RequestBody @Valid UserUpdateRequestDto userDTO, BindingResult bindingResult) {
-        HttpStatus status = null;
+        HttpStatus status;
         RestError restError = null;
-        String expenseResponseDTO = null;
-        var responseEntity = errorHelper.checkErrors2(bindingResult);
-        if (responseEntity == null) {
+        String response = null;
+        var errors = errorHelper.checkErrors2(bindingResult);
+        if (errors == null) {
             try {
                 passwordUseCase.createPasswordResetToken(mapper.toModel(userDTO));
                 status = HttpStatus.OK;
-                expenseResponseDTO = "Token created";
+                response = "Token created";
             } catch (UsernameNotFoundException e) {
                 restError = RestError.builder()
                         .text("User not found")
@@ -54,11 +54,11 @@ public class PasswordController {
             }
         } else {
             status = HttpStatus.BAD_REQUEST;
-            restError = new RestError(null, responseEntity);
+            restError = new RestError(null, errors);
         }
 
-        RestResponse<String> e = new RestResponse<>(restError, expenseResponseDTO);
-        return new ResponseEntity<>(e, status);
+        RestResponse<String> restResponse = new RestResponse<>(restError, response);
+        return new ResponseEntity<>(restResponse, status);
     }
 
     @PostMapping("/reset")
