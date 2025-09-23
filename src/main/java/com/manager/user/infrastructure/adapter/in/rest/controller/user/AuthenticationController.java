@@ -1,7 +1,7 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.user;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.domain.service.verification.AuthenticationService;
+import com.manager.user.application.port.in.AuthenticationUseCase;
 import com.manager.user.security.AuthenticationRequestDTO;
 import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private static final String INVALID_USERNAME_PASSWORD = "Invalid username/password";
-    private final AuthenticationService authenticationService;
+    private final AuthenticationUseCase authenticationUseCase;
 
     @PostMapping("/login")
     @TrackExecutionTime
@@ -33,7 +33,7 @@ public class AuthenticationController {
         log.debug("User {} tries to authenticate", authenticationDTO);
         var userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
         try {
-            var authentication = authenticationService.authenticate(userAgent, request.getRemoteAddr(), authenticationDTO);
+            var authentication = authenticationUseCase.authenticate(userAgent, request.getRemoteAddr(), authenticationDTO);
             log.info("User {} was successfully authenticated", authenticationDTO);
             return ResponseEntity.ok(authentication);
         } catch (AuthenticationException e) {

@@ -1,10 +1,10 @@
 package com.manager.user.domain.service.verification;
 
+import com.manager.user.application.port.in.AuthenticationUseCase;
 import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.event.AuthenticationEvent;
 import com.manager.user.domain.exception.UserIpAddressWasBlockedException;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.AuthenticationLogRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import com.manager.user.security.AuthenticationRequestDTO;
 import com.manager.user.security.JwtProvider;
 import com.manager.user.domain.service.LoginAttemptService;
@@ -27,7 +27,7 @@ import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationService implements AuthenticationUseCase {
     @Value("${authentication.blockPeriod}")
     private int blockPeriod;
     private final AuthenticationManager authenticationManager;
@@ -37,6 +37,7 @@ public class AuthenticationService {
     private final AuthenticationLogRepository authenticationLogRepository;
     private final LoginAttemptService loginAttemptService;
 
+    @Override
     public Map<String, String> authenticate(UserAgent userAgent, String remoteAddr, AuthenticationRequestDTO authentication) {
         publishAuthenticateEvent(userAgent, remoteAddr, authentication.getUsername());
         return authenticate(remoteAddr, authentication);
