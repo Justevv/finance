@@ -29,7 +29,8 @@ public class PasswordResetTokenEntity {
     public PasswordResetTokenEntity() {
     }
 
-    public PasswordResetTokenEntity(String token, UserEntity user, int expireInSeconds) {
+    public PasswordResetTokenEntity(UUID id, String token, UserEntity user, int expireInSeconds) {
+        this.id = id;
         this.token = token;
         this.user = user;
         this.expireTime = LocalDateTime.now().plusSeconds(expireInSeconds);

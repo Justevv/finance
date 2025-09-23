@@ -1,6 +1,7 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
+import com.manager.finance.helper.WithMockCustomUser;
 import com.manager.finance.helper.prepare.PasswordResetTokenPrepareHelper;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.PasswordResetTokenRepository;
@@ -14,13 +15,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
@@ -44,19 +48,21 @@ class PasswordControllerTest {
         var userEntity = userPrepareHelper.createUser();
         var passwordResetToken = passwordResetTokenPrepareHelper.createPasswordResetToken();
         Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));
+        Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         Mockito.when(passwordResetTokenRepository.findByToken(passwordResetToken.getToken())).thenReturn(Optional.of(passwordResetToken));
     }
 
     @Test
-    @WithMockUser
+    @WithMockCustomUser
     @SneakyThrows
     void forgetPassword_shouldReturnOkAndTrue_whenEmailIsExists() {
         mockMvc.perform(MockMvcRequestBuilders.post(FORGET_PASSWORD_API)
-                        .param("email", "email@email.ru")
-                )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"username":"user","password":"password"}"""))
                 .andExpect(status().is(200))
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.['Token created']").value(true));
+                .andExpect(jsonPath("$.payload").value("Token created"));
     }
 
     @Test
@@ -80,7 +86,7 @@ class PasswordControllerTest {
                         .param("email", "email")
                 )
                 .andExpect(status().is(400))
-                .andExpect(content().contentType("application/json"));
+                .andExpect(content().contentType("application/problem+json"));
     }
 
     @Test

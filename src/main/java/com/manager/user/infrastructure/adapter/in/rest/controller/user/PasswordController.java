@@ -1,16 +1,25 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.user;
 
-import com.manager.user.infrastructure.adapter.in.rest.dto.PasswordUpdateDTO;
-import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.domain.service.verification.PasswordService;
+import com.manager.user.application.port.in.PasswordUseCase;
+import com.manager.user.domain.model.UserModel;
+import com.manager.user.infrastructure.adapter.in.rest.dto.PasswordUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.UserUpdateDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserUpdateRequestDto;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.RestError;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.RestResponse;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDto;
+import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,18 +30,35 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 public class PasswordController {
-    private final PasswordService passwordService;
+    private final PasswordUseCase passwordUseCase;
     private final ErrorHelper errorHelper;
+    private final DtoMapper<UserUpdateRequestDto, UserResponseDto, UserModel> mapper;
 
     @PostMapping("/forget")
     @TrackExecutionTime
-    public ResponseEntity<Object> forgetPassword(@Valid UserUpdateDTO userDTO, BindingResult bindingResult) {
-        var responseEntity = errorHelper.checkErrors(bindingResult);
+    public ResponseEntity<RestResponse<String>> forgetPassword(@RequestBody @Valid UserUpdateRequestDto userDTO, BindingResult bindingResult) {
+        HttpStatus status = null;
+        RestError restError = null;
+        String expenseResponseDTO = null;
+        var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
-            var response = Map.of("Token created", passwordService.createPasswordResetToken(userDTO.getEmail()));
-            responseEntity = ResponseEntity.ok(response);
+            try {
+                passwordUseCase.createPasswordResetToken(mapper.toModel(userDTO));
+                status = HttpStatus.OK;
+                expenseResponseDTO = "Token created";
+            } catch (UsernameNotFoundException e) {
+                restError = RestError.builder()
+                        .text("User not found")
+                        .build();
+                status = HttpStatus.NOT_FOUND;
+            }
+        } else {
+            status = HttpStatus.BAD_REQUEST;
+            restError = new RestError(null, responseEntity);
         }
-        return responseEntity;
+
+        RestResponse<String> e = new RestResponse<>(restError, expenseResponseDTO);
+        return new ResponseEntity<>(e, status);
     }
 
     @PostMapping("/reset")
@@ -40,7 +66,7 @@ public class PasswordController {
     public ResponseEntity<Object> resetPassword(String token, @Valid PasswordUpdateDTO passwordUpdateDTO, BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
-            var isPasswordUpdated = passwordService.validatePasswordResetToken(token, passwordUpdateDTO);
+            var isPasswordUpdated = passwordUseCase.validatePasswordResetToken(token, passwordUpdateDTO);
             var response = Map.of("Password updated", isPasswordUpdated);
             responseEntity = ResponseEntity.ok(response);
         }
