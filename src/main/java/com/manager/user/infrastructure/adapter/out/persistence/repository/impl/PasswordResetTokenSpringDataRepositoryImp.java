@@ -25,8 +25,8 @@ public class PasswordResetTokenSpringDataRepositoryImp implements PasswordResetT
 
     @Override
 
-    public Optional<PasswordResetTokenModel> findByToken(String token) {
-        return repository.findByToken(token).map(mapper::toModel);
+    public Optional<PasswordResetTokenModel> findByTokenAndUser(String token, UserModel user) {
+        return repository.findByTokenAndUserId(token, user.id()).map(mapper::toModel);
     }
 
     @Override

@@ -1,14 +1,16 @@
 package com.manager.user.infrastructure.adapter.in.rest.dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
 import lombok.ToString;
 
-import jakarta.validation.constraints.NotBlank;
 
-@Data
-public class PasswordUpdateDTO {
-    @NotBlank
-    @ToString.Exclude
-    private String password;
+public record PasswordUpdateDTO(
+        @NotBlank
+        String token,
+        @NotBlank
+        String username,
+        @NotBlank
+        @ToString.Exclude
+        String password) {
 
 }

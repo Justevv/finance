@@ -4,6 +4,7 @@ import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.application.port.in.PasswordUseCase;
 import com.manager.user.application.port.out.repository.PasswordResetTokenRepository;
 import com.manager.user.application.port.out.repository.UserRepository;
+import com.manager.user.domain.exception.PasswordResetTokenExpiredException;
 import com.manager.user.domain.exception.PasswordResetTokenNotFoundException;
 import com.manager.user.domain.model.PasswordResetTokenModel;
 import com.manager.user.domain.model.ProcessStatus;
@@ -27,6 +28,7 @@ import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 @RequiredArgsConstructor
 public class PasswordService implements PasswordUseCase {
     private static final String PASSWORD_RESET_TOKEN_DOES_NOT_EXISTS_ERROR_MESSAGE = "Password reset token doesn't exists";
+    private static final String PASSWORD_RESET_TOKEN_EXPIRED_ERROR_MESSAGE = "Password reset token was expired";
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final UserService userService;
@@ -57,17 +59,19 @@ public class PasswordService implements PasswordUseCase {
     @TrackExecutionTime
     @Transactional
     @Override
-    public boolean validatePasswordResetToken(String token, PasswordUpdateDTO passwordUpdateDTO) {
-        var passToken = passwordResetTokenRepository.findByToken(token)
+    public void validatePasswordResetToken(PasswordUpdateDTO passwordUpdateDTO) {
+        var userModel = userRepository.findByUsername(passwordUpdateDTO.username())
+                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+        var passToken = passwordResetTokenRepository.findByTokenAndUser(passwordUpdateDTO.token(), userModel)
                 .orElseThrow(() -> new PasswordResetTokenNotFoundException(PASSWORD_RESET_TOKEN_DOES_NOT_EXISTS_ERROR_MESSAGE));
         if (!passToken.isExpire()) {
             var user = passToken.user();
-            userService.updatePassword(user, passwordUpdateDTO.getPassword());
+            userService.updatePassword(user, passwordUpdateDTO.password());
             passwordResetTokenRepository.delete(passToken);
             log.info("User password was updated {}", user);
-            return true;
+        } else {
+            throw new PasswordResetTokenExpiredException(PASSWORD_RESET_TOKEN_EXPIRED_ERROR_MESSAGE);
         }
-        return false;
     }
 
 }

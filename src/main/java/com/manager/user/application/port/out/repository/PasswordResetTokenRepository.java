@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PasswordResetTokenRepository {
 
-    Optional<PasswordResetTokenModel> findByToken(String token);
+    Optional<PasswordResetTokenModel> findByTokenAndUser(String token, UserModel user);
 
     List<PasswordResetTokenModel> findByUser(UserModel user);
 

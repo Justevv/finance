@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public interface PasswordResetTokenSpringDataRepository extends JpaRepository<PasswordResetTokenEntity, UUID> {
 
-    Optional<PasswordResetTokenEntity> findByToken(String token);
+    Optional<PasswordResetTokenEntity> findByTokenAndUserId(String token, UUID userId);
 
     List<PasswordResetTokenEntity> findByUser(UserEntity user);
 

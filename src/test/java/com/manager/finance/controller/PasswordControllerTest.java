@@ -50,7 +50,7 @@ class PasswordControllerTest {
         Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
         Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
-        Mockito.when(passwordResetTokenRepository.findByToken(passwordResetToken.getToken())).thenReturn(Optional.of(passwordResetToken));
+        Mockito.when(passwordResetTokenRepository.findByTokenAndUserId(passwordResetToken.getToken(), userEntity.getId())).thenReturn(Optional.of(passwordResetToken));
     }
 
     @Test
@@ -60,7 +60,10 @@ class PasswordControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post(FORGET_PASSWORD_API)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"username":"user","password":"password"}"""))
+                                {
+                                    "username":"user",
+                                    "password":"password"
+                                }"""))
                 .andExpect(status().is(200))
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.payload").value("Token created"));
@@ -71,12 +74,17 @@ class PasswordControllerTest {
     @SneakyThrows
     void resetPassword_shouldReturnOkAndTrue_whenTokenIsExists() {
         mockMvc.perform(MockMvcRequestBuilders.post(RESET_PASSWORD_API)
-                        .param("password", "1")
-                        .param("token", "token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "username": "user",
+                                    "token": "token",
+                                    "password":"1"
+                                }""")
                 )
                 .andExpect(status().is(200))
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.['Password updated']").value(true));
+                .andExpect(jsonPath("$.payload").value("Password updated"));
     }
 
     @Test
@@ -95,7 +103,13 @@ class PasswordControllerTest {
     @SneakyThrows
     void resetPassword_shouldReturn400AndFalse_whenTokenIsExists() {
         mockMvc.perform(MockMvcRequestBuilders.post(RESET_PASSWORD_API)
-                        .param("token", "token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "username": "user",
+                                    "token": "invalidToken",
+                                    "password":"1"
+                                }""")
                 )
                 .andExpect(status().is(400))
                 .andExpect(content().contentType("application/json"));

@@ -7,5 +7,5 @@ public interface PasswordUseCase {
 
     void createPasswordResetToken(UserModel userModel);
 
-    boolean validatePasswordResetToken(String token, PasswordUpdateDTO passwordUpdateDTO);
+    void validatePasswordResetToken(PasswordUpdateDTO passwordUpdateDTO);
 }

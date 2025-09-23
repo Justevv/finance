@@ -2,6 +2,8 @@ package com.manager.user.infrastructure.adapter.in.rest.controller.error;
 
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestError;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
+import com.manager.user.domain.exception.PasswordResetTokenExpiredException;
+import com.manager.user.domain.exception.PasswordResetTokenNotFoundException;
 import com.manager.user.domain.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +41,30 @@ public class UserExceptionsHandler extends ResponseEntityExceptionHandler {
         RestResponse<Object> response = new RestResponse<>(restError, null);
         return handleExceptionInternal(ex, response,
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler
+    protected ResponseEntity<Object> handlePasswordResetTokenExpiredException(
+            PasswordResetTokenExpiredException ex, WebRequest request) {
+        log.warn(ex.getMessage());
+        var restError = RestError.builder()
+                .text(ex.getMessage())
+                .build();
+        RestResponse<Object> response = new RestResponse<>(restError, null);
+        return handleExceptionInternal(ex, response,
+                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler
+    protected ResponseEntity<Object> handlePasswordResetTokenNotFoundException(
+            PasswordResetTokenNotFoundException ex, WebRequest request) {
+        log.warn(ex.getMessage());
+        var restError = RestError.builder()
+                .text(ex.getMessage())
+                .build();
+        RestResponse<Object> response = new RestResponse<>(restError, null);
+        return handleExceptionInternal(ex, response,
+                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
 
