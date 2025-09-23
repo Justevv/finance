@@ -11,6 +11,11 @@ public record PasswordResetTokenModel(
         UUID id,
         String token,
         UserModel user,
-        LocalDateTime expireTime
-) {
+        LocalDateTime expireTime,
+        ProcessStatus status
+) implements Model {
+
+    public boolean isExpire() {
+        return LocalDateTime.now().isAfter(expireTime);
+    }
 }

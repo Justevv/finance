@@ -100,6 +100,31 @@ public class UserService implements UserUseCase {
     @Transactional
     @TrackExecutionTime
     @Override
+    public UserModel updatePassword(UserModel principal, String password) {
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), principal);
+        var currentUser = userRepository.getById(principal.id());
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), currentUser);
+        var updatePassword = checkPassword(currentUser, password);
+
+        UserModel save = UserModel.builder()
+                .id(currentUser.id())
+                .username(currentUser.username())
+                .password(updatePassword ? passwordEncoder.encode(password) : currentUser.password())
+                .phone(currentUser.phone())
+                .email(currentUser.email())
+                .isPhoneConfirmed(currentUser.isPhoneConfirmed())
+                .isEmailConfirmed(currentUser.isEmailConfirmed())
+                .roles(currentUser.roles())
+                .build();
+
+        var saved = userRepository.save(save);
+        log.info(crudLogConstants.getUpdateEntityToDatabase(), saved);
+        return saved;
+    }
+
+    @Transactional
+    @TrackExecutionTime
+    @Override
     public void delete(UserModel principal) {
         log.debug(crudLogConstants.getInputEntityForDelete(), principal);
         var currentUser = userRepository.getById(principal.id());

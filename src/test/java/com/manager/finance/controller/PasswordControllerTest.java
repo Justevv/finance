@@ -49,6 +49,7 @@ class PasswordControllerTest {
         var passwordResetToken = passwordResetTokenPrepareHelper.createPasswordResetToken();
         Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(userRepository.findByUsername(userEntity.getUsername())).thenReturn(Optional.of(userEntity));
+        Mockito.when(userRepository.findById(userEntity.getId())).thenReturn(Optional.of(userEntity));
         Mockito.when(passwordResetTokenRepository.findByToken(passwordResetToken.getToken())).thenReturn(Optional.of(passwordResetToken));
     }
 

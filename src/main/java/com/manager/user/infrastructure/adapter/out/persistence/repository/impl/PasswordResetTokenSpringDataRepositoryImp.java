@@ -38,4 +38,19 @@ public class PasswordResetTokenSpringDataRepositoryImp implements PasswordResetT
     public void deleteByExpireTimeBefore(LocalDateTime dateTime) {
         repository.deleteByExpireTimeBefore(dateTime);
     }
+
+    @Override
+    public void deleteAll(List<PasswordResetTokenModel> tokens) {
+        repository.deleteAll();
+    }
+
+    @Override
+    public PasswordResetTokenModel save(PasswordResetTokenModel passwordResetToken) {
+        return mapper.toModel(repository.save(mapper.toEntity(passwordResetToken)));
+    }
+
+    @Override
+    public void delete(PasswordResetTokenModel passwordResetToken) {
+        repository.deleteById(passwordResetToken.id());
+    }
 }

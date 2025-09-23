@@ -15,28 +15,30 @@ public class PasswordResetTokenMapper implements EntityMapper<PasswordResetToken
     private final EntityMapper<UserEntity, UserModel> userMapper;
 
     @Override
-    public PasswordResetTokenModel toModel(PasswordResetTokenEntity dto) {
-        if (dto == null) {
+    public PasswordResetTokenModel toModel(PasswordResetTokenEntity entity) {
+        if (entity == null) {
             return null;
         }
         return PasswordResetTokenModel.builder()
-                .id(dto.getId())
-                .token(dto.getToken())
-                .expireTime(dto.getExpireTime())
-                .user(userMapper.toModel(dto.getUser()))
+                .id(entity.getId())
+                .token(entity.getToken())
+                .expireTime(entity.getExpireTime())
+                .user(userMapper.toModel(entity.getUser()))
+                .status(entity.getStatus())
                 .build();
     }
 
     @Override
-    public PasswordResetTokenEntity toEntity(PasswordResetTokenModel dto) {
-        if (dto == null) {
+    public PasswordResetTokenEntity toEntity(PasswordResetTokenModel model) {
+        if (model == null) {
             return null;
         }
         return PasswordResetTokenEntity.builder()
-                .id(dto.id())
-                .token(dto.token())
-                .expireTime(dto.expireTime())
-                .user(userMapper.toEntity(dto.user()))
+                .id(model.id())
+                .token(model.token())
+                .expireTime(model.expireTime())
+                .user(userMapper.toEntity(model.user()))
+                .status(model.status())
                 .build();
     }
 

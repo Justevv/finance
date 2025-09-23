@@ -4,6 +4,7 @@ create table password_reset_token
     expire_time timestamp,
     token       varchar(255),
     user_id   uuid,
+    status int4,
     primary key (id)
 );
 

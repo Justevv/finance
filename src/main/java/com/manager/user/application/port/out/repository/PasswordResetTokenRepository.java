@@ -14,4 +14,10 @@ public interface PasswordResetTokenRepository {
     List<PasswordResetTokenModel> findByUser(UserModel user);
 
     void deleteByExpireTimeBefore(LocalDateTime dateTime);
+
+    void deleteAll(List<PasswordResetTokenModel> tokens);
+
+    PasswordResetTokenModel save(PasswordResetTokenModel passwordResetToken);
+
+    void delete(PasswordResetTokenModel passwordResetToken);
 }
