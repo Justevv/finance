@@ -24,6 +24,7 @@ public class EmailVerificationEntityMapper implements EntityMapper<EmailVerifica
                 .code(dto.getCode())
                 .expireTime(dto.getExpireTime())
                 .user(userMapper.toModel(dto.getUser()))
+                .isSent(dto.isSent())
                 .build();
     }
 
@@ -37,6 +38,7 @@ public class EmailVerificationEntityMapper implements EntityMapper<EmailVerifica
                 .code(dto.code())
                 .expireTime(dto.expireTime())
                 .user(userMapper.toEntity(dto.user()))
+                .isSent(dto.isSent())
                 .build();
     }
 

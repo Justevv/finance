@@ -25,6 +25,7 @@ public class PhoneVerificationEntityMapper implements EntityMapper<PhoneVerifica
                 .code(dto.getCode())
                 .expireTime(dto.getExpireTime())
                 .user(userMapper.toModel(dto.getUser()))
+                .isSent(dto.isSent())
                 .build();
     }
 
@@ -38,6 +39,7 @@ public class PhoneVerificationEntityMapper implements EntityMapper<PhoneVerifica
                 .code(dto.code())
                 .expireTime(dto.expireTime())
                 .user(userMapper.toEntity(dto.user()))
+                .isSent(dto.isSent())
                 .build();
     }
 
