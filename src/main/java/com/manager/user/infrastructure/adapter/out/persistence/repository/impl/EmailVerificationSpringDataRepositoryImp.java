@@ -50,4 +50,9 @@ public class EmailVerificationSpringDataRepositoryImp implements EmailVerificati
     public VerificationModel save(VerificationModel verificationModel) {
         return mapper.toModel(repository.save(mapper.toEntity(verificationModel)));
     }
+
+    @Override
+    public void saveAll(List<VerificationModel> verifications) {
+        repository.saveAll(verifications.stream().map(mapper::toEntity).toList());
+    }
 }
