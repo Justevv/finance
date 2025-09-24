@@ -1,12 +1,13 @@
 package com.manager.user.domain.service.verification;
 
-import com.manager.user.application.port.out.repository.EmailVerificationRepository;
-import com.manager.user.domain.model.VerificationModel;
-import com.manager.user.domain.model.UserModel;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
-import com.manager.user.event.ConfirmationCompleteEvent;
-import com.manager.user.domain.exception.VerificationNotFoundException;
 import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.user.application.port.in.ConfirmEmailUseCase;
+import com.manager.user.application.port.out.repository.EmailVerificationRepository;
+import com.manager.user.domain.exception.VerificationNotFoundException;
+import com.manager.user.domain.model.UserModel;
+import com.manager.user.domain.model.VerificationModel;
+import com.manager.user.event.ConfirmationCompleteEvent;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.mapper.EntityMapper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
@@ -29,7 +30,7 @@ import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class EmailVerificationService {
+public class EmailVerificationService implements ConfirmEmailUseCase {
     private static final String VERIFICATION_DOES_NOT_EXISTS_ERROR_MESSAGE = "Verification doesn't exists";
     private static final int NUMBER_DIGITS_VERIFICATION_CODE = 6;
     @Value("${confirmationRegistrationCodeExpiredTime}")
@@ -43,6 +44,7 @@ public class EmailVerificationService {
 
     @Transactional
     @TrackExecutionTime
+    @Override
     public boolean verifyEmail(UUID userId, String code) {
         log.debug("Trying to verify email for userId {}", userId);
         var user = userRepository.findById(userId)
@@ -63,6 +65,7 @@ public class EmailVerificationService {
     }
 
     @TrackExecutionTime
+    @Override
     public void createAndSaveVerification(UserEntity user) {
         log.debug("Current user is {}", user);
         var verification = createVerificationCode();
@@ -72,6 +75,7 @@ public class EmailVerificationService {
     }
 
     @TrackExecutionTime
+    @Override
     public void createAndSaveVerification(UserModel user) {
         log.debug("Current user is {}", user);
         var verification = createVerificationCode();
@@ -91,6 +95,8 @@ public class EmailVerificationService {
         return new EmailVerificationEntity(code, confirmationRegistrationCodeExpiredTime);
     }
 
+    @TrackExecutionTime
+    @Override
     public boolean isEmailAlreadyConfirmed(String email) {
         var emailConfirmed = userRepository.findByEmailAndIsEmailConfirmed(email, true);
         var isEmailAlreadyConfirmed = emailConfirmed.isPresent();

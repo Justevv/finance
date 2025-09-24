@@ -1,7 +1,7 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.user;
 
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.domain.service.verification.EmailVerificationService;
+import com.manager.user.application.port.in.ConfirmEmailUseCase;
 import com.manager.user.domain.service.verification.PhoneVerificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class VerificationController {
-    private final EmailVerificationService emailVerificationService;
+    private final ConfirmEmailUseCase confirmEmailUseCase;
     private final PhoneVerificationService phoneVerificationService;
 
     @PostMapping("/phone")
@@ -33,7 +33,7 @@ public class VerificationController {
     @TrackExecutionTime
     public ResponseEntity<Map<String, Boolean>> confirmEmail(@PathVariable("userId") UUID user, @RequestParam String code) {
         log.debug("User {} tries to verify email", user);
-        var isConfirmed = emailVerificationService.verifyEmail(user, code);
+        var isConfirmed = confirmEmailUseCase.verifyEmail(user, code);
         var response = Map.of("Email confirmed", isConfirmed);
         log.debug("Is user {} confirm his email: {}", user, isConfirmed);
         return ResponseEntity.ok(response);
