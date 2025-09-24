@@ -17,4 +17,6 @@ public interface PhoneVerificationRepository {
     void delete(VerificationModel emailVerificationCode);
 
     VerificationModel save(VerificationModel verificationModel);
+
+    void saveAll(List<VerificationModel> verification);
 }

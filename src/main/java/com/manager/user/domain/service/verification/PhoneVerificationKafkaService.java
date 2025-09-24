@@ -1,12 +1,12 @@
 package com.manager.user.domain.service.verification;
 
-import com.manager.user.infrastructure.adapter.in.rest.dto.response.PhoneVerificationResponseDto;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
+import com.manager.user.application.port.out.repository.PhoneVerificationRepository;
+import com.manager.user.domain.model.VerificationModel;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.PhoneVerificationResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -16,9 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 public class PhoneVerificationKafkaService {
-    private final PhoneVerificationSpringDataRepository phoneVerificationRepository;
+    private final PhoneVerificationRepository phoneVerificationRepository;
     private final KafkaTemplate<String, PhoneVerificationResponseDto> kafkaTemplate;
-    private final ModelMapper mapper;
     @Value("${manager.schedule.send-sms.batch-size}")
     private int batchSize;
 
@@ -32,25 +31,40 @@ public class PhoneVerificationKafkaService {
         }
 
         log.debug("Trying to send a phone verification messages {}", phoneVerificationEntities);
-        phoneVerificationEntities.forEach(phoneVerificationEntity -> {
-            PhoneVerificationResponseDto responseDto = PhoneVerificationResponseDto.builder()
-                    .id(phoneVerificationEntity.getId())
-                    .code(phoneVerificationEntity.getCode())
-                    .phone(phoneVerificationEntity.getUser().getPhone())
-                    .build();
-            var future = kafkaTemplate.sendDefault(responseDto.phone(), responseDto);
-            phoneVerificationEntity.setSent(true);
-            future.whenComplete((result, ex) -> {
-                if (ex == null) {
-                    log.debug("Verification successfully sent: {}", phoneVerificationEntity);
-                } else {
-                    phoneVerificationEntity.setSent(false);
-                    phoneVerificationRepository.save(phoneVerificationEntity);
-                    log.error("Failed to send verification {} : {}", phoneVerificationEntity, ex.getMessage());
-                }
-            });
-        });
-        phoneVerificationRepository.saveAll(phoneVerificationEntities);
+        var sentVerification = phoneVerificationEntities.stream()
+                .map(toSend -> {
+                    var responseDto = PhoneVerificationResponseDto.builder()
+                            .id(toSend.id())
+                            .code(toSend.code())
+                            .phone(toSend.user().phone())
+                            .build();
+                    var future = kafkaTemplate.sendDefault(responseDto.phone(), responseDto);
+                    var verification = VerificationModel.builder()
+                            .id(toSend.id())
+                            .code(toSend.code())
+                            .expireTime(toSend.expireTime())
+                            .user(toSend.user())
+                            .isSent(true)
+                            .build();
+                    future.whenComplete((result, ex) -> {
+                        if (ex == null) {
+                            log.debug("Verification successfully sent: {}", toSend);
+                        } else {
+                            var unsentVerification = VerificationModel.builder()
+                                    .id(toSend.id())
+                                    .code(toSend.code())
+                                    .expireTime(toSend.expireTime())
+                                    .user(toSend.user())
+                                    .isSent(false)
+                                    .build();
+                            phoneVerificationRepository.save(unsentVerification);
+                            log.error("Failed to send verification {} : {}", toSend, ex.getMessage());
+                        }
+                    });
+                    return verification;
+                })
+                .toList();
+        phoneVerificationRepository.saveAll(sentVerification);
         return true;
     }
 

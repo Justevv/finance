@@ -1,14 +1,11 @@
 package com.manager.user.infrastructure.adapter.out.persistence.repository.impl;
 
-import com.manager.user.application.port.out.repository.EmailVerificationRepository;
 import com.manager.user.application.port.out.repository.PhoneVerificationRepository;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.model.VerificationModel;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PhoneVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.mapper.EntityMapper;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,5 +49,10 @@ public class PhoneVerificationSpringDataRepositoryImp implements PhoneVerificati
     @Override
     public VerificationModel save(VerificationModel verificationModel) {
         return mapper.toModel(repository.save(mapper.toEntity(verificationModel)));
+    }
+
+    @Override
+    public void saveAll(List<VerificationModel> verification) {
+        repository.saveAll(verification.stream().map(mapper::toEntity).toList());
     }
 }
