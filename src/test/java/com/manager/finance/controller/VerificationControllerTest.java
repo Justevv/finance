@@ -1,6 +1,7 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
+import com.manager.finance.helper.WithMockCustomUser;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PhoneVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
@@ -34,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class VerificationControllerTest {
     private static final String VERIFICATION_CODE = "100500";
     private static final String VERIFICATION_PHONE_API = "/v1/verification/{userId}/phone";
-    private static final String VERIFICATION_EMAIL_API = "/v1/verification/{userId}/email";
+    private static final String VERIFICATION_EMAIL_API = "/v1/verification/email";
     private static final String CODE_PARAM_NAME = "code";
     @MockBean
     private UserSpringDataRepository userRepository;
@@ -76,6 +77,7 @@ class VerificationControllerTest {
     }
 
     @Test
+    @WithMockCustomUser
     @SneakyThrows
     void confirmEmail_shouldReturnTrue_when_verificationIsValid() {
         Mockito.when(emailVerificationRepository.findByUser(any())).thenReturn(Optional.of(verificationCode));
@@ -97,6 +99,7 @@ class VerificationControllerTest {
     }
 
     @Test
+    @WithMockCustomUser
     @SneakyThrows
     void confirmEmail_shouldReturnFalse_when_verificationAlreadyExists() {
         Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));

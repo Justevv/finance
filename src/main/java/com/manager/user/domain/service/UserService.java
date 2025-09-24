@@ -4,10 +4,9 @@ import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.application.port.in.UserUseCase;
 import com.manager.user.application.port.out.repository.UserRepository;
-import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.exception.UserAlreadyExistException;
 import com.manager.user.domain.exception.UserNotFoundException;
-import com.manager.user.domain.service.verification.EmailVerificationService;
+import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.verification.PhoneVerificationService;
 import com.manager.user.helper.UserHelper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
@@ -33,7 +32,6 @@ public class UserService implements UserUseCase {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserHelper userHelper;
-    private final EmailVerificationService emailVerificationService;
     private final PhoneVerificationService phoneVerificationService;
 
     @TrackExecutionTime
@@ -99,8 +97,7 @@ public class UserService implements UserUseCase {
 
     @Transactional
     @TrackExecutionTime
-    @Override
-    public UserModel updatePassword(UserModel principal, String password) {
+    public void updatePassword(UserModel principal, String password) {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), principal);
         var currentUser = userRepository.getById(principal.id());
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), currentUser);
@@ -119,7 +116,6 @@ public class UserService implements UserUseCase {
 
         var saved = userRepository.save(save);
         log.info(crudLogConstants.getUpdateEntityToDatabase(), saved);
-        return saved;
     }
 
     @Transactional
@@ -136,7 +132,7 @@ public class UserService implements UserUseCase {
 
     @TrackExecutionTime
     public void checkUniqueUserCreateParameters(UserModel userDTO) throws UserAlreadyExistException {
-        if (emailVerificationService.isEmailAlreadyConfirmed(userDTO.email())) {
+        if (isEmailAlreadyConfirmed(userDTO.email())) {
             throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + userDTO.email());
         }
         if (phoneVerificationService.isPhoneAlreadyConfirmed(userDTO.phone())) {
@@ -182,10 +178,18 @@ public class UserService implements UserUseCase {
         if (newEmail == null || newEmail.equals(user.email())) {
             return false;
         }
-        if (emailVerificationService.isEmailAlreadyConfirmed(newEmail)) {
+        if (isEmailAlreadyConfirmed(newEmail)) {
             throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + newEmail);
         }
         log.debug("The email can be updated");
         return true;
+    }
+
+    @TrackExecutionTime
+    public boolean isEmailAlreadyConfirmed(String email) {
+        var emailConfirmed = userRepository.findByEmailAndIsEmailConfirmed(email, true);
+        var isEmailAlreadyConfirmed = emailConfirmed.isPresent();
+        log.debug("Is email {} already confirmed: {}", email, isEmailAlreadyConfirmed);
+        return isEmailAlreadyConfirmed;
     }
 }

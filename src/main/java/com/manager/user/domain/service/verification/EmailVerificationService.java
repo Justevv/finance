@@ -6,25 +6,20 @@ import com.manager.user.application.port.out.repository.EmailVerificationReposit
 import com.manager.user.domain.exception.VerificationNotFoundException;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.model.VerificationModel;
-import com.manager.user.event.ConfirmationCompleteEvent;
+import com.manager.user.domain.service.UserConfirmationService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
-import com.manager.user.infrastructure.adapter.out.persistence.mapper.EntityMapper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 
 
 @Service
@@ -38,25 +33,21 @@ public class EmailVerificationService implements ConfirmEmailUseCase {
     private final EmailVerificationRepository emailVerificationRepository;
     private final EmailVerificationSpringDataRepository emailVerificationSpringDataRepository;
     private final UserSpringDataRepository userRepository;
-    private final ApplicationEventPublisher eventPublisher;
-    private final EntityMapper<UserEntity, UserModel> userMapper;
+    private final UserConfirmationService userConfirmationService;
 
 
     @Transactional
     @TrackExecutionTime
     @Override
-    public boolean verifyEmail(UUID userId, String code) {
-        log.debug("Trying to verify email for userId {}", userId);
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(USER_DOES_NOT_EXISTS));
+    public boolean verifyEmail(UserModel user, String code) {
+        log.debug("Trying to verify email for userId {}", user);
 
-        var emailVerificationCode = emailVerificationRepository.findByUser(userMapper.toModel(user))
+        var emailVerificationCode = emailVerificationRepository.findByUser(user)
                 .orElseThrow(() -> new VerificationNotFoundException(VERIFICATION_DOES_NOT_EXISTS_ERROR_MESSAGE));
         if (emailVerificationCode != null && emailVerificationCode.code().equals(code)
-                && !emailVerificationCode.isExpire() && !isEmailAlreadyConfirmed(user.getEmail())) {
-            user.setEmailConfirmed(true);
+                && !emailVerificationCode.isExpire() && !isEmailAlreadyConfirmed(user.email())) {
+            userConfirmationService.confirmEmail(user);
             emailVerificationRepository.delete(emailVerificationCode);
-            eventPublisher.publishEvent(new ConfirmationCompleteEvent(user));
             log.info("Email for user {} was confirmed successfully", user);
             return true;
         }

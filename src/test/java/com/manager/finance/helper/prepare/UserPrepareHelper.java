@@ -1,5 +1,8 @@
 package com.manager.finance.helper.prepare;
 
+import com.manager.user.domain.model.UserModel;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -25,6 +28,21 @@ public class UserPrepareHelper {
         userEntity.setPhoneConfirmed(true);
         userEntity.setRoles(Set.of(rolePrepareHelper.createRole()));
         return userEntity;
+    }
+
+    public UserModel createUserModel() {
+        UserEntity user = createUser();
+        RoleEntity roleEntity = RoleEntity.builder()
+                .name("USER")
+                .permissions(Set.of(PermissionEntity.ALL_READ))
+                .build();
+        return UserModel.builder()
+                .id(UUID.fromString("3a2830b2-6d06-4964-bba5-e90a29d0fcd0"))
+                .username(user.getUsername())
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .roles(Set.of(roleEntity))
+                .build();
     }
 }
 

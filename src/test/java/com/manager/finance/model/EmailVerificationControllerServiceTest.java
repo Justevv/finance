@@ -1,6 +1,7 @@
 package com.manager.finance.model;
 
 import com.manager.Manager;
+import com.manager.user.domain.model.UserModel;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PhoneVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
@@ -42,12 +43,14 @@ class EmailVerificationControllerServiceTest {
     @Autowired
     private UserPrepareHelper userPrepareHelper;
     private UserEntity userEntity;
+    private UserModel userModel;
     private EmailVerificationEntity verificationCode;
     private PhoneVerificationEntity phoneVerificationEntity;
 
     @BeforeEach
     private void prepareData() {
         userEntity = userPrepareHelper.createUser();
+        userModel = userPrepareHelper.createUserModel();
         verificationCode = new EmailVerificationEntity();
         verificationCode.setId(UUID.randomUUID());
         verificationCode.setUser(userEntity);
@@ -73,7 +76,7 @@ class EmailVerificationControllerServiceTest {
     void confirmEmail_shouldReturnTrue_when_verificationIsValid() {
         Mockito.when(emailVerificationRepository.findByUser(any())).thenReturn(Optional.of(verificationCode));
 
-        Assertions.assertTrue(emailVerificationService.verifyEmail(userEntity.getId(), VERIFICATION_CODE));
+        Assertions.assertTrue(emailVerificationService.verifyEmail(userModel, VERIFICATION_CODE));
     }
 
     @Test
@@ -89,7 +92,7 @@ class EmailVerificationControllerServiceTest {
         Mockito.when(userRepository.findByEmailAndIsEmailConfirmed(userEntity.getEmail(), true)).thenReturn(Optional.of(userEntity));
         Mockito.when(emailVerificationRepository.findByUser(any())).thenReturn(Optional.of(verificationCode));
 
-        Assertions.assertFalse(emailVerificationService.verifyEmail(userEntity.getId(), VERIFICATION_CODE));
+        Assertions.assertFalse(emailVerificationService.verifyEmail(userModel, VERIFICATION_CODE));
     }
 
 }
