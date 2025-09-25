@@ -33,8 +33,8 @@ public class UserPrepareHelper {
     public UserModel createUserModel() {
         UserEntity user = createUser();
         RoleEntity roleEntity = RoleEntity.builder()
-                .name("USER")
-                .permissions(Set.of(PermissionEntity.ALL_READ))
+                .name("ROLE_USER")
+                .permissions(Set.of(PermissionEntity.USER_READ))
                 .build();
         return UserModel.builder()
                 .id(UUID.fromString("3a2830b2-6d06-4964-bba5-e90a29d0fcd0"))
@@ -42,6 +42,7 @@ public class UserPrepareHelper {
                 .phone(user.getPhone())
                 .email(user.getEmail())
                 .roles(Set.of(roleEntity))
+                .password(user.getPassword())
                 .build();
     }
 }

@@ -20,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -144,10 +145,18 @@ class UserControllerAdminTest {
     @SneakyThrows
     void createUser_shouldReturnException_when_userIsExists() {
         mockMvc.perform(MockMvcRequestBuilders.post(USER_API)
-                        .param(USERNAME_PARAMETER, "user")
-                        .param(PASSWORD_PARAMETER, "1")
-                        .param(PHONE_PARAMETER, NEW_PHONE)
-                        .param(EMAIL_PARAMETER, NEW_EMAIL)
+                        .content("""
+                                {
+                                    "user":{
+                                        "username": "user",
+                                        "email": "st@a.ru",
+                                        "phone": "1",
+                                        "password":"1"
+                                    },
+                                    "isPhoneConfirmed":false,
+                                    "isEmailConfirmed":false
+                                }""")
+                        .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(409));
     }
@@ -159,7 +168,7 @@ class UserControllerAdminTest {
         mockMvc.perform(MockMvcRequestBuilders.post(USER_API)
                 )
                 .andExpect(status().is(400))
-                .andExpect(content().contentType("application/json"));
+                .andExpect(content().contentType("application/problem+json"));
     }
 
     @Test
@@ -167,19 +176,27 @@ class UserControllerAdminTest {
     @SneakyThrows
     void createUser_shouldReturnUsersAndOk_when_userIsNotExists() {
         Mockito.when(roleRepository.findById(role.getId())).thenReturn(Optional.ofNullable(role));
+        Mockito.when(roleRepository.findByName(role.getName())).thenReturn(Optional.ofNullable(role));
         mockMvc.perform(MockMvcRequestBuilders.post(USER_API)
-                        .param(USERNAME_PARAMETER, NEW_USERNAME)
-                        .param(PASSWORD_PARAMETER, "1")
-                        .param(PHONE_PARAMETER, NEW_PHONE)
-                        .param(EMAIL_PARAMETER, NEW_EMAIL)
-                        .param(ROLES_PARAMETER, String.valueOf(role.getId()))
+                        .content("""
+                                {
+                                    "user":{
+                                        "username": "new",
+                                        "email": "st@a.ru",
+                                        "phone": "1",
+                                        "password":"1"
+                                    },
+                                    "isPhoneConfirmed":false,
+                                    "isEmailConfirmed":false
+                                }""")
+                        .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.username").value(NEW_USERNAME))
-                .andExpect(jsonPath("$.phone").value(NEW_PHONE))
-                .andExpect(jsonPath("$.email").value(NEW_EMAIL))
-                .andExpect(jsonPath("$.roles.[0].name").value(role.getName()))
-                .andExpect(jsonPath("$.roles.[0].permissions").value(PermissionEntity.ALL_READ.toString()));
+                .andExpect(jsonPath("$.payload.username").value(NEW_USERNAME))
+                .andExpect(jsonPath("$.payload.phone").value(NEW_PHONE))
+                .andExpect(jsonPath("$.payload.email").value(NEW_EMAIL))
+                .andExpect(jsonPath("$.payload.roles.[0].name").value(role.getName()))
+                .andExpect(jsonPath("$.payload.roles.[0].permissions").value(PermissionEntity.ALL_READ.toString()));
     }
 
     @Test

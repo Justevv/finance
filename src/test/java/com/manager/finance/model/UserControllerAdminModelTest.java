@@ -1,14 +1,13 @@
 package com.manager.finance.model;
 
 import com.manager.Manager;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminDTO;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminUpdateDTO;
-import com.manager.user.domain.service.admin.UserAdminService;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
+import com.manager.user.domain.service.admin.UserAdminService;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminUpdateDTO;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,18 +71,14 @@ class UserControllerAdminModelTest {
 
     @Test
     void create_shouldReturnUser_when_userDTOIsOk() {
-        var userDTO = new UserAdminDTO();
-        userDTO.setPhone("newPhone");
-        userDTO.setUsername("newUsername");
-        userDTO.setEmail("newEmail");
-        userDTO.setPassword("password");
+        var userDTO = userPrepareHelper.createUserModel();
         var userResponseDTO = userAdminService.createAndGetDTO(userDTO);
-        Assertions.assertEquals(userDTO.getEmail(), userResponseDTO.getEmail());
-        Assertions.assertEquals(userDTO.getUsername(), userResponseDTO.getUsername());
-        Assertions.assertEquals(userDTO.getPhone(), userResponseDTO.getPhone());
+        Assertions.assertEquals(userDTO.email(), userResponseDTO.email());
+        Assertions.assertEquals(userDTO.username(), userResponseDTO.username());
+        Assertions.assertEquals(userDTO.phone(), userResponseDTO.phone());
         Assertions.assertEquals(userDTO.isEmailConfirmed(), userResponseDTO.isEmailConfirmed());
         Assertions.assertEquals(userDTO.isPhoneConfirmed(), userResponseDTO.isPhoneConfirmed());
-        Assertions.assertEquals(userDTO.getRoles(), userResponseDTO.getRoles());
+        Assertions.assertEquals(userDTO.roles().iterator().next().getName(), userResponseDTO.roles().iterator().next().getName());
     }
 
     @Test

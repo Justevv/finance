@@ -6,21 +6,15 @@ import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.verification.EmailVerificationService;
 import com.manager.user.domain.service.verification.PhoneVerificationService;
 import com.manager.user.domain.exception.UserAlreadyExistException;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.admin.UserUpdateRequestAdminDto;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.mapper.EntityMapper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.security.Principal;
-
-import static com.manager.finance.constant.Constant.USER_DOES_NOT_EXISTS;
 
 @Service
 @Slf4j
@@ -36,27 +30,21 @@ public class UserHelper {
     private final EntityMapper<UserEntity, UserModel> userMapper;
 
     @TrackExecutionTime
-    public void createVerification(UserEntity user) {
-        emailVerificationService.createAndSaveVerification(user);
-        phoneVerificationService.createAndSaveVerification(user);
-    }
-
-    @TrackExecutionTime
     public void createVerification(UserModel user) {
         emailVerificationService.createAndSaveVerification(user);
         phoneVerificationService.createAndSaveVerification(user);
     }
 
     @TrackExecutionTime
-    public void checkUniqueUserCreateParameters(@Valid UserDTO userDTO) throws UserAlreadyExistException {
-        if (emailVerificationService.isEmailAlreadyConfirmed(userDTO.getEmail())) {
-            throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + userDTO.getEmail());
+    public void checkUniqueUserCreateParameters(@Valid UserUpdateRequestAdminDto userDTO) throws UserAlreadyExistException {
+        if (emailVerificationService.isEmailAlreadyConfirmed(userDTO.user().email())) {
+            throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + userDTO.user().email());
         }
-        if (phoneVerificationService.isPhoneAlreadyConfirmed(userDTO.getPhone())) {
-            throw new UserAlreadyExistException(PHONE_EXISTS_ERROR_MESSAGE + userDTO.getPhone());
+        if (phoneVerificationService.isPhoneAlreadyConfirmed(userDTO.user().phone())) {
+            throw new UserAlreadyExistException(PHONE_EXISTS_ERROR_MESSAGE + userDTO.user().phone());
         }
-        if (isUsernameExists(userDTO.getUsername())) {
-            throw new UserAlreadyExistException(USERNAME_EXISTS_ERROR_MESSAGE + userDTO.getUsername());
+        if (isUsernameExists(userDTO.user().username())) {
+            throw new UserAlreadyExistException(USERNAME_EXISTS_ERROR_MESSAGE + userDTO.user().username());
         }
     }
 
