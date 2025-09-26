@@ -34,9 +34,9 @@ public class UserPrincipalMapper {
         log.debug("input principal is {}", principal);
         if (principal instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
             var user = usernamePasswordAuthenticationToken.getPrincipal();
-            if (user instanceof UserModel userEntity) {
-                log.debug("Current user is {}", userEntity);
-                return userEntity;
+            if (user instanceof UserModel userModel) {
+                log.debug("Current user is {}", userModel);
+                return userModel;
             }
         }
 

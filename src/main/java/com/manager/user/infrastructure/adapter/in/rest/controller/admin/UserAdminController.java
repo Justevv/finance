@@ -37,7 +37,7 @@ import java.util.List;
 @RequestMapping("/v1/admin/user")
 @Slf4j
 @RequiredArgsConstructor
-public class UserAdmin {
+public class UserAdminController {
     private final UserAdminService userAdminService;
     private final ErrorHelper errorHelper;
     private final DtoMapper<UserRequestDto, UserResponseDto, UserModel> mapper;
