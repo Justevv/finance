@@ -6,4 +6,5 @@ public class Constant {
     public static final String PLACE_ENTITY = "place";
     public static final String EXPENSE_ENTITY = "expense";
     public static final String CATEGORY_ENTITY = "category";
+    public static final String USER_ENTITY = "user";
 }

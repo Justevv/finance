@@ -5,7 +5,6 @@ import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.application.port.in.UserUseCase;
 import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.domain.exception.UserAlreadyExistException;
-import com.manager.user.domain.exception.UserNotFoundException;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.verification.PhoneVerificationService;
 import com.manager.user.helper.UserHelper;
@@ -33,11 +32,12 @@ public class UserService implements UserUseCase {
     private final PasswordEncoder passwordEncoder;
     private final UserHelper userHelper;
     private final PhoneVerificationService phoneVerificationService;
+    private final UserMainService userMainService;
 
     @TrackExecutionTime
     @Override
-    public UserModel findById(UUID id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    public UserModel getById(UUID id) {
+        return userRepository.getById(id);
     }
 
     @Transactional
@@ -121,12 +121,8 @@ public class UserService implements UserUseCase {
     @Transactional
     @TrackExecutionTime
     @Override
-    public void delete(UserModel principal) {
-        log.debug(crudLogConstants.getInputEntityForDelete(), principal);
-        var currentUser = userRepository.getById(principal.id());
-        log.debug(crudLogConstants.getInputEntityForDelete(), currentUser);
-        userRepository.delete(currentUser);
-        log.info(crudLogConstants.getDeleteEntityFromDatabase(), currentUser);
+    public void delete(UserModel user) {
+        userMainService.delete(user);
     }
 
 

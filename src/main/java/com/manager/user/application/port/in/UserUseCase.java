@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface UserUseCase {
 
-    UserModel findById(UUID id);
+    UserModel getById(UUID id);
 
     UserModel create(UserModel userDTO) throws UserAlreadyExistException;
 

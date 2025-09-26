@@ -65,7 +65,7 @@ public class JwtProvider {
 
     @TrackExecutionTime
     public Authentication getAuthentication(String token) {
-        var user = userService.findById(getId(token));
+        var user = userService.getById(getId(token));
         return new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities());
 
     }

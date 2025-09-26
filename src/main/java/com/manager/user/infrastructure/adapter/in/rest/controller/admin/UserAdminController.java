@@ -1,6 +1,7 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.admin;
 
 
+import com.manager.finance.infrastructure.adapter.in.exception.InvalidUUIDException;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestError;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
@@ -32,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
+
+import static com.manager.finance.constant.Constant.USER_ENTITY;
 
 @RestController
 @RequestMapping("/v1/admin/user")
@@ -88,8 +92,14 @@ public class UserAdminController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('user:delete')")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") UserEntity user) {
-        return ResponseEntity.ok(userAdminService.delete(user));
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            userAdminService.delete(uuid);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidUUIDException(id, USER_ENTITY);
+        }
     }
 
 }

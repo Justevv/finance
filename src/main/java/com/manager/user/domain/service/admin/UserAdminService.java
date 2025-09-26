@@ -1,7 +1,9 @@
 package com.manager.user.domain.service.admin;
 
+import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.domain.model.UserModel;
+import com.manager.user.domain.service.UserMainService;
 import com.manager.user.domain.service.UserService;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDTOOld;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminUpdateDTO;
@@ -43,6 +45,7 @@ public class UserAdminService {
     private final UserHelper userHelper;
     private final UserService userService;
     private final RoleRepository roleRepository;
+    private final UserMainService userMainService;
 
     public List<UserAdminResponseDTOOld> getAll() {
         var userEntities = userSpringDataRepository.findAll();
@@ -104,11 +107,10 @@ public class UserAdminService {
 
 
     @Transactional
-    public Void delete(UserEntity user) {
-        log.debug(crudLogConstants.getInputEntityForDelete(), user);
-        userSpringDataRepository.delete(user);
-        log.info(crudLogConstants.getDeleteEntityFromDatabase(), user);
-        return null;
+    @TrackExecutionTime
+    public void delete(UUID userId) {
+        var currentUser = userRepository.getById(userId);
+        userMainService.delete(currentUser);
     }
 
     private UserModel createUser(UserModel inputUser) {
