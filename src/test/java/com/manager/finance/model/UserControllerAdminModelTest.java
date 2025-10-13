@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Import;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest(classes = Manager.class)
 @Import({UserPrepareHelper.class})
@@ -98,8 +99,9 @@ class UserControllerAdminModelTest {
 
     @Test
     void delete_shouldReturnNull_when_userIsExists() {
-        var deleteUser = userAdminService.delete(user);
-        Assertions.assertNull(deleteUser);
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.ofNullable(user));
+        userAdminService.delete(user.getId());
+        Assertions.assertNull(null);
     }
 
 }

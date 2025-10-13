@@ -79,6 +79,33 @@ public class UserAdminService {
         return adminUserResponseDTO;
     }
 
+    @Transactional
+    @TrackExecutionTime
+    public UserModel update(UUID uuid, UserModel input) {
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), input, uuid);
+        var currentUser = userRepository.getById(uuid);
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), currentUser, input);
+        var updateUsername = userMainService.checkUsername(currentUser, input.username());
+        var updateEmail = userMainService.checkEmail(currentUser, input.email());
+        var updatePhone = userMainService.checkPhone(currentUser, input.phone());
+        var updatePassword = userMainService.checkPassword(currentUser, input.password());
+
+        UserModel save = UserModel.builder()
+                .id(currentUser.id())
+                .username(updateUsername ? input.username() : currentUser.username())
+                .password(updatePassword ? passwordEncoder.encode(input.password()) : currentUser.password())
+                .phone(updatePhone ? input.phone() : currentUser.phone())
+                .email(updateEmail ? input.email() : currentUser.email())
+                .isPhoneConfirmed(input.isPhoneConfirmed())
+                .isEmailConfirmed(input.isEmailConfirmed())
+                .roles(currentUser.roles())
+                .build();
+
+        var saved = userRepository.save(save);
+        log.info(crudLogConstants.getUpdateEntityToDatabase(), saved);
+        return saved;
+    }
+
     private void updatePhoneConfirmed(UserEntity user, boolean isPhoneConfirmed) {
         if (isPhoneConfirmed != user.isPhoneConfirmed()) {
             log.debug("The PhoneConfirmed was updated");

@@ -81,13 +81,23 @@ public class UserAdminController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<Object> updateUser(@PathVariable("id") UserEntity user, @Valid UserAdminUpdateDTO userUpdateDTO,
+    public ResponseEntity<Object> updateUser(@PathVariable("id") UUID userId, @RequestBody @Valid UserUpdateRequestAdminDto userUpdateRequestAdminDto,
                                              BindingResult bindingResult) {
-        var responseEntity = errorHelper.checkErrors(bindingResult);
-        if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(userAdminService.update(user, userUpdateDTO));
+        HttpStatus status;
+        RestError restError = null;
+        UserResponseDto userResponseDto = null;
+        var dtoErrors = errorHelper.checkErrors2(bindingResult);
+        if (dtoErrors == null) {
+            var model = userAdminService.update(userId, mapper2.toModel(userUpdateRequestAdminDto));
+            userResponseDto = mapper.toResponseDto(model);
+            status = HttpStatus.OK;
+        } else {
+            status = HttpStatus.BAD_REQUEST;
+            restError = new RestError(null, dtoErrors);
         }
-        return responseEntity;
+
+        RestResponse<UserResponseDto> restResponse = new RestResponse<>(restError, userResponseDto);
+        return new ResponseEntity<>(restResponse, status);
     }
 
     @DeleteMapping("/{id}")

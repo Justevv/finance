@@ -34,7 +34,7 @@ public class UserDtoMapper implements DtoMapper<UserRequestDto, UserResponseDto,
                 .phone(dto.phone())
                 .email(dto.email())
                 .isEmailConfirmed(dto.isEmailConfirmed())
-                .isPhoneConfirmed(dto.isEmailConfirmed())
+                .isPhoneConfirmed(dto.isPhoneConfirmed())
                 .build();
     }
 

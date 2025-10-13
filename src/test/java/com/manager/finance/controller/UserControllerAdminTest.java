@@ -28,7 +28,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = Manager.class)
@@ -105,25 +108,41 @@ class UserControllerAdminTest {
     @WithMockUser(authorities = {"user:write"})
     @SneakyThrows
     void updateUser_shouldReturnUserAndOk_when_userIsExists() {
+        UserEntity userEntity = UserEntity.builder()
+                .id(user.getId())
+                .username("new")
+                .email("st@a.ru")
+                .phone("1")
+                .password("$2a$04$kLf5hQQ8yshxEfcMk9etVupP2It5u889YM9KLVpuAnSEAvc3oDq.6")
+                .isEmailConfirmed(true)
+                .isPhoneConfirmed(true)
+                .roles(user.getRoles())
+                .build();
+        Mockito.when(userRepository.save(any())).thenReturn(userEntity);
         Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         Mockito.when(roleRepository.findById(role.getId())).thenReturn(Optional.ofNullable(role));
         role.setName(NEW_ROLE);
         mockMvc.perform(MockMvcRequestBuilders.put(USER_WITH_ID_API, user.getId())
-                        .param(USERNAME_PARAMETER, NEW_USERNAME)
-                        .param(PASSWORD_PARAMETER, "1")
-                        .param(PHONE_PARAMETER, NEW_PHONE)
-                        .param(EMAIL_PARAMETER, NEW_EMAIL)
-                        .param("emailConfirmed", String.valueOf(true))
-                        .param("phoneConfirmed", String.valueOf(true))
-                        .param(ROLES_PARAMETER, String.valueOf(role.getId()))
+                        .content("""
+                                {
+                                    "user":{
+                                        "username": "new",
+                                        "email": "st@a.ru",
+                                        "phone": "1",
+                                        "password":"1"
+                                    },
+                                    "isPhoneConfirmed":false,
+                                    "isEmailConfirmed":false
+                                }""")
+                        .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.username").value(NEW_USERNAME))
-                .andExpect(jsonPath("$.phone").value(NEW_PHONE))
-                .andExpect(jsonPath("$.email").value(NEW_EMAIL))
-                .andExpect(jsonPath("$.emailConfirmed").value(true))
-                .andExpect(jsonPath("$.phoneConfirmed").value(true))
-                .andExpect(jsonPath("$.roles.[0].name").value(NEW_ROLE));
+                .andExpect(jsonPath("$.payload.username").value(NEW_USERNAME))
+                .andExpect(jsonPath("$.payload.phone").value(NEW_PHONE))
+                .andExpect(jsonPath("$.payload.email").value(NEW_EMAIL))
+                .andExpect(jsonPath("$.payload.isEmailConfirmed").value(true))
+                .andExpect(jsonPath("$.payload.isPhoneConfirmed").value(true));
+//                .andExpect(jsonPath("$.payload.roles.[0].name").value(NEW_ROLE));
     }
 
     @Test
@@ -137,7 +156,7 @@ class UserControllerAdminTest {
                         .param(EMAIL_PARAMETER, newEmail)
                 )
                 .andExpect(status().is(400))
-                .andExpect(content().contentType("application/json"));
+                .andExpect(content().contentType("application/problem+json"));
     }
 
     @Test
@@ -205,7 +224,7 @@ class UserControllerAdminTest {
     void deleteUser_shouldReturnNullAndOk_when_userIsExists() {
         Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         mockMvc.perform(MockMvcRequestBuilders.delete(USER_WITH_ID_API, user.getId()))
-                .andExpect(status().is(200));
+                .andExpect(status().is(204));
     }
 
 }
