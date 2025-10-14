@@ -6,13 +6,10 @@ import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.UserMainService;
 import com.manager.user.domain.service.UserService;
-import com.manager.user.domain.service.verification.EmailVerificationService;
-import com.manager.user.domain.service.verification.PhoneVerificationService;
 import com.manager.user.domain.service.verification.VerificationService;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDTOOld;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,19 +32,15 @@ public class UserAdminService {
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(USER_LOG_NAME);
     @Getter
     private final ModelMapper mapper;
-    private final UserSpringDataRepository userSpringDataRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final PhoneVerificationService phoneVerificationService;
-    private final EmailVerificationService emailVerificationService;
     private final VerificationService verificationService;
     private final UserService userService;
     private final RoleRepository roleRepository;
     private final UserMainService userMainService;
 
-    public List<UserAdminResponseDTOOld> getAll() {
-        var userEntities = userSpringDataRepository.findAll();
-        return userEntities.stream().map(this::convertUserToUserResponseDTO).toList();
+    public List<UserModel> getAll() {
+        return userRepository.findAll();
     }
 
     public UserModel get(UUID user) {

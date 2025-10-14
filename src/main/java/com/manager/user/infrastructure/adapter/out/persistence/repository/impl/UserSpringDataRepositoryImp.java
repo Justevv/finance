@@ -43,6 +43,11 @@ public class UserSpringDataRepositoryImp implements UserRepository {
     }
 
     @Override
+    public List<UserModel> findAll() {
+        return repository.findAll().stream().map(mapper::toModel).toList();
+    }
+
+    @Override
     public Optional<UserModel> findByUsername(String username) {
         return repository.findByUsername(username).map(mapper::toModel);
     }

@@ -79,13 +79,13 @@ class UserControllerAdminTest {
         Mockito.when(userRepository.findAll()).thenReturn((List.of(user)));
         mockMvc.perform(MockMvcRequestBuilders.get(USER_API))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("[0].username").value(user.getUsername()))
-                .andExpect(jsonPath("[0].email").value(user.getEmail()))
-                .andExpect(jsonPath("[0].phone").value(user.getPhone()))
-                .andExpect(jsonPath("[0].phoneConfirmed").value(user.isPhoneConfirmed()))
-                .andExpect(jsonPath("[0].emailConfirmed").value(user.isEmailConfirmed()))
-                .andExpect(jsonPath("[0].roles.[0].name").value(role.getName()))
-                .andExpect(jsonPath("[0].roles.[0].permissions").value(PermissionEntity.ALL_READ.toString()));
+                .andExpect(jsonPath("$.payload.[0].username").value(user.getUsername()))
+                .andExpect(jsonPath("$.payload.[0].email").value(user.getEmail()))
+                .andExpect(jsonPath("$.payload.[0].phone").value(user.getPhone()))
+                .andExpect(jsonPath("$.payload.[0].isPhoneConfirmed").value(user.isPhoneConfirmed()))
+                .andExpect(jsonPath("$.payload.[0].isEmailConfirmed").value(user.isEmailConfirmed()))
+                .andExpect(jsonPath("$.payload.[0].roles.[0].name").value(role.getName()))
+                .andExpect(jsonPath("$.payload.[0].roles.[0].permissions").value(PermissionEntity.ALL_READ.toString()));
     }
 
     @Test

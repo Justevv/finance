@@ -53,12 +53,12 @@ class UserControllerAdminModelTest {
         Mockito.when(userRepository.findAll()).thenReturn(userEntities);
 
         var userResponseDTO = userAdminService.getAll();
-        Assertions.assertEquals(user.getEmail(), userResponseDTO.get(0).getEmail());
-        Assertions.assertEquals(user.getUsername(), userResponseDTO.get(0).getUsername());
-        Assertions.assertEquals(user.getPhone(), userResponseDTO.get(0).getPhone());
+        Assertions.assertEquals(user.getEmail(), userResponseDTO.get(0) .email());
+        Assertions.assertEquals(user.getUsername(), userResponseDTO.get(0).username());
+        Assertions.assertEquals(user.getPhone(), userResponseDTO.get(0).phone());
         Assertions.assertEquals(user.isEmailConfirmed(), userResponseDTO.get(0).isEmailConfirmed());
         Assertions.assertEquals(user.isPhoneConfirmed(), userResponseDTO.get(0).isPhoneConfirmed());
-        Assertions.assertTrue(user.getRoles().containsAll(userResponseDTO.get(0).getRoles()));
+        Assertions.assertTrue(user.getRoles().containsAll(userResponseDTO.get(0).roles()));
     }
 
     @Test

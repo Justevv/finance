@@ -24,4 +24,6 @@ public interface UserRepository {
     UserModel save(UserModel user);
 
     void delete(UserModel user);
+
+    List<UserModel> findAll();
 }

@@ -8,7 +8,6 @@ import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.admin.UserAdminService;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.admin.UserUpdateRequestAdminDto;
-import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDTOOld;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDto;
 import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
 import jakarta.validation.Valid;
@@ -43,8 +42,11 @@ public class UserAdminController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('user:read')")
-    public List<UserAdminResponseDTOOld> getUsers() {
-        return userAdminService.getAll();
+    public ResponseEntity<RestResponse<List<UserAdminResponseDto>>> getUsers() {
+        var responseDto = userAdminService.getAll().stream().map(mapper::toResponseDto).toList();
+
+        RestResponse<List<UserAdminResponseDto>> response = new RestResponse<>(null, responseDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
