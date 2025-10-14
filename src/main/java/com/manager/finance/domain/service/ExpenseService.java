@@ -10,8 +10,6 @@ import com.manager.finance.infrastructure.adapter.out.persistence.entity.Categor
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.log.LogConstants;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.domain.model.UserModel;
-import com.manager.user.helper.UserHelper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +30,6 @@ public class ExpenseService implements ExpenseUseCase {
     private final ExpenseRepository expenseRepository;
     private final CategoryService categoryService;
     private final PlaceService placeService;
-    private final UserHelper userHelper;
     private final ExpenseCache expenseCache;
     private CrudLogConstants crudLogConstants;
 

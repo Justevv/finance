@@ -7,7 +7,6 @@ import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestRespo
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.admin.UserAdminService;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminUpdateDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.admin.UserUpdateRequestAdminDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDTOOld;
@@ -69,7 +68,7 @@ public class UserAdminController {
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
             status = HttpStatus.OK;
-            responseDto = mapper2.toResponseDto(userAdminService.createAndGetDTO(mapper2.toModel(userUpdateRequestAdminDto)));
+            responseDto = mapper2.toResponseDto(userAdminService.create(mapper2.toModel(userUpdateRequestAdminDto)));
         } else {
             status = HttpStatus.BAD_REQUEST;
             restError = new RestError(null, responseEntity);

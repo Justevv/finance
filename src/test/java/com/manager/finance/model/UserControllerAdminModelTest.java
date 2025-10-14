@@ -4,7 +4,6 @@ import com.manager.Manager;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.admin.UserAdminService;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminUpdateDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
@@ -78,7 +77,7 @@ class UserControllerAdminModelTest {
     @Test
     void create_shouldReturnUser_when_userDTOIsOk() {
         var userDTO = userPrepareHelper.createUserModel();
-        var userResponseDTO = userAdminService.createAndGetDTO(userDTO);
+        var userResponseDTO = userAdminService.create(userDTO);
         Assertions.assertEquals(userDTO.email(), userResponseDTO.email());
         Assertions.assertEquals(userDTO.username(), userResponseDTO.username());
         Assertions.assertEquals(userDTO.phone(), userResponseDTO.phone());

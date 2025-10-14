@@ -4,7 +4,6 @@ import com.manager.finance.domain.model.CategoryModel;
 import com.manager.finance.domain.model.FavoriteCategoryModel;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.CategoryEntity;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.FavoriteCategoryEntity;
-import com.manager.user.helper.UserHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

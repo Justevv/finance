@@ -7,7 +7,6 @@ import com.manager.finance.domain.exception.SaveProcessException;
 import com.manager.finance.domain.model.CategoryModel;
 import com.manager.finance.log.LogConstants;
 import com.manager.finance.metric.TrackExecutionTime;
-import com.manager.user.helper.UserHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,7 +27,6 @@ public class CategoryService implements CategoryUseCase {
     //    private final CategoryRedisRepository categoryRedisRepository;
     private final FavoriteCategoryService favoriteCategoryService;
     private final ModelMapper mapper;
-    private final UserHelper userHelper;
 
     @TrackExecutionTime
     @Override

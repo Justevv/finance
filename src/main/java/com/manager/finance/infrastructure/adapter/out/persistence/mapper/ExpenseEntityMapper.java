@@ -6,7 +6,6 @@ import com.manager.finance.domain.model.PlaceModel;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.CategoryEntity;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.ExpenseEntity;
 import com.manager.finance.infrastructure.adapter.out.persistence.entity.PlaceEntity;
-import com.manager.user.helper.UserHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

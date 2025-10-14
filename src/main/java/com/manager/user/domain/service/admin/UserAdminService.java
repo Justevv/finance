@@ -1,20 +1,18 @@
 package com.manager.user.domain.service.admin;
 
+import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.metric.TrackExecutionTime;
 import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.UserMainService;
 import com.manager.user.domain.service.UserService;
-import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDTOOld;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminUpdateDTO;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
-import com.manager.user.domain.exception.UserAlreadyExistException;
-import com.manager.user.helper.UserHelper;
-import com.manager.finance.log.CrudLogConstants;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import com.manager.user.domain.service.verification.EmailVerificationService;
 import com.manager.user.domain.service.verification.PhoneVerificationService;
+import com.manager.user.domain.service.verification.VerificationService;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDTOOld;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +40,7 @@ public class UserAdminService {
     private final PasswordEncoder passwordEncoder;
     private final PhoneVerificationService phoneVerificationService;
     private final EmailVerificationService emailVerificationService;
-    private final UserHelper userHelper;
+    private final VerificationService verificationService;
     private final UserService userService;
     private final RoleRepository roleRepository;
     private final UserMainService userMainService;
@@ -57,9 +55,9 @@ public class UserAdminService {
     }
 
     @Transactional
-    public UserModel createAndGetDTO(UserModel userAdminDTO) {
+    public UserModel create(UserModel userAdminDTO) {
         var user = createUser(userAdminDTO);
-        userHelper.createVerification(user);
+        verificationService.createVerification(user);
         return user;
     }
 
@@ -89,33 +87,6 @@ public class UserAdminService {
         log.info(crudLogConstants.getUpdateEntityToDatabase(), saved);
         return saved;
     }
-
-    private void updatePhoneConfirmed(UserEntity user, boolean isPhoneConfirmed) {
-        if (isPhoneConfirmed != user.isPhoneConfirmed()) {
-            log.debug("The PhoneConfirmed was updated");
-            if (isPhoneConfirmed) {
-                if (phoneVerificationService.isPhoneAlreadyConfirmed(user.getPhone())) {
-                    throw new UserAlreadyExistException(PHONE_EXISTS_ERROR_MESSAGE + user.getPhone());
-                }
-                user.setPhoneConfirmed(true);
-            }
-            user.setPhoneConfirmed(isPhoneConfirmed);
-        }
-    }
-
-    private void updateEmailConfirmed(UserEntity user, boolean isEmailConfirmed) {
-        if (isEmailConfirmed != user.isEmailConfirmed()) {
-            log.debug("The EmailConfirmed was updated");
-            if (isEmailConfirmed) {
-                if (emailVerificationService.isEmailAlreadyConfirmed(user.getEmail())) {
-                    throw new UserAlreadyExistException(EMAIL_EXISTS_ERROR_MESSAGE + user.getEmail());
-                }
-                user.setEmailConfirmed(true);
-            }
-            user.setEmailConfirmed(isEmailConfirmed);
-        }
-    }
-
 
     @Transactional
     @TrackExecutionTime

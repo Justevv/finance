@@ -7,7 +7,7 @@ import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.domain.exception.UserAlreadyExistException;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.verification.PhoneVerificationService;
-import com.manager.user.helper.UserHelper;
+import com.manager.user.domain.service.verification.VerificationService;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class UserService implements UserUseCase {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserHelper userHelper;
+    private final VerificationService verificationService;
     private final PhoneVerificationService phoneVerificationService;
     private final UserMainService userMainService;
 
@@ -45,7 +45,7 @@ public class UserService implements UserUseCase {
     @Override
     public UserModel create(UserModel inputUser) throws UserAlreadyExistException {
         var user = createUser(inputUser);
-        userHelper.createVerification(user);
+        verificationService.createVerification(user);
         return user;
     }
 
