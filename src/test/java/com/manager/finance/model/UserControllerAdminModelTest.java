@@ -63,15 +63,14 @@ class UserControllerAdminModelTest {
 
     @Test
     void getUsersAllInfo_shouldReturnUserEntity_when_userIsExists() {
-        var userEntities = List.of(user);
-        Mockito.when(userRepository.findAll()).thenReturn(userEntities);
-        var userResponseDTO = userAdminService.get(user);
-        Assertions.assertEquals(user.getEmail(), userResponseDTO.getEmail());
-        Assertions.assertEquals(user.getUsername(), userResponseDTO.getUsername());
-        Assertions.assertEquals(user.getPhone(), userResponseDTO.getPhone());
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.ofNullable(user));
+        var userResponseDTO = userAdminService.get(user.getId());
+        Assertions.assertEquals(user.getEmail(), userResponseDTO.email());
+        Assertions.assertEquals(user.getUsername(), userResponseDTO.username());
+        Assertions.assertEquals(user.getPhone(), userResponseDTO.phone());
         Assertions.assertEquals(user.isEmailConfirmed(), userResponseDTO.isEmailConfirmed());
         Assertions.assertEquals(user.isPhoneConfirmed(), userResponseDTO.isPhoneConfirmed());
-        Assertions.assertTrue(user.getRoles().containsAll(userResponseDTO.getRoles()));
+        Assertions.assertTrue(user.getRoles().containsAll(userResponseDTO.roles()));
     }
 
     @Test

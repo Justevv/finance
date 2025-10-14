@@ -50,8 +50,8 @@ public class UserAdminService {
         return userEntities.stream().map(this::convertUserToUserResponseDTO).toList();
     }
 
-    public UserAdminResponseDTOOld get(UserEntity user) {
-        return convertUserToUserResponseDTO(user);
+    public UserModel get(UUID user) {
+        return userRepository.getById(user);
     }
 
     @Transactional

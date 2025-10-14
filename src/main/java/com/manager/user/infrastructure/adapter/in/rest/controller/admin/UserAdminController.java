@@ -13,8 +13,6 @@ import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminRes
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDto;
 import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
-import com.manager.user.infrastructure.adapter.out.persistence.mapper.UserPrincipalMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +43,6 @@ public class UserAdminController {
     private final ErrorHelper errorHelper;
     private final DtoMapper<UserRequestDto, UserResponseDto, UserModel> mapper;
     private final DtoMapper<UserUpdateRequestAdminDto, UserAdminResponseDto, UserModel> mapper2;
-    private final UserPrincipalMapper principalMapper;
 
     @GetMapping
     @PreAuthorize("hasAuthority('user:read')")
@@ -55,8 +52,11 @@ public class UserAdminController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('user:read')")
-    public UserAdminResponseDTOOld getUser(@PathVariable("id") UserEntity user) {
-        return userAdminService.get(user);
+    public ResponseEntity<RestResponse<UserAdminResponseDto>> getUser(@PathVariable("id") UUID userId) {
+        UserAdminResponseDto responseDto = mapper2.toResponseDto(userAdminService.get(userId));
+
+        RestResponse<UserAdminResponseDto> response = new RestResponse<>(null, responseDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping
