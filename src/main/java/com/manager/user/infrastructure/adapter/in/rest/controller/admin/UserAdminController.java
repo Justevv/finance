@@ -7,11 +7,9 @@ import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestRespo
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.admin.UserAdminService;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.admin.UserUpdateRequestAdminDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDTOOld;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDto;
-import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDto;
 import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +39,7 @@ import static com.manager.finance.constant.Constant.USER_ENTITY;
 public class UserAdminController {
     private final UserAdminService userAdminService;
     private final ErrorHelper errorHelper;
-    private final DtoMapper<UserRequestDto, UserResponseDto, UserModel> mapper;
-    private final DtoMapper<UserUpdateRequestAdminDto, UserAdminResponseDto, UserModel> mapper2;
+    private final DtoMapper<UserUpdateRequestAdminDto, UserAdminResponseDto, UserModel> mapper;
 
     @GetMapping
     @PreAuthorize("hasAuthority('user:read')")
@@ -53,7 +50,7 @@ public class UserAdminController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<RestResponse<UserAdminResponseDto>> getUser(@PathVariable("id") UUID userId) {
-        UserAdminResponseDto responseDto = mapper2.toResponseDto(userAdminService.get(userId));
+        UserAdminResponseDto responseDto = mapper.toResponseDto(userAdminService.get(userId));
 
         RestResponse<UserAdminResponseDto> response = new RestResponse<>(null, responseDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -68,7 +65,7 @@ public class UserAdminController {
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
             status = HttpStatus.OK;
-            responseDto = mapper2.toResponseDto(userAdminService.create(mapper2.toModel(userUpdateRequestAdminDto)));
+            responseDto = mapper.toResponseDto(userAdminService.create(mapper.toModel(userUpdateRequestAdminDto)));
         } else {
             status = HttpStatus.BAD_REQUEST;
             restError = new RestError(null, responseEntity);
@@ -80,14 +77,14 @@ public class UserAdminController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<Object> updateUser(@PathVariable("id") UUID userId, @RequestBody @Valid UserUpdateRequestAdminDto userUpdateRequestAdminDto,
-                                             BindingResult bindingResult) {
+    public ResponseEntity<RestResponse<UserAdminResponseDto>> updateUser(@PathVariable("id") UUID userId, @RequestBody @Valid UserUpdateRequestAdminDto userUpdateRequestAdminDto,
+                                                                         BindingResult bindingResult) {
         HttpStatus status;
         RestError restError = null;
-        UserResponseDto userResponseDto = null;
+        UserAdminResponseDto userResponseDto = null;
         var dtoErrors = errorHelper.checkErrors2(bindingResult);
         if (dtoErrors == null) {
-            var model = userAdminService.update(userId, mapper2.toModel(userUpdateRequestAdminDto));
+            var model = userAdminService.update(userId, mapper.toModel(userUpdateRequestAdminDto));
             userResponseDto = mapper.toResponseDto(model);
             status = HttpStatus.OK;
         } else {
@@ -95,7 +92,7 @@ public class UserAdminController {
             restError = new RestError(null, dtoErrors);
         }
 
-        RestResponse<UserResponseDto> restResponse = new RestResponse<>(restError, userResponseDto);
+        RestResponse<UserAdminResponseDto> restResponse = new RestResponse<>(restError, userResponseDto);
         return new ResponseEntity<>(restResponse, status);
     }
 
