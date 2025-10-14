@@ -43,6 +43,8 @@ public class UserPrepareHelper {
                 .email(user.getEmail())
                 .roles(Set.of(roleEntity))
                 .password(user.getPassword())
+                .isEmailConfirmed(user.isEmailConfirmed())
+                .isPhoneConfirmed(user.isPhoneConfirmed())
                 .build();
     }
 }

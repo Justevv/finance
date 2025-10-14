@@ -2,6 +2,7 @@ package com.manager.finance.model;
 
 import com.manager.Manager;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
+import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.admin.UserAdminService;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserAdminUpdateDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
@@ -21,6 +22,8 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+
 @SpringBootTest(classes = Manager.class)
 @Import({UserPrepareHelper.class})
 class UserControllerAdminModelTest {
@@ -37,10 +40,12 @@ class UserControllerAdminModelTest {
     @Autowired
     private UserPrepareHelper userPrepareHelper;
     private UserEntity user;
+    private UserModel userModel;
 
     @BeforeEach
     private void prepareUser() {
         user = userPrepareHelper.createUser();
+        userModel = userPrepareHelper.createUserModel();
     }
 
     @Test
@@ -84,17 +89,14 @@ class UserControllerAdminModelTest {
 
     @Test
     void update_shouldReturnUser_when_userDTOIsOk() {
-        var userDTO = new UserAdminUpdateDTO();
-        userDTO.setPhone("newPhone");
-        userDTO.setUsername("newUsername");
-        userDTO.setEmail("newEmail");
-        userDTO.setPassword("password");
-        var userResponseDTO = userAdminService.update(user, userDTO);
-        Assertions.assertEquals(userDTO.getEmail(), userResponseDTO.getEmail());
-        Assertions.assertEquals(userDTO.getUsername(), userResponseDTO.getUsername());
-        Assertions.assertEquals(userDTO.getPhone(), userResponseDTO.getPhone());
-        Assertions.assertEquals(userDTO.isEmailConfirmed(), userResponseDTO.isEmailConfirmed());
-        Assertions.assertEquals(userDTO.isPhoneConfirmed(), userResponseDTO.isPhoneConfirmed());
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.ofNullable(user));
+        Mockito.when(userRepository.save(any())).thenReturn(user);
+        var userResponseDTO = userAdminService.update(user.getId(), userModel);
+        Assertions.assertEquals(userModel.email(), userResponseDTO.email());
+        Assertions.assertEquals(userModel.username(), userResponseDTO.username());
+        Assertions.assertEquals(userModel.phone(), userResponseDTO.phone());
+        Assertions.assertEquals(userModel.isEmailConfirmed(), userResponseDTO.isEmailConfirmed());
+        Assertions.assertEquals(userModel.isPhoneConfirmed(), userResponseDTO.isPhoneConfirmed());
     }
 
     @Test

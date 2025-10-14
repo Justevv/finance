@@ -64,22 +64,6 @@ public class UserAdminService {
     }
 
     @Transactional
-    public UserAdminResponseDTOOld update(UserEntity user, UserAdminUpdateDTO userUpdateDTO) {
-        log.debug(crudLogConstants.getInputDTOToChangeEntity(), user, userUpdateDTO);
-        userHelper.updateUsername(user, userUpdateDTO.getUsername());
-        userHelper.updateEmail(user, userUpdateDTO.getEmail());
-        userHelper.updatePhone(user, userUpdateDTO.getPhone());
-        userHelper.updatePassword(user, userUpdateDTO.getPassword());
-        updateEmailConfirmed(user, userUpdateDTO.isEmailConfirmed());
-        updatePhoneConfirmed(user, userUpdateDTO.isPhoneConfirmed());
-        userSpringDataRepository.save(user);
-        log.info(crudLogConstants.getUpdateEntityToDatabase(), user);
-        var adminUserResponseDTO = convertUserToUserResponseDTO(user);
-        log.debug(crudLogConstants.getOutputDTOAfterMapping(), adminUserResponseDTO);
-        return adminUserResponseDTO;
-    }
-
-    @Transactional
     @TrackExecutionTime
     public UserModel update(UUID uuid, UserModel input) {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), input, uuid);
