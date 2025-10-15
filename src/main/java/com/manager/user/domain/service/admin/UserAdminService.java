@@ -2,13 +2,12 @@ package com.manager.user.domain.service.admin;
 
 import com.manager.finance.log.CrudLogConstants;
 import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.user.application.port.in.UserAdminUseCase;
 import com.manager.user.application.port.out.repository.UserRepository;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.UserMainService;
 import com.manager.user.domain.service.UserService;
 import com.manager.user.domain.service.verification.VerificationService;
-import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDTOOld;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +24,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserAdminService {
-    private static final String EMAIL_EXISTS_ERROR_MESSAGE = "There is an account with that email address: ";
-    private static final String PHONE_EXISTS_ERROR_MESSAGE = "There is an account with that phone: ";
+public class UserAdminService implements UserAdminUseCase {
     private static final String USER_LOG_NAME = "adminUser";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(USER_LOG_NAME);
     @Getter
@@ -39,15 +36,21 @@ public class UserAdminService {
     private final RoleRepository roleRepository;
     private final UserMainService userMainService;
 
+    @TrackExecutionTime
+    @Override
     public List<UserModel> getAll() {
         return userRepository.findAll();
     }
 
+    @TrackExecutionTime
+    @Override
     public UserModel get(UUID user) {
         return userRepository.getById(user);
     }
 
     @Transactional
+    @TrackExecutionTime
+    @Override
     public UserModel create(UserModel userAdminDTO) {
         var user = createUser(userAdminDTO);
         verificationService.createVerification(user);
@@ -56,6 +59,7 @@ public class UserAdminService {
 
     @Transactional
     @TrackExecutionTime
+    @Override
     public UserModel update(UUID uuid, UserModel input) {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), input, uuid);
         var currentUser = userRepository.getById(uuid);
@@ -83,6 +87,7 @@ public class UserAdminService {
 
     @Transactional
     @TrackExecutionTime
+    @Override
     public void delete(UUID userId) {
         var currentUser = userRepository.getById(userId);
         userMainService.delete(currentUser);
@@ -106,12 +111,6 @@ public class UserAdminService {
         userRepository.save(user);
         log.info(crudLogConstants.getSaveEntityToDatabase(), user);
         return user;
-    }
-
-    private UserAdminResponseDTOOld convertUserToUserResponseDTO(UserEntity user) {
-        var userResponseDTO = getMapper().map(user, UserAdminResponseDTOOld.class);
-        log.debug(crudLogConstants.getOutputDTOAfterMapping(), userResponseDTO);
-        return userResponseDTO;
     }
 
 }

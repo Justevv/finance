@@ -5,8 +5,8 @@ import com.manager.finance.infrastructure.adapter.in.exception.InvalidUUIDExcept
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestError;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
+import com.manager.user.application.port.in.UserAdminUseCase;
 import com.manager.user.domain.model.UserModel;
-import com.manager.user.domain.service.admin.UserAdminService;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.admin.UserUpdateRequestAdminDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserAdminResponseDto;
 import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
@@ -36,14 +36,14 @@ import static com.manager.finance.constant.Constant.USER_ENTITY;
 @Slf4j
 @RequiredArgsConstructor
 public class UserAdminController {
-    private final UserAdminService userAdminService;
+    private final UserAdminUseCase userAdminUseCase;
     private final ErrorHelper errorHelper;
     private final DtoMapper<UserUpdateRequestAdminDto, UserAdminResponseDto, UserModel> mapper;
 
     @GetMapping
     @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<RestResponse<List<UserAdminResponseDto>>> getUsers() {
-        var responseDto = userAdminService.getAll().stream().map(mapper::toResponseDto).toList();
+        var responseDto = userAdminUseCase.getAll().stream().map(mapper::toResponseDto).toList();
 
         RestResponse<List<UserAdminResponseDto>> response = new RestResponse<>(null, responseDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -52,7 +52,7 @@ public class UserAdminController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<RestResponse<UserAdminResponseDto>> getUser(@PathVariable("id") UUID userId) {
-        UserAdminResponseDto responseDto = mapper.toResponseDto(userAdminService.get(userId));
+        UserAdminResponseDto responseDto = mapper.toResponseDto(userAdminUseCase.get(userId));
 
         RestResponse<UserAdminResponseDto> response = new RestResponse<>(null, responseDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -67,7 +67,7 @@ public class UserAdminController {
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
             status = HttpStatus.OK;
-            responseDto = mapper.toResponseDto(userAdminService.create(mapper.toModel(userUpdateRequestAdminDto)));
+            responseDto = mapper.toResponseDto(userAdminUseCase.create(mapper.toModel(userUpdateRequestAdminDto)));
         } else {
             status = HttpStatus.BAD_REQUEST;
             restError = new RestError(null, responseEntity);
@@ -86,7 +86,7 @@ public class UserAdminController {
         UserAdminResponseDto userResponseDto = null;
         var dtoErrors = errorHelper.checkErrors2(bindingResult);
         if (dtoErrors == null) {
-            var model = userAdminService.update(userId, mapper.toModel(userUpdateRequestAdminDto));
+            var model = userAdminUseCase.update(userId, mapper.toModel(userUpdateRequestAdminDto));
             userResponseDto = mapper.toResponseDto(model);
             status = HttpStatus.OK;
         } else {
@@ -103,7 +103,7 @@ public class UserAdminController {
     public ResponseEntity<Void> deleteUser(@PathVariable("id") String id) {
         try {
             UUID uuid = UUID.fromString(id);
-            userAdminService.delete(uuid);
+            userAdminUseCase.delete(uuid);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (IllegalArgumentException e) {
             throw new InvalidUUIDException(id, USER_ENTITY);
