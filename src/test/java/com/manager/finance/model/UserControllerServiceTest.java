@@ -1,20 +1,20 @@
 package com.manager.finance.model;
 
-import com.manager.user.domain.model.UserModel;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
+import com.manager.user.domain.model.UserModel;
+import com.manager.user.domain.service.UserService;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
-import com.manager.user.domain.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -22,13 +22,13 @@ import java.util.Optional;
 @SpringBootTest
 @Import({UserPrepareHelper.class})
 class UserControllerServiceTest {
-    @MockBean
+    @MockitoBean
     private UserSpringDataRepository userRepository;
-    @MockBean
+    @MockitoBean
     private EmailVerificationSpringDataRepository emailVerificationRepository;
-    @MockBean
+    @MockitoBean
     private PhoneVerificationSpringDataRepository phoneVerificationRepository;
-    @MockBean
+    @MockitoBean
     private Principal principal;
     @Autowired
     private UserService userService;
@@ -81,8 +81,8 @@ class UserControllerServiceTest {
     @Test
     void delete_shouldReturnNull_when_userIsExists() {
         var principal = UserModel.builder()
-            .id(user.getId())
-            .build();
+                .id(user.getId())
+                .build();
         userService.delete(principal);
         Assertions.assertNull(null);
     }

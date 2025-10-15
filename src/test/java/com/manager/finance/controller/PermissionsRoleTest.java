@@ -1,10 +1,10 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import com.manager.finance.helper.converter.RoleIdConverter;
 import com.manager.finance.helper.prepare.RolePrepareHelper;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.RoleSpringDataRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,10 +13,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 class PermissionsRoleTest {
     private static final String PERMISSION_API = "/v1/admin/role/{id}/permission";
-    @MockBean
+    @MockitoBean
     private RoleSpringDataRepository roleRepository;
     @Autowired
     private MockMvc mockMvc;

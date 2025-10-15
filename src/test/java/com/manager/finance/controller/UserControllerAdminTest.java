@@ -1,16 +1,16 @@
 package com.manager.finance.controller;
 
 import com.manager.Manager;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
 import com.manager.finance.helper.converter.RoleIdConverter;
 import com.manager.finance.helper.converter.UserIdConverter;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.RoleSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,11 +18,11 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -30,7 +30,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = Manager.class)
 @AutoConfigureMockMvc
@@ -48,13 +50,13 @@ class UserControllerAdminTest {
     private static final String NEW_PHONE = "1";
     private static final String NEW_EMAIL = "st@a.ru";
     private static final String NEW_ROLE = "newRole";
-    @MockBean
+    @MockitoBean
     private UserSpringDataRepository userRepository;
-    @MockBean
+    @MockitoBean
     private EmailVerificationSpringDataRepository emailVerificationRepository;
-    @MockBean
+    @MockitoBean
     private PhoneVerificationSpringDataRepository phoneVerificationRepository;
-    @MockBean
+    @MockitoBean
     private RoleSpringDataRepository roleRepository;
     @Autowired
     private MockMvc mockMvc;

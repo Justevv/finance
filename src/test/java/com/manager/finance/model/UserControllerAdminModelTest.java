@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.security.Principal;
 import java.util.List;
@@ -26,13 +26,13 @@ import static org.mockito.ArgumentMatchers.any;
 @SpringBootTest(classes = Manager.class)
 @Import({UserPrepareHelper.class})
 class UserControllerAdminModelTest {
-    @MockBean
+    @MockitoBean
     private UserSpringDataRepository userRepository;
-    @MockBean
+    @MockitoBean
     private EmailVerificationSpringDataRepository emailVerificationRepository;
-    @MockBean
+    @MockitoBean
     private PhoneVerificationSpringDataRepository phoneVerificationRepository;
-    @MockBean
+    @MockitoBean
     private Principal principal;
     @Autowired
     private UserAdminService userAdminService;
@@ -53,7 +53,7 @@ class UserControllerAdminModelTest {
         Mockito.when(userRepository.findAll()).thenReturn(userEntities);
 
         var userResponseDTO = userAdminService.getAll();
-        Assertions.assertEquals(user.getEmail(), userResponseDTO.get(0) .email());
+        Assertions.assertEquals(user.getEmail(), userResponseDTO.get(0).email());
         Assertions.assertEquals(user.getUsername(), userResponseDTO.get(0).username());
         Assertions.assertEquals(user.getPhone(), userResponseDTO.get(0).phone());
         Assertions.assertEquals(user.isEmailConfirmed(), userResponseDTO.get(0).isEmailConfirmed());

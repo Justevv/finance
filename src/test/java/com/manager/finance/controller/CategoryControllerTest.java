@@ -19,9 +19,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -35,11 +35,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import({UserPrepareHelper.class, CategoryPrepareHelper.class, CategoryIdConverter.class})
 class CategoryControllerTest {
-    @MockBean
+    @MockitoBean
     private UserSpringDataRepository userRepository;
-    @MockBean
+    @MockitoBean
     private CategorySpringDataRepository categoryRepository;
-    @MockBean
+    @MockitoBean
     private FavoriteCategorySpringDataRepository favoriteCategorySpringDataRepository;
     @Autowired
     private MockMvc mockMvc;

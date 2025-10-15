@@ -1,24 +1,24 @@
 package com.manager.finance.model;
 
 import com.manager.Manager;
+import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.user.domain.model.UserModel;
+import com.manager.user.domain.service.verification.EmailVerificationService;
+import com.manager.user.domain.service.verification.PhoneVerificationService;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.EmailVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PhoneVerificationEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.UserEntity;
-import com.manager.finance.helper.prepare.UserPrepareHelper;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
-import com.manager.user.domain.service.verification.EmailVerificationService;
-import com.manager.user.domain.service.verification.PhoneVerificationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -34,11 +34,11 @@ class EmailVerificationControllerServiceTest {
     private PhoneVerificationService phoneVerificationService;
     @Autowired
     private EmailVerificationService emailVerificationService;
-    @MockBean
+    @MockitoBean
     private UserSpringDataRepository userRepository;
-    @MockBean
+    @MockitoBean
     private EmailVerificationSpringDataRepository emailVerificationRepository;
-    @MockBean
+    @MockitoBean
     private PhoneVerificationSpringDataRepository phoneVerificationSpringDataRepository;
     @Autowired
     private UserPrepareHelper userPrepareHelper;
