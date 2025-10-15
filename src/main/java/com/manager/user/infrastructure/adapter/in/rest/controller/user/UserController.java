@@ -9,7 +9,6 @@ import com.manager.user.application.port.in.UserUseCase;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserRequestDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.UserUpdateRequestDto;
-import com.manager.user.infrastructure.adapter.in.rest.dto.response.OldUserResponseDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.UserResponseDto;
 import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
 import com.manager.user.infrastructure.adapter.out.persistence.mapper.UserPrincipalMapper;
@@ -43,7 +42,7 @@ public class UserController {
     @GetMapping
     @TrackExecutionTime
     public ResponseEntity<RestResponse<UserResponseDto>> getUser(Principal principal) {
-        var user =  mapper.toResponseDto(principalMapper.toModel(principal));
+        var user = mapper.toResponseDto(principalMapper.toModel(principal));
         RestResponse<UserResponseDto> response = new RestResponse<>(null, user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
