@@ -1,17 +1,29 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.admin;
 
 
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.RoleDTO;
-import com.manager.user.domain.service.admin.RoleService;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
+import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
+import com.manager.user.domain.model.RoleModel;
+import com.manager.user.domain.service.admin.RoleService;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.OldRoleDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.RoleRequestDto;
+import com.manager.user.infrastructure.adapter.in.rest.dto.response.RoleResponseDto;
+import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
+import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -22,11 +34,15 @@ import java.util.List;
 public class Role {
     private final RoleService roleService;
     private final ErrorHelper errorHelper;
+    private final DtoMapper<RoleRequestDto, RoleResponseDto, RoleModel> mapper;
 
     @GetMapping
     @PreAuthorize("hasAuthority('role:crud')")
-    public List<RoleEntity> getRoles() {
-        return roleService.getAll();
+    public ResponseEntity<RestResponse<List<RoleResponseDto>>> getRoles() {
+        var responseDto = roleService.getAll().stream().map(mapper::toResponseDto).toList();
+
+        RestResponse<List<RoleResponseDto>> response = new RestResponse<>(null, responseDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -37,7 +53,7 @@ public class Role {
 
     @PostMapping
     @PreAuthorize("hasAuthority('role:crud')")
-    public ResponseEntity<Object> createRole(@Valid RoleDTO role, BindingResult bindingResult) {
+    public ResponseEntity<Object> createRole(@Valid OldRoleDTO role, BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {
             responseEntity = ResponseEntity.ok(roleService.create(role));
@@ -47,7 +63,7 @@ public class Role {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('role:crud')")
-    public ResponseEntity<Object> updateRole(@PathVariable("id") RoleEntity role, @Valid RoleDTO roleDTO,
+    public ResponseEntity<Object> updateRole(@PathVariable("id") RoleEntity role, @Valid OldRoleDTO roleDTO,
                                              BindingResult bindingResult) {
         var responseEntity = errorHelper.checkErrors(bindingResult);
         if (responseEntity == null) {

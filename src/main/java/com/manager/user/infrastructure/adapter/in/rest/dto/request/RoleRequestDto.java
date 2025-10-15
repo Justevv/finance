@@ -1,13 +1,14 @@
 package com.manager.user.infrastructure.adapter.in.rest.dto.request;
 
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
-import lombok.Data;
+import lombok.Builder;
 
-import java.util.Collection;
+import java.util.Set;
 
-@Data
-public class RoleDTO {
-    private String name;
-    private Collection<PermissionEntity> permissions;
+@Builder
+public record RoleRequestDto(
+        String name,
+        Set<PermissionEntity> permissions
+) {
 
 }

@@ -8,7 +8,7 @@ import com.manager.user.domain.exception.UserAlreadyExistException;
 import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.verification.PhoneVerificationService;
 import com.manager.user.domain.service.verification.VerificationService;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.RoleSpringDataRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class UserService implements UserUseCase {
     private static final String USER_LOG_NAME = "user";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(USER_LOG_NAME);
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final RoleSpringDataRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final VerificationService verificationService;
     private final PhoneVerificationService phoneVerificationService;

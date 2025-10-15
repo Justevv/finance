@@ -1,7 +1,7 @@
 package com.manager.user.listener;
 
 import com.manager.user.event.ConfirmationCompleteEvent;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.RoleSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 public class ConfirmationCompleteListener {
-    private final RoleRepository roleRepository;
+    private final RoleSpringDataRepository roleRepository;
 
     @EventListener
     @SneakyThrows

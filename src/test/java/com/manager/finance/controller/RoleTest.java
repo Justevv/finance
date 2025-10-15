@@ -5,7 +5,7 @@ import com.manager.user.infrastructure.adapter.out.persistence.entity.Permission
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import com.manager.finance.helper.converter.RoleIdConverter;
 import com.manager.finance.helper.prepare.RolePrepareHelper;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.RoleSpringDataRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RoleTest {
     private static final String ROLE_API = "/v1/admin/role";
     @MockBean
-    private RoleRepository roleRepository;
+    private RoleSpringDataRepository roleRepository;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -52,7 +52,7 @@ class RoleTest {
         Mockito.when(roleRepository.findAll()).thenReturn(List.of(role));
         mockMvc.perform(MockMvcRequestBuilders.get(ROLE_API))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("[0].name").value(role.getName()));
+                .andExpect(jsonPath("payload.[0].name").value(role.getName()));
     }
 
     @Test

@@ -8,7 +8,7 @@ import com.manager.user.domain.model.UserModel;
 import com.manager.user.domain.service.UserMainService;
 import com.manager.user.domain.service.UserService;
 import com.manager.user.domain.service.verification.VerificationService;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.RoleSpringDataRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class UserAdminService implements UserAdminUseCase {
     private final PasswordEncoder passwordEncoder;
     private final VerificationService verificationService;
     private final UserService userService;
-    private final RoleRepository roleRepository;
+    private final RoleSpringDataRepository roleRepository;
     private final UserMainService userMainService;
 
     @TrackExecutionTime

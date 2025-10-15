@@ -1,12 +1,14 @@
 package com.manager.user.domain.service.admin;
 
 
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.RoleDTO;
+import com.manager.user.application.port.out.repository.RoleRepository;
+import com.manager.user.domain.model.RoleModel;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.OldRoleDTO;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import com.manager.user.domain.exception.UserAlreadyExistException;
 import com.manager.finance.log.CrudLogConstants;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.RoleSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -21,27 +23,28 @@ import java.util.List;
 public class RoleService {
     private static final String ROLE_LOG_NAME = "role";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(ROLE_LOG_NAME);
-    private final ModelMapper mapper;
+    private final ModelMapper oldMapper;
+    private final RoleSpringDataRepository roleSpringDataRepository;
     private final RoleRepository roleRepository;
 
-    public List<RoleEntity> getAll() {
+    public List<RoleModel> getAll() {
         return roleRepository.findAll();
     }
 
     @Transactional
-    public RoleEntity create(RoleDTO roleDTO) throws UserAlreadyExistException {
+    public RoleEntity create(OldRoleDTO roleDTO) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputNewDTO(), roleDTO);
-        var role = mapper.map(roleDTO, RoleEntity.class);
-        roleRepository.save(role);
+        var role = oldMapper.map(roleDTO, RoleEntity.class);
+        roleSpringDataRepository.save(role);
         log.info(crudLogConstants.getSaveEntityToDatabase(), role);
         return role;
     }
 
     @Transactional
-    public RoleEntity update(RoleEntity role, RoleDTO roleDTO) throws UserAlreadyExistException {
+    public RoleEntity update(RoleEntity role, OldRoleDTO roleDTO) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), roleDTO, role);
-        mapper.map(roleDTO, role);
-        roleRepository.save(role);
+        oldMapper.map(roleDTO, role);
+        roleSpringDataRepository.save(role);
         log.info(crudLogConstants.getUpdateEntityToDatabase(), role);
         return role;
     }
@@ -49,7 +52,7 @@ public class RoleService {
     @Transactional
     public Void delete(RoleEntity role) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputEntityForDelete(), role);
-        roleRepository.delete(role);
+        roleSpringDataRepository.delete(role);
         log.info(crudLogConstants.getDeleteEntityFromDatabase());
         return null;
     }
@@ -59,7 +62,7 @@ public class RoleService {
         var permissionEntities = permissionIds.stream().map(PermissionEntity::valueOf).toList();
         log.debug("For role {} will be add the permissions: {}", role, permissionEntities);
         role.getPermissions().addAll(permissionEntities);
-        roleRepository.save(role);
+        roleSpringDataRepository.save(role);
         return role;
     }
 
@@ -68,7 +71,7 @@ public class RoleService {
         var permissionEntities = permissionIds.stream().map(PermissionEntity::valueOf).toList();
         log.debug("For role {} will be remove the permissions: {}", role, permissionEntities);
         permissionEntities.forEach(role.getPermissions()::remove);
-        roleRepository.save(role);
+        roleSpringDataRepository.save(role);
         return role;
     }
 

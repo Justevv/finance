@@ -5,7 +5,7 @@ import com.manager.user.infrastructure.adapter.out.persistence.entity.Permission
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import com.manager.finance.helper.converter.RoleIdConverter;
 import com.manager.finance.helper.prepare.RolePrepareHelper;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.RoleSpringDataRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PermissionsRoleTest {
     private static final String PERMISSION_API = "/v1/admin/role/{id}/permission";
     @MockBean
-    private RoleRepository roleRepository;
+    private RoleSpringDataRepository roleRepository;
     @Autowired
     private MockMvc mockMvc;
     @Autowired

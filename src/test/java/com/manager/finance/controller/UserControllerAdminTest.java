@@ -8,7 +8,7 @@ import com.manager.finance.helper.converter.RoleIdConverter;
 import com.manager.finance.helper.converter.UserIdConverter;
 import com.manager.finance.helper.prepare.UserPrepareHelper;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.PhoneVerificationSpringDataRepository;
-import com.manager.user.infrastructure.adapter.out.persistence.repository.RoleRepository;
+import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.RoleSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.UserSpringDataRepository;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.EmailVerificationSpringDataRepository;
 import lombok.SneakyThrows;
@@ -28,8 +28,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -57,7 +55,7 @@ class UserControllerAdminTest {
     @MockBean
     private PhoneVerificationSpringDataRepository phoneVerificationRepository;
     @MockBean
-    private RoleRepository roleRepository;
+    private RoleSpringDataRepository roleRepository;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
