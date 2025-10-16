@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -29,6 +30,10 @@ public class RoleService {
 
     public List<RoleModel> getAll() {
         return roleRepository.findAll();
+    }
+
+    public RoleModel get(UUID id) {
+        return roleRepository.getById(id);
     }
 
     @Transactional

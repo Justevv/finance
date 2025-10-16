@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/admin/role")
@@ -47,8 +48,11 @@ public class Role {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('role:crud')")
-    public RoleEntity getRole(@PathVariable("id") RoleEntity role) {
-        return role;
+    public ResponseEntity<RestResponse<RoleResponseDto>> getRole(@PathVariable("id") UUID id) {
+        var responseDto = mapper.toResponseDto(roleService.get(id));
+
+        RestResponse<RoleResponseDto> response = new RestResponse<>(null, responseDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping

@@ -40,7 +40,7 @@ class RoleTest {
     private RoleEntity role;
 
     @BeforeEach
-    private void prepare() {
+    public void prepare() {
         role = rolePrepareHelper.createRole();
         Mockito.when(roleRepository.findById(role.getId())).thenReturn(Optional.ofNullable(role));
     }
@@ -52,7 +52,9 @@ class RoleTest {
         Mockito.when(roleRepository.findAll()).thenReturn(List.of(role));
         mockMvc.perform(MockMvcRequestBuilders.get(ROLE_API))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("payload.[0].name").value(role.getName()));
+                .andExpect(jsonPath("payload.[0].id").value(role.getId().toString()))
+                .andExpect(jsonPath("payload.[0].name").value(role.getName()))
+                .andExpect(jsonPath("payload.[0].permissions").value(PermissionEntity.ALL_READ.toString()));
     }
 
     @Test
@@ -61,7 +63,9 @@ class RoleTest {
     void getRole_shouldReturnRoleEntityAndOk_when_roleIsExists() {
         mockMvc.perform(MockMvcRequestBuilders.get(ROLE_API + "/" + role.getId()))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.name").value(role.getName()));
+                .andExpect(jsonPath("$.payload.id").value(role.getId().toString()))
+                .andExpect(jsonPath("$.payload.name").value(role.getName()))
+                .andExpect(jsonPath("$.payload.permissions").value(PermissionEntity.ALL_READ.toString()));
     }
 
 
