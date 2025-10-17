@@ -59,7 +59,7 @@ public class RoleController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('role:crud')")
-    public ResponseEntity<Object> createRole(@RequestBody @Valid RoleRequestDto role, BindingResult bindingResult) {
+    public ResponseEntity<RestResponse<RoleResponseDto>> createRole(@RequestBody @Valid RoleRequestDto role, BindingResult bindingResult) {
         HttpStatus status;
         RestError restError = null;
         RoleResponseDto responseDto = null;
