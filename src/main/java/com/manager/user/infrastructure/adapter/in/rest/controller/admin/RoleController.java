@@ -6,7 +6,6 @@ import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestRespo
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.user.domain.model.RoleModel;
 import com.manager.user.domain.service.admin.RoleService;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.OldRoleDTO;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.RoleRequestDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.RoleResponseDto;
 import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
@@ -78,13 +77,36 @@ public class RoleController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('role:crud')")
-    public ResponseEntity<Object> updateRole(@PathVariable("id") RoleEntity role, @Valid OldRoleDTO roleDTO,
-                                             BindingResult bindingResult) {
-        var responseEntity = errorHelper.checkErrors(bindingResult);
-        if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(roleService.update(role, roleDTO));
+    public ResponseEntity<RestResponse<RoleResponseDto>> updateRole(@PathVariable("id") String id,
+                                                                    @RequestBody @Valid RoleRequestDto requestDto, BindingResult bindingResult) {
+        HttpStatus status;
+        RestError restError = null;
+        RoleResponseDto responseDto = null;
+        var dtoErrors = errorHelper.checkErrors2(bindingResult);
+        try {
+            UUID uuid = UUID.fromString(id);
+            if (dtoErrors == null) {
+                var model = roleService.update(uuid, requestDto);
+                responseDto = mapper.toResponseDto(model);
+                status = HttpStatus.OK;
+            } else {
+                status = HttpStatus.BAD_REQUEST;
+                restError = new RestError(null, dtoErrors);
+            }
+        } catch (IllegalArgumentException e) {
+            status = HttpStatus.BAD_REQUEST;
+            restError = new RestError("Invalid UUID", null);
         }
-        return responseEntity;
+
+        RestResponse<RoleResponseDto> restResponse = new RestResponse<>(restError, responseDto);
+        return new ResponseEntity<>(restResponse, status);
+
+
+//        var responseEntity = errorHelper.checkErrors(bindingResult);
+//        if (responseEntity == null) {
+//            responseEntity = ResponseEntity.ok(roleService.update(role, roleDTO));
+//        }
+//        return responseEntity;
     }
 
     @DeleteMapping("/{id}")

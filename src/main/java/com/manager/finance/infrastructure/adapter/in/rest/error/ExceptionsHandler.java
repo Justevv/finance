@@ -7,6 +7,7 @@ import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestRespo
 import com.manager.user.domain.exception.UserAlreadyExistException;
 import com.manager.user.domain.exception.UserIpAddressWasBlockedException;
 import com.manager.user.domain.exception.VerificationNotFoundException;
+import com.manager.user.infrastructure.adapter.out.persistence.exception.RoleNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -69,6 +70,18 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfResponse,
                 new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+    }
+
+    @ExceptionHandler
+    protected ResponseEntity<Object> handleRoleNotFoundException(
+            RoleNotFoundException ex, WebRequest request) {
+        log.warn(ex.getMessage());
+        var restError = RestError.builder()
+                .text(ex.getMessage())
+                .build();
+        RestResponse<Object> response = new RestResponse<>(restError, null);
+        return handleExceptionInternal(ex, response,
+                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
 }

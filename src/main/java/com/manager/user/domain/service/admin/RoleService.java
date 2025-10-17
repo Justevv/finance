@@ -1,13 +1,13 @@
 package com.manager.user.domain.service.admin;
 
 
+import com.manager.finance.log.CrudLogConstants;
 import com.manager.user.application.port.out.repository.RoleRepository;
+import com.manager.user.domain.exception.UserAlreadyExistException;
 import com.manager.user.domain.model.RoleModel;
-import com.manager.user.infrastructure.adapter.in.rest.dto.request.OldRoleDTO;
+import com.manager.user.infrastructure.adapter.in.rest.dto.request.RoleRequestDto;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
-import com.manager.user.domain.exception.UserAlreadyExistException;
-import com.manager.finance.log.CrudLogConstants;
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.RoleSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,12 +50,17 @@ public class RoleService {
     }
 
     @Transactional
-    public RoleEntity update(RoleEntity role, OldRoleDTO roleDTO) throws UserAlreadyExistException {
-        log.debug(crudLogConstants.getInputDTOToChangeEntity(), roleDTO, role);
-        oldMapper.map(roleDTO, role);
-        roleSpringDataRepository.save(role);
-        log.info(crudLogConstants.getUpdateEntityToDatabase(), role);
-        return role;
+    public RoleModel update(UUID roleId, RoleRequestDto model) throws UserAlreadyExistException {
+        log.debug(crudLogConstants.getInputDTOToChangeEntity(), model, roleId);
+        var current = roleRepository.getById(roleId);
+        RoleModel save = RoleModel.builder()
+                .id(current.id())
+                .name(model.name())
+                .permissions(model.permissions())
+                .build();
+        var saved = roleRepository.save(save);
+        log.info(crudLogConstants.getUpdateEntityToDatabase(), roleId);
+        return saved;
     }
 
     @Transactional
