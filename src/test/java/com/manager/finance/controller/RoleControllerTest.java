@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import({RoleIdConverter.class, RolePrepareHelper.class})
 @ActiveProfiles("test")
-class RoleTest {
+class RoleControllerTest {
     private static final String ROLE_API = "/v1/admin/role";
     @MockitoBean
     private RoleSpringDataRepository roleRepository;

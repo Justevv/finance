@@ -34,7 +34,7 @@ import java.util.UUID;
 @RequestMapping("/v1/admin/role")
 @Slf4j
 @RequiredArgsConstructor
-public class Role {
+public class RoleController {
     private final RoleService roleService;
     private final ErrorHelper errorHelper;
     private final DtoMapper<RoleRequestDto, RoleResponseDto, RoleModel> mapper;
