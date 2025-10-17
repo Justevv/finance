@@ -1,7 +1,6 @@
 package com.manager.user.application.port.out.repository;
 
 import com.manager.user.domain.model.RoleModel;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,4 +13,6 @@ public interface RoleRepository {
     Optional<RoleModel> findById(UUID id);
 
     RoleModel getById(UUID id);
+
+    RoleModel save(RoleModel model);
 }

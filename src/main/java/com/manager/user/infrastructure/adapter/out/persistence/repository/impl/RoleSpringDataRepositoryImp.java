@@ -37,4 +37,9 @@ public class RoleSpringDataRepositoryImp implements RoleRepository {
     public RoleModel getById(UUID id) {
         return repository.findById(id).map(mapper::toModel).orElseThrow(() -> new RoleNotFoundException(id));
     }
+
+    @Override
+    public RoleModel save(RoleModel model) {
+        return mapper.toModel(repository.save(mapper.toEntity(model)));
+    }
 }

@@ -1,6 +1,7 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.admin;
 
 
+import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestError;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
 import com.manager.user.domain.model.RoleModel;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -57,12 +59,21 @@ public class Role {
 
     @PostMapping
     @PreAuthorize("hasAuthority('role:crud')")
-    public ResponseEntity<Object> createRole(@Valid OldRoleDTO role, BindingResult bindingResult) {
-        var responseEntity = errorHelper.checkErrors(bindingResult);
+    public ResponseEntity<Object> createRole(@RequestBody @Valid RoleRequestDto role, BindingResult bindingResult) {
+        HttpStatus status;
+        RestError restError = null;
+        RoleResponseDto responseDto = null;
+        var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
-            responseEntity = ResponseEntity.ok(roleService.create(role));
+            status = HttpStatus.OK;
+            responseDto = mapper.toResponseDto(roleService.create(mapper.toModel(role)));
+        } else {
+            status = HttpStatus.BAD_REQUEST;
+            restError = new RestError(null, responseEntity);
         }
-        return responseEntity;
+
+        RestResponse<RoleResponseDto> response = new RestResponse<>(restError, responseDto);
+        return new ResponseEntity<>(response, status);
     }
 
     @PutMapping("/{id}")

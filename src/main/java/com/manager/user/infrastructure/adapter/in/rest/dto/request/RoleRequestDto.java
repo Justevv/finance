@@ -3,6 +3,7 @@ package com.manager.user.infrastructure.adapter.in.rest.dto.request;
 import com.manager.user.infrastructure.adapter.out.persistence.entity.PermissionEntity;
 import lombok.Builder;
 
+import java.util.List;
 import java.util.Set;
 
 @Builder

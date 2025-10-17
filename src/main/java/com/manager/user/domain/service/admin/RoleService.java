@@ -37,12 +37,16 @@ public class RoleService {
     }
 
     @Transactional
-    public RoleEntity create(OldRoleDTO roleDTO) throws UserAlreadyExistException {
-        log.debug(crudLogConstants.getInputNewDTO(), roleDTO);
-        var role = oldMapper.map(roleDTO, RoleEntity.class);
-        roleSpringDataRepository.save(role);
-        log.info(crudLogConstants.getSaveEntityToDatabase(), role);
-        return role;
+    public RoleModel create(RoleModel model) throws UserAlreadyExistException {
+        log.debug(crudLogConstants.getInputNewDTO(), model);
+        RoleModel save = RoleModel.builder()
+                .id(UUID.randomUUID())
+                .name(model.name())
+                .permissions(model.permissions())
+                .build();
+        RoleModel saved = roleRepository.save(save);
+        log.info(crudLogConstants.getSaveEntityToDatabase(), model);
+        return saved;
     }
 
     @Transactional
