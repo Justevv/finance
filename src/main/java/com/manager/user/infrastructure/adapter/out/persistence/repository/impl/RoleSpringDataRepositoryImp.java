@@ -42,4 +42,9 @@ public class RoleSpringDataRepositoryImp implements RoleRepository {
     public RoleModel save(RoleModel model) {
         return mapper.toModel(repository.save(mapper.toEntity(model)));
     }
+
+    @Override
+    public void deleteById(UUID id) {
+        repository.deleteById(id);
+    }
 }

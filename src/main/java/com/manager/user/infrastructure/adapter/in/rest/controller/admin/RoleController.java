@@ -1,6 +1,7 @@
 package com.manager.user.infrastructure.adapter.in.rest.controller.admin;
 
 
+import com.manager.finance.infrastructure.adapter.in.exception.InvalidUUIDException;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestError;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
@@ -9,7 +10,6 @@ import com.manager.user.domain.service.admin.RoleService;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.RoleRequestDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.RoleResponseDto;
 import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
-import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
+
+import static com.manager.finance.constant.Constant.USER_ENTITY;
 
 @RestController
 @RequestMapping("/v1/admin/role")
@@ -100,19 +102,18 @@ public class RoleController {
 
         RestResponse<RoleResponseDto> restResponse = new RestResponse<>(restError, responseDto);
         return new ResponseEntity<>(restResponse, status);
-
-
-//        var responseEntity = errorHelper.checkErrors(bindingResult);
-//        if (responseEntity == null) {
-//            responseEntity = ResponseEntity.ok(roleService.update(role, roleDTO));
-//        }
-//        return responseEntity;
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('role:crud')")
-    public ResponseEntity<Void> deleteRole(@PathVariable("id") RoleEntity role) {
-        return ResponseEntity.ok(roleService.delete(role));
+    public ResponseEntity<Void> deleteRole(@PathVariable("id") String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            roleService.delete(uuid);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidUUIDException(id, USER_ENTITY);
+        }
     }
 
 }

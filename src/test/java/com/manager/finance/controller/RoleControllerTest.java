@@ -139,6 +139,6 @@ class RoleControllerTest {
     @SneakyThrows
     void deleteRole_shouldReturnNullAndOk_when_roleIsExists() {
         mockMvc.perform(MockMvcRequestBuilders.delete(ROLE_API + "/" + role.getId()))
-                .andExpect(status().is(200));
+                .andExpect(status().is(204));
     }
 }

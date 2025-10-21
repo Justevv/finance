@@ -64,11 +64,11 @@ public class RoleService {
     }
 
     @Transactional
-    public Void delete(RoleEntity role) throws UserAlreadyExistException {
-        log.debug(crudLogConstants.getInputEntityForDelete(), role);
-        roleSpringDataRepository.delete(role);
+    public void delete(UUID id) throws UserAlreadyExistException {
+        log.debug(crudLogConstants.getInputEntityForDelete(), id);
+        roleRepository.getById(id);
+        roleRepository.deleteById(id);
         log.info(crudLogConstants.getDeleteEntityFromDatabase());
-        return null;
     }
 
     public RoleEntity addPermission(RoleEntity role, List<String> permissionIds) {

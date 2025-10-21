@@ -15,4 +15,6 @@ public interface RoleRepository {
     RoleModel getById(UUID id);
 
     RoleModel save(RoleModel model);
+
+    void deleteById(UUID id);
 }
