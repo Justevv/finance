@@ -2,6 +2,8 @@ package com.manager.user.domain.service.admin;
 
 
 import com.manager.finance.log.CrudLogConstants;
+import com.manager.finance.metric.TrackExecutionTime;
+import com.manager.user.application.port.in.RoleUseCase;
 import com.manager.user.application.port.out.repository.RoleRepository;
 import com.manager.user.domain.exception.UserAlreadyExistException;
 import com.manager.user.domain.model.RoleModel;
@@ -11,7 +13,6 @@ import com.manager.user.infrastructure.adapter.out.persistence.entity.RoleEntity
 import com.manager.user.infrastructure.adapter.out.persistence.repository.springdata.RoleSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,22 +22,27 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RoleService {
+public class RoleService implements RoleUseCase {
     private static final String ROLE_LOG_NAME = "role";
     private final CrudLogConstants crudLogConstants = new CrudLogConstants(ROLE_LOG_NAME);
-    private final ModelMapper oldMapper;
     private final RoleSpringDataRepository roleSpringDataRepository;
     private final RoleRepository roleRepository;
 
+    @TrackExecutionTime
+    @Override
     public List<RoleModel> getAll() {
         return roleRepository.findAll();
     }
 
+    @TrackExecutionTime
+    @Override
     public RoleModel get(UUID id) {
         return roleRepository.getById(id);
     }
 
+    @TrackExecutionTime
     @Transactional
+    @Override
     public RoleModel create(RoleModel model) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputNewDTO(), model);
         RoleModel save = RoleModel.builder()
@@ -49,7 +55,9 @@ public class RoleService {
         return saved;
     }
 
+    @TrackExecutionTime
     @Transactional
+    @Override
     public RoleModel update(UUID roleId, RoleRequestDto model) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputDTOToChangeEntity(), model, roleId);
         var current = roleRepository.getById(roleId);
@@ -63,7 +71,9 @@ public class RoleService {
         return saved;
     }
 
+    @TrackExecutionTime
     @Transactional
+    @Override
     public void delete(UUID id) throws UserAlreadyExistException {
         log.debug(crudLogConstants.getInputEntityForDelete(), id);
         roleRepository.getById(id);

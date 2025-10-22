@@ -5,8 +5,8 @@ import com.manager.finance.infrastructure.adapter.in.exception.InvalidUUIDExcept
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestError;
 import com.manager.finance.infrastructure.adapter.in.rest.dto.response.RestResponse;
 import com.manager.finance.infrastructure.adapter.in.rest.error.ErrorHelper;
+import com.manager.user.application.port.in.RoleUseCase;
 import com.manager.user.domain.model.RoleModel;
-import com.manager.user.domain.service.admin.RoleService;
 import com.manager.user.infrastructure.adapter.in.rest.dto.request.RoleRequestDto;
 import com.manager.user.infrastructure.adapter.in.rest.dto.response.RoleResponseDto;
 import com.manager.user.infrastructure.adapter.in.rest.mapper.DtoMapper;
@@ -36,14 +36,14 @@ import static com.manager.finance.constant.Constant.USER_ENTITY;
 @Slf4j
 @RequiredArgsConstructor
 public class RoleController {
-    private final RoleService roleService;
+    private final RoleUseCase roleUseCase;
     private final ErrorHelper errorHelper;
     private final DtoMapper<RoleRequestDto, RoleResponseDto, RoleModel> mapper;
 
     @GetMapping
     @PreAuthorize("hasAuthority('role:crud')")
     public ResponseEntity<RestResponse<List<RoleResponseDto>>> getRoles() {
-        var responseDto = roleService.getAll().stream().map(mapper::toResponseDto).toList();
+        var responseDto = roleUseCase.getAll().stream().map(mapper::toResponseDto).toList();
 
         RestResponse<List<RoleResponseDto>> response = new RestResponse<>(null, responseDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -52,7 +52,7 @@ public class RoleController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('role:crud')")
     public ResponseEntity<RestResponse<RoleResponseDto>> getRole(@PathVariable("id") UUID id) {
-        var responseDto = mapper.toResponseDto(roleService.get(id));
+        var responseDto = mapper.toResponseDto(roleUseCase.get(id));
 
         RestResponse<RoleResponseDto> response = new RestResponse<>(null, responseDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -67,7 +67,7 @@ public class RoleController {
         var responseEntity = errorHelper.checkErrors2(bindingResult);
         if (responseEntity == null) {
             status = HttpStatus.OK;
-            responseDto = mapper.toResponseDto(roleService.create(mapper.toModel(role)));
+            responseDto = mapper.toResponseDto(roleUseCase.create(mapper.toModel(role)));
         } else {
             status = HttpStatus.BAD_REQUEST;
             restError = new RestError(null, responseEntity);
@@ -88,7 +88,7 @@ public class RoleController {
         try {
             UUID uuid = UUID.fromString(id);
             if (dtoErrors == null) {
-                var model = roleService.update(uuid, requestDto);
+                var model = roleUseCase.update(uuid, requestDto);
                 responseDto = mapper.toResponseDto(model);
                 status = HttpStatus.OK;
             } else {
@@ -109,7 +109,7 @@ public class RoleController {
     public ResponseEntity<Void> deleteRole(@PathVariable("id") String id) {
         try {
             UUID uuid = UUID.fromString(id);
-            roleService.delete(uuid);
+            roleUseCase.delete(uuid);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (IllegalArgumentException e) {
             throw new InvalidUUIDException(id, USER_ENTITY);
